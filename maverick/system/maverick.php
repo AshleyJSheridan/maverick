@@ -33,6 +33,17 @@ class maverick
 		return isset($c[$param])?$c[$param]:'';
 	}
 	
+	public function xss_filter($data)
+	{
+		foreach($data as $key => &$datum)
+		{
+			if(is_array($datum))
+				$datum = $this->xss_filter($datum);
+			else
+				$datum = filter_var($datum, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+		}
+		return $data;
+	}
 	
 	
 	private function load_config()
@@ -58,17 +69,16 @@ class maverick
 
 			$this->requested_route->$request = ($this->get_config('config.xss_protection'))?$this->xss_filter($GLOBALS[$global]):$GLOBALS[$global];
 		}
+		
+		if(isset($_SERVER['REDIRECT_URL']))
+			$path = $_SERVER['REDIRECT_URL'];
+		else
+			$path = (strpos($_SERVER['REQUEST_URI'], '?') !== false)?substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?')):$_SERVER['REQUEST_URI'];
+		
+		$path = explode('/', trim($path, '/') );
+		
+		$this->requested_route->path = ($this->get_config('config.xss_protection'))?$this->xss_filter($path):$path;
 	}
 	
-	private function xss_filter($data)
-	{
-		foreach($data as $key => &$datum)
-		{
-			if(is_array($datum))
-				$datum = $this->xss_filter($datum);
-			else
-				$datum = filter_var($datum, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-		}
-		return $data;
-	}
+	
 }
