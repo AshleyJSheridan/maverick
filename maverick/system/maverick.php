@@ -82,7 +82,42 @@ class maverick
 		// look at routes to find out which route the requested path best matches
 		require_once (MAVERICK_BASEDIR . 'routes.php');
 		
-		var_dump($this->controller);
+		if(!empty($this->controller))
+		{
+			$controller_name = $this->controller['controller_name'];
+			
+			if(class_exists($controller_name))
+			{
+				$this->controller['controller'] = new $controller_name;
+
+				if(get_parent_class($this->controller['controller']) != 'base_controller')
+				{
+					// for some reason the controller referenced in the route isn't actually a controller
+					unset($this->controller['controller']);
+					//TODO: throw a server error
+					error::show('controller specified in route is wrong type of class');
+				}
+				else
+				{
+					if(method_exists($this->controller['controller'], $this->controller['method']))
+						$this->controller['controller']->{$this->controller['method']}();
+					else
+					{
+						//TODO: throw missing method error
+						error::show('controller method does not exist');
+					}
+				}
+			}
+			else
+			{
+				//TODO: throw an error as class specified in route doesn't exist
+				error::show('controller specified in route does not exist');
+			}
+		}
+		else
+		{
+			// throw a 404 - either look to see if an explicit route accounts for this, or throw some kind of default one
+		}
 	}
 	
 	public function set_error_route($code, $details)
