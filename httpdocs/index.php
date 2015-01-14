@@ -5,3 +5,4 @@ if(!defined('MAVERICK_BASEDIR'))
 require_once MAVERICK_BASEDIR . 'system/maverick.php';
 
 $app = maverick::getInstance();
+$app->build();

@@ -1,16 +1,48 @@
 <?php
+function __autoload($class)
+{
+	$maverick = maverick::getInstance();
+	
+	foreach($maverick->get_config('config.paths') as $path)
+	{
+		if(file_exists("/$path/$class.php"))
+			require_once "/$path/$class.php";
+	}
+}
+
 class maverick
 {
 	static $_instance;
-	private $requested_route;
 	private $config;
+	private $requested_route;
+	private $requested_route_string;
+	private $controller;
+	private $error_routes = array();
+
+	public function __get($name)
+	{
+		if(in_array($name, array('requested_route_string', 'matched_route', 'controller', 'error_routes') ) )
+			return $this->$name;
+		else
+			return null;
+	}
 	
+	public function __set($name, $value)
+	{
+		if(in_array($name, array('matched_route', 'controller', 'error_routes') ) )
+		{
+			$this->$name = $value;
+			return true;
+		}
+		else
+			return false;
+	}
+
 	private function __construct()
 	{
 		$this->load_config();
 		$this->get_request_uri();
 		
-		var_dump($this);
 	}
 	
 	private function __clone() {}
@@ -45,6 +77,18 @@ class maverick
 		return $data;
 	}
 	
+	public function build()
+	{
+		// look at routes to find out which route the requested path best matches
+		require_once (MAVERICK_BASEDIR . 'routes.php');
+		
+		var_dump($this->controller);
+	}
+	
+	public function set_error_route($code, $details)
+	{
+		$this->error_routes[$code] = $details;
+	}
 	
 	private function load_config()
 	{
@@ -78,6 +122,7 @@ class maverick
 		$path = explode('/', trim($path, '/') );
 		
 		$this->requested_route->path = ($this->get_config('config.xss_protection'))?$this->xss_filter($path):$path;
+		$this->requested_route_string = implode('/', $this->requested_route->path);
 	}
 	
 	
