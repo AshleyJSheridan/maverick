@@ -5,4 +5,9 @@ class main_controller extends base_controller
 	{
 		echo 'page123';
 	}
+	
+	public function error()
+	{
+		echo 'error';
+	}
 }

@@ -84,35 +84,36 @@ class maverick
 		
 		if(!empty($this->controller))
 		{
-			$controller_name = $this->controller['controller_name'];
-			
-			if(class_exists($controller_name))
-			{
-				$this->controller['controller'] = new $controller_name;
-
-				if(method_exists($this->controller['controller'], $this->controller['method']))
-					$this->controller['controller']->{$this->controller['method']}();
-				else
-				{
-					//TODO: throw missing method error
-					error::show('controller method does not exist');
-				}
-			}
+			if($this->check_class_method_exists($this->controller['controller_name'], $this->controller['method'], $this->controller['controller']))
+				$this->controller['controller']->{$this->controller['method']}();
 			else
-			{
-				//TODO: throw an error as class specified in route doesn't exist
-				error::show('controller specified in route does not exist');
-			}
+				error::show("controller '{$this->controller['controller_name']}' or method '{$this->controller['method']}' not found");
 		}
 		else
 		{
 			// throw a 404 - either look to see if an explicit route accounts for this, or throw some kind of default one
+			$error_controller = $this->get_error_route(404);
+
+			if($this->check_class_method_exists($error_controller['controller_name'], $error_controller['method'], $this->controller['controller']))
+			{
+				// add the error controller details in as the main controller details for consistency later on
+				list($this->controller['controller_name'], $this->controller['method'], $this->controller['protocol'], $this->controller['args']) = array($error_controller['controller_name'], $error_controller['method'], 'any', null);
+				$this->controller['controller']->{$this->controller['method']}();
+			}
+			else
+				error::show("404", 404);
 		}
 	}
-	
+
 	public function set_error_route($code, $details)
 	{
-		$this->error_routes[$code] = $details;
+		if($this->check_required_fields($details, array('args', 'protocol', 'method', 'controller_name') ) )
+			$this->error_routes[$code] = $details;
+	}
+	
+	private function get_error_route($code)
+	{
+		return isset($this->error_routes[$code])?array('controller_name'=>$this->error_routes[$code]['controller_name'], 'method'=>$this->error_routes[$code]['method']):array('controller_name'=>'', 'method'=>'');
 	}
 	
 	private function load_config()
@@ -150,5 +151,16 @@ class maverick
 		$this->requested_route_string = implode('/', $this->requested_route->path);
 	}
 	
+	private function check_class_method_exists($class, $method, &$class_holder)
+	{
+		return (class_exists($class) && ($class_holder = new $class) && method_exists($class_holder, $method) );
+	}
 	
+	//TODO: consider breaking this out into a static helper class
+	private function check_required_fields($data, $fields)
+	{
+		$data_keys = array_keys($data);
+		
+		return (bool)!array_diff($data_keys, $fields);
+	}
 }
