@@ -90,22 +90,12 @@ class maverick
 			{
 				$this->controller['controller'] = new $controller_name;
 
-				if(get_parent_class($this->controller['controller']) != 'base_controller')
-				{
-					// for some reason the controller referenced in the route isn't actually a controller
-					unset($this->controller['controller']);
-					//TODO: throw a server error
-					error::show('controller specified in route is wrong type of class');
-				}
+				if(method_exists($this->controller['controller'], $this->controller['method']))
+					$this->controller['controller']->{$this->controller['method']}();
 				else
 				{
-					if(method_exists($this->controller['controller'], $this->controller['method']))
-						$this->controller['controller']->{$this->controller['method']}();
-					else
-					{
-						//TODO: throw missing method error
-						error::show('controller method does not exist');
-					}
+					//TODO: throw missing method error
+					error::show('controller method does not exist');
 				}
 			}
 			else
