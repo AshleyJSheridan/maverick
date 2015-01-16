@@ -122,6 +122,8 @@ class query
 		else
 			$q->gets[] = $fields;
 		
+		//TODO: as this should be the last chainable method called, this should trigger a build and execution of the query
+		
 		return $q;
 			
 	}
