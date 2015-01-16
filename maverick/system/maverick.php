@@ -18,6 +18,7 @@ class maverick
 	private $requested_route_string;
 	private $controller;
 	private $error_routes = array();
+	public $db;
 
 	public function __get($name)
 	{
@@ -42,7 +43,7 @@ class maverick
 	{
 		$this->load_config();
 		$this->get_request_uri();
-		
+		$this->db = new stdClass();
 	}
 	
 	private function __clone() {}
@@ -56,13 +57,19 @@ class maverick
 	
 	public function get_config($item)
 	{
-		if(!preg_match('/^[a-z\d_-]+\.[a-z\d_-]+$/i', $item))
+		if(preg_match('/^([a-z\d_-]+)(\.([a-z\d_-]+))?$/i', $item, $matches))
+		{
+			if(count($matches) == 2)
+				return $this->config->{$matches[1]};
+			else
+			{
+				$c = ($this->config->{$matches[1]});
+				$p = $matches[3];
+				return isset($c[$p])?$c[$p]:'';
+			}
+		}
+		else
 			return '';
-		
-		list($config, $param) = explode('.', $item);
-		
-		$c = ($this->config->$config);
-		return isset($c[$param])?$c[$param]:'';
 	}
 	
 	public function xss_filter($data)
@@ -82,6 +89,18 @@ class maverick
 		// look at routes to find out which route the requested path best matches
 		require_once (MAVERICK_BASEDIR . 'routes.php');
 		
+		// initialise base db object if the config exists, the engine is not an empty string, and the required parameters exist
+		if(strlen($this->get_config('db.engine') ) && $this->check_required_fields($this->get_config('db'), array('engine','host','database','username','password') ) )
+		{
+			$dbname = $this->get_config('db.database');
+			$dbhost = $this->get_config('db.host');
+			$dbuser = $this->get_config('db.username');
+			$dbpass = $this->get_config('db.password');
+			
+			$this->db->pdo = $pdo = new PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
+		}
+		
+		// locate and initiate call to controller responsible for the requested route
 		if(!empty($this->controller))
 		{
 			if($this->check_class_method_exists($this->controller['controller_name'], $this->controller['method'], $this->controller['controller']))
@@ -160,7 +179,7 @@ class maverick
 	private function check_required_fields($data, $fields)
 	{
 		$data_keys = array_keys($data);
-		
-		return (bool)!array_diff($data_keys, $fields);
+
+		return !count( array_diff($fields, $data_keys) );
 	}
 }
