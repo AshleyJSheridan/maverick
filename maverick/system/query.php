@@ -6,8 +6,13 @@ class query
 	private $from = '';
 	private $joins = array();
 	private $wheres = array();
+	private $group_bys = array();
+	private $gets = array();
 	
-	
+	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
+	private $where_conditions = array('IS', 'IS NOT');
+	private $where_internal_conditions = array('IN', 'NOT IN');
+
 	private $query = '';
 	
 	private function __clone() {}
@@ -51,13 +56,93 @@ class query
 		return $q;
 	}
 	
+	public static function whereIn($field, $values)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($values))
+			return $q;
+		
+		$q->add_where('IN', $field, $value);
+		
+		return $q;
+	}
+	
+	public static function whereNotIn($field, $values)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($values))
+			return $q;
+		
+		$q->add_where('NOT IN', $field, $value);
+		
+		return $q;
+	}
+	
 	public static function where($field, $condition, $value)
 	{
+		$q = query::getInstance();
 		
+		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
+			return $q;
+		
+		$q->add_where($condition, $field, $value);
+		
+		return $q;
 	}
 
-
+	public static function groupBy($field, $direction='asc')
+	{
+		$q = query::getInstance();
+		
+		if(!in_array($direction, array('asc', 'desc')))
+			return $q;
+		
+		$q->group_bys[] = array(
+			'field' => $field,
+			'direction' => $direction,
+		);
+		
+		return $q;
+	}
 	
+	public static function get($fields='*')
+	{
+		$q = query::getInstance();
+		
+		if((is_array($fields) && !count($fields)) || is_string($fields) && !strlen($fields) )
+			return $q;
+		
+		if(is_array($fields))
+		{
+			foreach($fields as $field)
+				$q->gets[] = $field;
+		}
+		else
+			$q->gets[] = $fields;
+		
+		return $q;
+			
+	}
+	
+	
+	
+	private function add_where($type, $field, $value)
+	{
+		$q = query::getInstance();
+		
+		if(!in_array($type, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
+			return $q;
+		
+		$q->wheres[] = array(
+			'field' => $field,
+			'condition' => $type,
+			'value' => $value,
+		);
+		
+		return $q;
+	}
 	
 	private function join($type, $table, $on)
 	{
@@ -106,6 +191,6 @@ class query
 	
 	private function check_join_condition($condition)
 	{
-		return in_array($condition, array('=', '!=', '<', '<=', '>', '>='));
+		return in_array($condition, $this->join_conditions);
 	}
 }

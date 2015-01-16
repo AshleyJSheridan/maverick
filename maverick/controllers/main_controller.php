@@ -7,7 +7,7 @@ class main_controller extends base_controller
 		
 		echo content::get_all_from_test_table();
 		
-		var_dump($app);
+		//var_dump($app);
 	}
 	
 	public function error()

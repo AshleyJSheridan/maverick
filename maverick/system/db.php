@@ -18,4 +18,10 @@ class db
 		return $q;
 	}
 	
+	public static function raw($value)
+	{
+		$v = new db_raw($value);
+		
+		return $v;
+	}
 }
