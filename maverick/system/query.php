@@ -2,18 +2,19 @@
 class query
 {
 	static $_instance;
-	private $select = '*';
 	private $from = '';
 	private $joins = array();
 	private $wheres = array();
 	private $group_bys = array();
 	private $gets = array();
+	private $results;
 	
 	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
 	private $where_conditions = array('IS', 'IS NOT');
 	private $where_internal_conditions = array('IN', 'NOT IN');
 
 	private $query = '';
+	private $queries = array();
 	
 	private function __clone() {}
 	
@@ -68,6 +69,18 @@ class query
 		return $q;
 	}
 	
+	public static function whereInOr($field, $values)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($values))
+			return $q;
+		
+		$q->add_where('IN', $field, $value, 'or');
+		
+		return $q;
+	}
+	
 	public static function whereNotIn($field, $values)
 	{
 		$q = query::getInstance();
@@ -80,6 +93,18 @@ class query
 		return $q;
 	}
 	
+	public static function whereNotInOr($field, $values)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($values))
+			return $q;
+		
+		$q->add_where('NOT IN', $field, $value, 'or');
+		
+		return $q;
+	}
+	
 	public static function where($field, $condition, $value)
 	{
 		$q = query::getInstance();
@@ -88,6 +113,18 @@ class query
 			return $q;
 		
 		$q->add_where($condition, $field, $value);
+		
+		return $q;
+	}
+	
+	public static function whereOr($field, $condition, $value)
+	{
+		$q = query::getInstance();
+		
+		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
+			return $q;
+		
+		$q->add_where($condition, $field, $value, 'or');
 		
 		return $q;
 	}
@@ -107,7 +144,7 @@ class query
 		return $q;
 	}
 	
-	public static function get($fields='*')
+	public static function get($fields=array('*'))
 	{
 		$q = query::getInstance();
 		
@@ -122,25 +159,156 @@ class query
 		else
 			$q->gets[] = $fields;
 		
-		//TODO: as this should be the last chainable method called, this should trigger a build and execution of the query
+		$q->result('select');
 		
 		return $q;
-			
 	}
 	
+	private function compile_joins($joins)
+	{
+		$join_string = '';
+		$params = array();
+		
+		foreach($joins as $join)
+		{
+			$join_string .= " {$join['type']} JOIN {$join['table']} ON ";
+			
+			for($i=0; $i<count($join['on']); $i++)
+			{
+				if(!$i)
+					$join_string .= ' ( ';
+				
+				if($i)
+					$join_string .= ' AND ';
+				
+				if(is_object($join['on'][$i]['field1']) && get_class($join['on'][$i]['field1']) == 'db_raw')
+				{
+					$join_string .= ' ? ';
+					$params[] = (string)$join['on'][$i]['field1'];
+				}
+				else
+					$join_string .= $join['on'][$i]['field1'];
+				
+				$join_string .= " {$join['on'][$i]['condition']} ";
+				
+				if(is_object($join['on'][$i]['field2']) && get_class($join['on'][$i]['field2']) == 'db_raw')
+				{
+					$join_string .= ' ? ';
+					$params[] = (string)$join['on'][$i]['field2'];
+				}
+				else
+					$join_string .= $join['on'][$i]['field2'];
+				
+				if($i==count($join['on'])-1)
+					$join_string .= ' ) ';
+			}
+		}
+		
+		return array($join_string, $params);;
+	}
 	
+	private function compile_wheres($wheres)
+	{
+		$where_string = '';
+		$params = array();
+		
+		for($i=0; $i<count($wheres); $i++)
+		{
+			$where_string .= (!$i)?' WHERE ':" {$wheres[$i]['type']} ";
+			
+			if(is_object($wheres[$i]['field']) && get_class($wheres[$i]['field']) == 'db_raw')
+			{
+				$where_string .= ' ? ';
+				$params[] = (string)$wheres[$i]['field'];
+			}
+			else
+				$where_string .= $wheres[$i]['field'];
+			
+			$where_string .= " {$wheres[$i]['condition']} ";
+			
+			if(is_object($wheres[$i]['value']) && get_class($wheres[$i]['value']) == 'db_raw')
+			{
+				$where_string .= ' ? ';
+				$params[] = (string)$wheres[$i]['value'];
+			}
+			else
+				$where_string .= $wheres[$i]['field'];
+		}
+		
+		return array($where_string, $params);;
+	}
 	
-	private function add_where($type, $field, $value)
+	private function result($type)
+	{
+		$maverick = maverick::getInstance();
+		$q = query::getInstance();
+		
+		if(!strlen($q->from)) return false;
+		
+		$from = "FROM {$q->from}";
+		list($join_string, $join_params) = $q->compile_joins($q->joins);
+		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
+		$params = array_merge($join_params, $where_params);
+		
+		switch($type)
+		{
+			case 'select':
+			{
+				$select = implode(',', $q->gets);
+				
+				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string");
+
+				break;
+			}
+			case 'insert':
+			{
+				
+				break;
+			}
+			case 'delete':
+			{
+				
+				break;
+			}
+			case 'update':
+			{
+				
+				break;
+			}
+		}
+		
+		if ($stmt->execute( $params ) )
+		{
+			$results = array();
+			while ($row = $stmt->fetch())
+				$results[] = $row;
+		}
+		else
+			$results = false;
+		
+		$q->numrows = count($results);
+		
+		
+		$q->results = $results;
+	}
+	
+	public function fetch()
+	{
+		return $this->results;
+	}
+	
+	private function add_where($condition, $field, $value, $type='and')
 	{
 		$q = query::getInstance();
 		
-		if(!in_array($type, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
+		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
 			return $q;
 		
 		$q->wheres[] = array(
 			'field' => $field,
-			'condition' => $type,
+			'condition' => $condition,
 			'value' => $value,
+			'type' => $type,
 		);
 		
 		return $q;

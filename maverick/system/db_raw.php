@@ -8,4 +8,9 @@ class db_raw
 	{
 		$this->value = $value;
 	}
+	
+	function __toString()
+	{
+		return $this->value;
+	}
 }
