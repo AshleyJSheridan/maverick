@@ -44,4 +44,11 @@ class content
 				array('field_key'=>'insert bulk test2', 'field_value'=>date("ymd His") ),
 			));*/
 	}
+	
+	static function update_record()
+	{
+		$update = db::table('test')
+			->where('field_key', '=', db::raw('insert bulk test') )
+			->update( array('field_value'=>'ash') );
+	}
 }

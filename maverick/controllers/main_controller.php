@@ -9,7 +9,7 @@ class main_controller extends base_controller
 		
 		$data2 = content::get_from_test_with_matching_id(2);
 		
-		$insert = content::add_record();
+		$insert = content::update_record();
 	}
 	
 	public function error()

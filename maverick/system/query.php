@@ -207,6 +207,20 @@ class query
 		
 		return $q;
 	}
+	
+	public static function update($data)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($data))
+			return false;
+		
+		$q->data = $data;
+		
+		$q->result('update');
+		
+		return $q;
+	}
 
 	private function result($type)
 	{
@@ -220,15 +234,15 @@ class query
 		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
 		list($group_by_string, $group_by_params) = $q->compile_group_bys($q->group_bys);
 		list($order_by_string, $order_by_params) = $q->compile_order_bys($q->order_bys);
-		$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
-		
+
 		switch($type)
 		{
 			case 'select':
 			{
-				$select = implode(',', $q->gets);
+				$select_string = implode(',', $q->gets);
+				$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
 				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string $group_by_string $order_by_string");
+				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string");
 
 				break;
 			}
@@ -247,6 +261,12 @@ class query
 			}
 			case 'update':
 			{
+				list($update_string, $update_params) = $q->compile_updates($q->data);
+				$params = array_merge($update_params, $where_params);
+				
+				$stmt = $maverick->db->pdo->prepare("UPDATE {$q->from} SET $update_string  $where_string");
+				
+				var_dump("UPDATE {$q->from} SET $update_string  $where_string", $params);
 				
 				break;
 			}
@@ -277,6 +297,26 @@ class query
 		$q->results = $results;
 	}
 	
+	private function compile_updates($data)
+	{
+		$update_string = '';
+		$params = array();
+		
+		foreach($data as $key => $value)
+		{
+			if(!strlen($key))
+				continue;
+			
+			$update_string .= strlen($update_string)?', ':'';
+			
+			$update_string .= " $key = ?";
+			
+			$params[] = $value;
+		}
+		
+		return array($update_string, $params);
+	}
+
 	private function compile_inserts($data)
 	{
 		$insert_string = '';
