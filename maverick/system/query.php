@@ -14,16 +14,33 @@ class query
 	private $where_conditions = array('IS', 'IS NOT');
 	private $where_internal_conditions = array('IN', 'NOT IN');
 
-	private $query = '';
 	private $queries = array();
 	
 	private function __clone() {}
 	
-	public static function getInstance()
+	public static function getInstance($reset=false)
 	{
+		if($reset)
+		{
+			// not everything needs to be reset, only those variables pertaining to an individual query
+			
+			$q = query::getInstance();
+			
+			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets') as $var)
+				$q->$var = array();
+		}
+		
 		if(!(self::$_instance instanceof self))
 			self::$_instance = new self;
+
 		return self::$_instance;
+	}
+	
+	public function get_queries()
+	{
+		$q = query::getInstance();
+		
+		return $q->queries;
 	}
 	
 	public function set_from_table($table)
@@ -250,7 +267,6 @@ class query
 					case 'IN':
 					case 'NOT IN':
 					{
-						var_dump($wheres[$i]);
 						if(is_array($wheres[$i]['value']))
 						{
 							$where_string .= ' (';
@@ -371,9 +387,8 @@ class query
 			$results = false;
 		
 		$q->numrows = count($results);
-		$q->query = $stmt->queryString;
-		$q->params = $params;
-var_dump($q->query, $q->params);
+		$q->queries[] = array('query' => $stmt->queryString, 'params' => $params);
+
 		$q->results = $results;
 	}
 	
@@ -393,7 +408,7 @@ var_dump($q->query, $q->params);
 			'field' => $field,
 			'condition' => $condition,
 			'value' => $value,
-			'type' => $type,
+			'type' => strtoupper($type),
 		);
 		
 		return $q;
@@ -410,7 +425,7 @@ var_dump($q->query, $q->params);
 		{
 			$q->joins[] = array(
 				'table' => $table,
-				'type' => $type,
+				'type' => strtoupper($type),
 				'on' => $q->on($on),
 			);
 		}

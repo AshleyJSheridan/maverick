@@ -7,7 +7,9 @@ class main_controller extends base_controller
 		
 		$data = content::get_all_from_test_table();
 		
-		var_dump($data);
+		$data2 = content::get_from_test_with_matching_id(2);
+		
+		var_dump($data, $data2);
 	}
 	
 	public function error()

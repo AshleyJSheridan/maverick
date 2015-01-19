@@ -13,7 +13,7 @@ class content
 				array('t2.test_id', '=', 't.id'),
 				array('t2.display', '=', db::raw('yes')),
 			))*/
-			->whereNotIn('t.id', array(1,3))
+			->whereIn('t.id', array(1,3))
 			//->leftJoin('test2 AS t2', array('t2.test_id', '=', 't.id') )
 			//->where('t.id', '>', db::raw('1'))
 			//->where(db::raw(1), '=', db::raw(1))
@@ -21,6 +21,16 @@ class content
 			//->get(array('t.id', 't.field_key', 't.field_value', 't2.id AS test2_id', 't2.other_value'))
 			->get(array('t.*'))
 		;
+		
+		return $data->fetch();
+	}
+	
+	static function get_from_test_with_matching_id($id)
+	{
+		$data = db::table('test2 AS t')->where('t.id', '=', $id)->get();
+		
+		$q = query::getInstance();
+		var_dump($q->get_queries());
 		
 		return $data->fetch();
 	}

@@ -8,7 +8,7 @@ class db
 	// all queries should start with a table request
 	public static function table($table)
 	{
-		$q = query::getInstance();
+		$q = query::getInstance(true);
 		
 		if(!strlen($table))
 			return $q;	// TODO: consider throwing an error here
