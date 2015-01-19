@@ -8,6 +8,7 @@ class query
 	private $group_bys = array();
 	private $order_bys = array();
 	private $gets = array();
+	private $data = array();
 	private $results;
 	
 	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
@@ -26,7 +27,7 @@ class query
 			
 			$q = query::getInstance();
 			
-			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets') as $var)
+			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data') as $var)
 				$q->$var = array();
 		}
 		
@@ -193,6 +194,118 @@ class query
 		return $q;
 	}
 	
+	public static function insert($data)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($data))
+			return false;
+		
+		$q->data = $data;
+		
+		$q->result('insert');
+		
+		return $q;
+	}
+
+	private function result($type)
+	{
+		$maverick = maverick::getInstance();
+		$q = query::getInstance();
+		
+		if(!strlen($q->from)) return false;
+		
+		$from = "FROM {$q->from}";
+		list($join_string, $join_params) = $q->compile_joins($q->joins);
+		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
+		list($group_by_string, $group_by_params) = $q->compile_group_bys($q->group_bys);
+		list($order_by_string, $order_by_params) = $q->compile_order_bys($q->order_bys);
+		$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
+		
+		switch($type)
+		{
+			case 'select':
+			{
+				$select = implode(',', $q->gets);
+				
+				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string $group_by_string $order_by_string");
+
+				break;
+			}
+			case 'insert':
+			{
+				list($insert_string, $params) = $q->compile_inserts($q->data);
+				
+				$stmt = $maverick->db->pdo->prepare("INSERT INTO {$q->from} $insert_string");
+				
+				break;
+			}
+			case 'delete':
+			{
+				
+				break;
+			}
+			case 'update':
+			{
+				
+				break;
+			}
+		}
+		
+		if ($stmt->execute( $params ) )
+		{
+			switch($type)
+			{
+				case 'select':
+				{
+					$results = array();
+					while ($row = $stmt->fetch())
+						$results[] = $row;
+					
+					break;
+				}
+				default:
+					$results = true;
+			}
+		}
+		else
+			$results = false;
+		
+		$q->numrows = count($results);
+		$q->queries[] = array('query' => $stmt->queryString, 'params' => $params);
+
+		$q->results = $results;
+	}
+	
+	private function compile_inserts($data)
+	{
+		$insert_string = '';
+		$params = array();
+		
+		if(isset($data[0]))	// crude, but should determine if this is a single key/value array for inserting one record, or a multi-dimensional array for a bulk insert
+		{
+			$insert_string .= ' (' . implode(',', array_keys($data[0])) . ') VALUES ';
+			
+			for($i=0; $i<count($data); $i++)
+			{
+				$insert_string .= ($i)?', ':'';
+				
+				$insert_string .= ' (' . implode(',', array_fill(0, count(array_keys($data[$i]) ), '?') ) . ') ';
+				
+				foreach($data[$i] as $value)
+					$params[] = $value;
+			}
+		}
+		else
+		{
+			$insert_string .= ' (' . implode(',', array_keys($data)) . ') VALUES (' . implode(',', array_fill(0, count(array_keys($data) ), '?') ) . ') ';
+			foreach($data as $value)
+				$params[] = $value;
+		}
+		
+		return array($insert_string, $params);
+	}
+		
 	private function compile_joins($joins)
 	{
 		$join_string = '';
@@ -336,62 +449,6 @@ class query
 		return array($order_by_string, $params);
 	}
 
-	private function result($type)
-	{
-		$maverick = maverick::getInstance();
-		$q = query::getInstance();
-		
-		if(!strlen($q->from)) return false;
-		
-		$from = "FROM {$q->from}";
-		list($join_string, $join_params) = $q->compile_joins($q->joins);
-		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
-		list($group_by_string, $group_by_params) = $q->compile_group_bys($q->group_bys);
-		list($order_by_string, $order_by_params) = $q->compile_order_bys($q->order_bys);
-		$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
-		
-		switch($type)
-		{
-			case 'select':
-			{
-				$select = implode(',', $q->gets);
-				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string $group_by_string $order_by_string");
-
-				break;
-			}
-			case 'insert':
-			{
-				
-				break;
-			}
-			case 'delete':
-			{
-				
-				break;
-			}
-			case 'update':
-			{
-				
-				break;
-			}
-		}
-		
-		if ($stmt->execute( $params ) )
-		{
-			$results = array();
-			while ($row = $stmt->fetch())
-				$results[] = $row;
-		}
-		else
-			$results = false;
-		
-		$q->numrows = count($results);
-		$q->queries[] = array('query' => $stmt->queryString, 'params' => $params);
-
-		$q->results = $results;
-	}
-	
 	public function fetch()
 	{
 		return $this->results;

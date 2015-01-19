@@ -34,4 +34,14 @@ class content
 		
 		return $data->fetch();
 	}
+	
+	static function add_record()
+	{
+		$insert = db::table('test')
+			->insert(array('field_key'=>'insert test', 'field_value'=>date("ymd His") ) );
+			/*->insert(array(
+				array('field_key'=>'insert bulk test', 'field_value'=>date("ymd His") ),
+				array('field_key'=>'insert bulk test2', 'field_value'=>date("ymd His") ),
+			));*/
+	}
 }
