@@ -5,11 +5,13 @@ class main_controller extends base_controller
 	{
 		$app = maverick::getInstance();
 		
-		$data = content::get_all_from_test_table();
+		//$data = content::get_all_from_test_table();
 		
-		$data2 = content::get_from_test_with_matching_id(2);
+		//$data2 = content::get_from_test_with_matching_id(2);
 		
-		$insert = content::update_record();
+		//$insert = content::update_record();
+		
+		content::delete_record();
 	}
 	
 	public function error()

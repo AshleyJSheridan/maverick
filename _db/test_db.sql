@@ -21,12 +21,19 @@ CREATE TABLE `test` (
   `field_key` varchar(30) NOT NULL,
   `field_value` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 /*Data for the table `test` */
 
-insert  into `test`(`id`,`field_key`,`field_value`) values (1,'test','123456789');
-insert  into `test`(`id`,`field_key`,`field_value`) values (2,'another_test','qwerty');
+insert  into `test`(`id`,`field_key`,`field_value`) values (1,'test','sdfsdfsd');
+insert  into `test`(`id`,`field_key`,`field_value`) values (2,'another_test','sdfsdf');
+insert  into `test`(`id`,`field_key`,`field_value`) values (3,'third','sdfhj');
+insert  into `test`(`id`,`field_key`,`field_value`) values (4,'insert bulk test','ash');
+insert  into `test`(`id`,`field_key`,`field_value`) values (5,'insert bulk test2','tyutyu');
+insert  into `test`(`id`,`field_key`,`field_value`) values (6,'insert bulk test','ash');
+insert  into `test`(`id`,`field_key`,`field_value`) values (7,'insert bulk test2','utyu');
+insert  into `test`(`id`,`field_key`,`field_value`) values (8,'insert bulk test','ash');
+insert  into `test`(`id`,`field_key`,`field_value`) values (9,'insert bulk test2','uiouio');
 
 /*Table structure for table `test2` */
 

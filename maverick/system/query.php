@@ -221,6 +221,15 @@ class query
 		
 		return $q;
 	}
+	
+	public static function delete()
+	{
+		$q = query::getInstance();
+		
+		$q->result('delete');
+		
+		return $q;
+	}
 
 	private function result($type)
 	{
@@ -256,6 +265,9 @@ class query
 			}
 			case 'delete':
 			{
+				$params = $where_params;
+				
+				$stmt = $maverick->db->pdo->prepare("DELETE FROM {$q->from} $where_string");
 				
 				break;
 			}
@@ -265,9 +277,7 @@ class query
 				$params = array_merge($update_params, $where_params);
 				
 				$stmt = $maverick->db->pdo->prepare("UPDATE {$q->from} SET $update_string  $where_string");
-				
-				var_dump("UPDATE {$q->from} SET $update_string  $where_string", $params);
-				
+
 				break;
 			}
 		}

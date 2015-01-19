@@ -51,4 +51,11 @@ class content
 			->where('field_key', '=', db::raw('insert bulk test') )
 			->update( array('field_value'=>'ash') );
 	}
+	
+	static function delete_record()
+	{
+		$delete = db::table('test')
+			->where('id', '=', db::raw(10))
+			->delete();
+	}
 }
