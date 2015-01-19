@@ -65,7 +65,7 @@ class query
 		if(!is_array($values))
 			return $q;
 		
-		$q->add_where('IN', $field, $value);
+		$q->add_where('IN', $field, $values);
 		
 		return $q;
 	}
@@ -89,7 +89,7 @@ class query
 		if(!is_array($values))
 			return $q;
 		
-		$q->add_where('NOT IN', $field, $value);
+		$q->add_where('NOT IN', $field, $values);
 		
 		return $q;
 	}
@@ -223,7 +223,7 @@ class query
 	{
 		$where_string = '';
 		$params = array();
-		
+
 		for($i=0; $i<count($wheres); $i++)
 		{
 			$where_string .= (!$i)?' WHERE ':" {$wheres[$i]['type']} ";
@@ -244,7 +244,33 @@ class query
 				$params[] = (string)$wheres[$i]['value'];
 			}
 			else
-				$where_string .= $wheres[$i]['field'];
+			{
+				switch($wheres[$i]['condition'])
+				{
+					case 'IN':
+					case 'NOT IN':
+					{
+						var_dump($wheres[$i]);
+						if(is_array($wheres[$i]['value']))
+						{
+							$where_string .= ' (';
+							for($j=0; $j<count($wheres[$i]['value']); $j++)
+							{
+								$where_string .= ($j)?',':'';
+								
+								$where_string .= '?';
+								$params[] = $wheres[$i]['value'][$j];
+							}
+							$where_string .= ') ';
+						}
+
+						break;
+					}
+					default:
+						$where_string .= $wheres[$i]['value'];
+				}
+			}
+				//$where_string .= $wheres[$i]['field'];
 		}
 		
 		return array($where_string, $params);
@@ -347,7 +373,7 @@ class query
 		$q->numrows = count($results);
 		$q->query = $stmt->queryString;
 		$q->params = $params;
-
+var_dump($q->query, $q->params);
 		$q->results = $results;
 	}
 	

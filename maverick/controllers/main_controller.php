@@ -5,9 +5,9 @@ class main_controller extends base_controller
 	{
 		$app = maverick::getInstance();
 		
-		echo content::get_all_from_test_table();
+		$data = content::get_all_from_test_table();
 		
-		//var_dump($app);
+		var_dump($data);
 	}
 	
 	public function error()
