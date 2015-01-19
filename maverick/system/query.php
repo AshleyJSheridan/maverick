@@ -6,6 +6,7 @@ class query
 	private $joins = array();
 	private $wheres = array();
 	private $group_bys = array();
+	private $order_bys = array();
 	private $gets = array();
 	private $results;
 	
@@ -129,14 +130,25 @@ class query
 		return $q;
 	}
 
-	public static function groupBy($field, $direction='asc')
+	public static function groupBy($field)
+	{
+		$q = query::getInstance();
+		
+		$q->group_bys[] = array(
+			'field' => $field,
+		);
+		
+		return $q;
+	}
+	
+	public static function orderBy($field, $direction='asc')
 	{
 		$q = query::getInstance();
 		
 		if(!in_array($direction, array('asc', 'desc')))
 			return $q;
 		
-		$q->group_bys[] = array(
+		$q->order_bys[] = array(
 			'field' => $field,
 			'direction' => $direction,
 		);
@@ -204,7 +216,7 @@ class query
 			}
 		}
 		
-		return array($join_string, $params);;
+		return array($join_string, $params);
 	}
 	
 	private function compile_wheres($wheres)
@@ -235,9 +247,53 @@ class query
 				$where_string .= $wheres[$i]['field'];
 		}
 		
-		return array($where_string, $params);;
+		return array($where_string, $params);
 	}
 	
+	private function compile_group_bys($group_bys)
+	{
+		$group_by_string = '';
+		$params = array();
+		
+		for($i=0; $i<count($group_bys); $i++)
+		{
+			$group_by_string .= (!$i)?' GROUP BY ':',';
+			
+			if(is_object($group_bys[$i]['field']) && get_class($group_bys[$i]['field']) == 'db_raw')
+			{
+				$group_by_string .= ' ? ';
+				$params[] = (string)$group_bys[$i]['field'];
+			}
+			else
+				$group_by_string .= $group_bys[$i]['field'];
+		}
+
+		return array($group_by_string, $params);
+	}
+
+	private function compile_order_bys($order_bys)
+	{
+		$order_by_string = '';
+		$params = array();
+		
+		for($i=0; $i<count($order_bys); $i++)
+		{
+			$order_by_string .= (!$i)?' ORDER BY ':',';
+			
+			if(is_object($order_bys[$i]['field']) && get_class($order_bys[$i]['field']) == 'db_raw')
+			{
+				$order_by_string .= ' ? ';
+				$params[] = (string)$order_bys[$i]['field'];
+			}
+			else
+				$order_by_string .= $order_bys[$i]['field'];
+			
+			$order_by_string .= " {$order_bys[$i]['direction']} ";
+		}
+
+		return array($order_by_string, $params);
+	}
+
 	private function result($type)
 	{
 		$maverick = maverick::getInstance();
@@ -248,7 +304,9 @@ class query
 		$from = "FROM {$q->from}";
 		list($join_string, $join_params) = $q->compile_joins($q->joins);
 		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
-		$params = array_merge($join_params, $where_params);
+		list($group_by_string, $group_by_params) = $q->compile_group_bys($q->group_bys);
+		list($order_by_string, $order_by_params) = $q->compile_order_bys($q->order_bys);
+		$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
 		
 		switch($type)
 		{
@@ -256,7 +314,7 @@ class query
 			{
 				$select = implode(',', $q->gets);
 				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string");
+				$stmt = $maverick->db->pdo->prepare("SELECT $select $from $join_string $where_string $group_by_string $order_by_string");
 
 				break;
 			}
@@ -287,8 +345,9 @@ class query
 			$results = false;
 		
 		$q->numrows = count($results);
-		
-		
+		$q->query = $stmt->queryString;
+		$q->params = $params;
+
 		$q->results = $results;
 	}
 	
