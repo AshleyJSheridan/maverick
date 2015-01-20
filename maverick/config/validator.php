@@ -1,0 +1,23 @@
+<?php
+return array(
+	'required' => 'The %s field is required',
+	'accepted' => 'The %s field must be checked to continue',
+	'after' => 'The %s field must be a date after %s',
+	'alpha' => 'The %s field must contain only letters or spaces',
+	'alpha_apos' => 'The %s field must contain only letters, spaces or apostrophes',
+	'alpha_dash' => 'The %s field must contain only letters, numbers, spaces, hyphens, underscores or apostrophes',
+	'alpha_numeric' => 'The %s field must contain only letters, spaces or numbers',
+	'before' => 'The %s field must be a date before %s',
+	'between' => 'The %s field must be between %s and %s',
+	'confirmed' => 'The %s field must match the %s field',
+	'email' => 'The %s field must be a valid email address',
+	'in' => 'The %s field must be a value in %s',
+	'ip' => 'The %s field must be a valid IPv4 or IPv6 address',
+	'min' => 'The %s field must be greater than %s',
+	'max' => 'The %s field must be less than %s',
+	'in' => 'The %s field must not be a value in %s',
+	'numeric' => 'The %s field must be a valid number',
+	'phone' => 'The %s field must be a valid phone number',
+	'regex' => 'The %s field must match the pattern %s',
+	'url' => 'The %s field must be a valid URL',
+);

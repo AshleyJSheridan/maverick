@@ -18,6 +18,7 @@ class maverick
 	private $requested_route_string;
 	private $controller;
 	private $error_routes = array();
+	public $validator;
 	public $db;
 	public $view;
 

@@ -17,10 +17,9 @@ class view
 		return self::$_instance;
 	}
 
-	// all queries should start with a table request
 	public static function make($view)
 	{
-		$v = view::getInstance(true);
+		$v = view::getInstance();
 		$app = maverick::getInstance();
 		
 		$v->reset();
@@ -36,7 +35,7 @@ class view
 	
 	public static function with($name, $data)
 	{
-		$v = view::getInstance(true);
+		$v = view::getInstance();
 		
 		if(!strlen($name) || empty($data))
 			return false;	// TODO: consider throwing an error here
