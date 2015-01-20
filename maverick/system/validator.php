@@ -58,9 +58,7 @@ class validator
 					{
 						// look up an error message for this and push it into the errors array
 						$error_string = vsprintf( $app->get_config("validator.$rule"), array_merge((array)$field, $params) );
-						
-						var_dump($app->get_config("validator.$rule"), $params);
-						
+
 						if(!isset($v->errors[$field]))
 							$v->errors[$field] = array();
 						
@@ -71,14 +69,13 @@ class validator
 					error::show("the validation rule {$params[0]} does not exist");
 			}
 		}
-		
 		return !count($v->errors);
 	}
 	
 	
 	private function rule_required($field)
 	{
-		return isset($_REQUEST[$field]);
+		return isset($_REQUEST[$field]) && strlen($_REQUEST[$field]);
 	}
 	
 	private function rule_accepted($field)

@@ -36,12 +36,13 @@ class main_controller extends base_controller
 		
 		if(validator::run())
 		{
-			// form validates - do stuff
+			// form validates - do stuff with the data - maybe pass it to a model to save in a DB and then continue to a thanks page
 			
 		}
 		else
 		{
 			// errors - pass back to the form and show errors
+			$view = view::make('includes/template')->with('page', 'form')->render();
 		}
 	}
 	
