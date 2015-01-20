@@ -16,7 +16,7 @@ class validator
 
 		return self::$_instance;
 	}
-	
+		
 	public static function make($rules)
 	{
 		$v = validator::getInstance();
@@ -33,6 +33,52 @@ class validator
 		return $v;
 	}
 	
+	public static function get_all_errors($field=null, $wrapper=array())
+	{
+		$v = validator::getInstance();
+		
+		if($field)
+		{
+			$errors = $v->errors[$field];
+			
+			if(count($wrapper)==2)
+			{
+				foreach($errors as &$error)
+					$error = $wrapper[0] . $error . $wrapper[1];
+			}
+
+			return $errors;
+		}
+		else
+		{
+			if(count($wrapper)==2)
+			{
+				foreach($v->errors as $key => &$error)
+					$v->errors[$key] = $v->get_all_errors($key, $wrapper);
+			}
+
+			return $v->errors;
+		}
+			
+	}
+	
+	public static function get_first_error($field, $wrapper=array())
+	{
+		$v = validator::getInstance();
+		
+		if(isset($v->errors[$field]))
+			return(count($wrapper)==2)?$wrapper[0] . reset($v->errors[$field]) . $wrapper[1]:reset($v->errors[$field]);
+		else
+			return '';
+	}
+	
+	public static function get_error_count()
+	{
+		$v = validator::getInstance();
+		
+		return count($v->errors);
+	}
+
 	public static function run()
 	{
 		$v = validator::getInstance();

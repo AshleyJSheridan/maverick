@@ -24,7 +24,7 @@ class main_controller extends base_controller
 		$app = maverick::getInstance();
 		
 		$rules = array(
-			'name' => array('required', 'alpha'),
+			'name' => array('required', 'alpha', 'email'),
 			'age' => array('numeric', 'between:18:100'),
 			'email' => array('required', 'email'),
 			'postcode' => array('required', 'regex:/^([a-pr-uwyz][a-hk-y]{0,1}\d[\da-hjkst]{0,1} \d[abd-hjlnp-uw-z]{2})$/i'),
