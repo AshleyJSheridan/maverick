@@ -37,7 +37,7 @@ class validator
 	{
 		$v = validator::getInstance();
 		
-		if($field)
+		if($field && isset($v->errors[$field]))
 		{
 			$errors = $v->errors[$field];
 			
