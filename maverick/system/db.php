@@ -1,8 +1,6 @@
 <?php
 class db
 {
-	
-	
 	private function __construct() {}
 
 	// all queries should start with a table request

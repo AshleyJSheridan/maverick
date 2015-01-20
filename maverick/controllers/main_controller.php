@@ -1,7 +1,12 @@
 <?php
 class main_controller extends base_controller
 {
-	public function page123()
+	function __construct()
+	{
+		$app = maverick::getInstance();
+	}
+	
+	function page123()
 	{
 		$app = maverick::getInstance();
 		
@@ -10,11 +15,17 @@ class main_controller extends base_controller
 		//$data2 = content::get_from_test_with_matching_id(2);
 		
 		//$insert = content::update_record();
-		
-		content::delete_record();
+
 	}
 	
-	public function error()
+	function home()
+	{
+		$data = content::get_all_from_test_table();
+		
+		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->render();
+	}
+
+	function error()
 	{
 		echo 'error';
 	}

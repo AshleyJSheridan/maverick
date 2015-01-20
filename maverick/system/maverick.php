@@ -19,6 +19,7 @@ class maverick
 	private $controller;
 	private $error_routes = array();
 	public $db;
+	public $view;
 
 	public function __get($name)
 	{
@@ -122,6 +123,11 @@ class maverick
 			else
 				error::show("404", 404);
 		}
+	}
+	
+	public function set_view(&$view)
+	{
+		$this->view = $view;
 	}
 
 	public function set_error_route($code, $details)
