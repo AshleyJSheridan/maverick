@@ -294,3 +294,39 @@ If you wish to suppress the automatic output of your rendered page, pass in a <c
 ```
 
 This causes the method to return the HTML (or other content) instead of echoing it to the output stream.
+
+##<a name="form-validation"></a>Form Validation
+Form validation is very important, and MaVeriCk takes advantage of the new validation features built into the latest versions of PHP. This means that validation is solid and doesn't rely on a half-baked regular expression. As [this quote by Jamie Zawinski](http://blog.codinghorror.com/regular-expressions-now-you-have-two-problems/) points out:
+
+> Some people, when confronted with a problem, think 
+> "I know, I'll use regular expressions."
+> Now they have two problems.
+
+At the heart of the validator class is the <code>make()</code> method which accepts an array of rules, one element per form element that you wish to validate.
+
+There are two different ways to set up rules:
+
+###<a name="multiple-vs-single-rules"></a>Multiple vs Single Rules
+The most basic form of rule binding is a single rule per form element:
+
+```php
+$rules = array(
+	'web_address' => 'url',
+	'phone' => 'phone',
+);
+```
+
+This is fine if you only want one rule to be applied, but often you want more, such as making a field both required and checking if the value is a valid email:
+
+```php
+$rules = array(
+	'email' => array('required', 'email'),
+);
+```
+
+This allows you to couple a lot of simple rules to create some quite useful validation. The rules you can use are:
+
+###<a name="rules"></a>Rules
+There are many types of validation rules:
+
+* 
