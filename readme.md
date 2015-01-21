@@ -11,4 +11,4 @@ The features of this include:
 * Powerful form validation based on arrays of rules, based a little on the concept behind triggering validation rules in [Laravel](http://laravel.com/).
 * Simple views that you can chain as many extra parameters to as you want
 
-*Documentation is not currently available for the framework, but should be soon.*
+Detailed documentation is available in [/docs](https://github.com/AshleyJSheridan/maverick/tree/master/docs)
