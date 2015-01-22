@@ -25,7 +25,7 @@ class validator
 		$v->reset();
 		
 		if(!is_array($rules))
-			return $v;	// TODO: consider throwing an error here
+			error::show('Validator ruleset is not an array');
 		
 		$v->set_rules($rules);
 		$app->validator = $v;

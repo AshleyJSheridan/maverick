@@ -9,7 +9,7 @@ class db
 		$q = query::getInstance(true);
 		
 		if(!strlen($table))
-			return $q;	// TODO: consider throwing an error here
+			error::show('Table not specified');
 		else
 			$q->set_from_table($table);
 		
