@@ -75,8 +75,6 @@ $db = $maverick->get_config('db.database');
 
 Don't worry about creating many calls to the <code>getInstance</code> method, as the class is a singleton and only initiates one instance of itself.
 
-At the moment, the <code>get_config()</code> method can only return values one level deep in the config array, but there are plans to extend this to be more flexible.
-
 ##<a name="routing"></a> Routing
 The routing in MaVeriCk is fairly flexible, and allows you to route different types of request to different controllers or controller methods.
 
