@@ -11,4 +11,9 @@ return array(
 		MAVERICK_BASEDIR . 'models',
 		MAVERICK_BASEDIR . 'system',
 	),
+	
+	'sub' => array(
+		'item' => 'test',
+		'item2' => 'test 2',
+	),
 );

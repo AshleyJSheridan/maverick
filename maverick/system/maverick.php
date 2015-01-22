@@ -59,19 +59,48 @@ class maverick
 	
 	public function get_config($item)
 	{
-		if(preg_match('/^([a-z\d_-]+)(\.([a-z\d_-]+))?$/i', $item, $matches))
+		if(preg_match('/^([a-z\d_-]+)(\.([a-z\d_-]+))*$/i', $item))
 		{
-			if(count($matches) == 2)
-				return $this->config->{$matches[1]};
-			else
+			$matches = explode('.', $item);
+			
+			switch(count($matches))
 			{
-				$c = ($this->config->{$matches[1]});
-				$p = $matches[3];
-				return isset($c[$p])?$c[$p]:'';
+				case 1:
+					$config = $this->config->{$matches[0]};
+					break;
+				case 2:
+					$c = ($this->config->{$matches[0]});
+					$p = $matches[1];
+
+					$config = isset($c[$p])?$c[$p]:'';
+					break;
+				default:
+					$c = ($this->config->{$matches[0]});
+					$p = $config = '';
+					array_shift($matches);
+					
+					foreach($matches as $item)
+					{
+						if(isset($c[$item]))
+						{
+							$config = $c[$item];
+							$c = $c[$item];
+						}
+						else
+						{
+							$config = '';
+							break;
+						}
+					}
+					
+					break;
 			}
+
 		}
 		else
-			return '';
+			$config = '';
+
+		return $config;
 	}
 	
 	public function xss_filter($data)
@@ -90,7 +119,7 @@ class maverick
 	{
 		// look at routes to find out which route the requested path best matches
 		require_once (MAVERICK_BASEDIR . 'routes.php');
-		
+
 		// initialise base db object if the config exists, the engine is not an empty string, and the required parameters exist
 		if(strlen($this->get_config('db.engine') ) && $this->check_required_fields($this->get_config('db'), array('engine','host','database','username','password') ) )
 		{
@@ -101,7 +130,7 @@ class maverick
 			
 			$this->db->pdo = $pdo = new PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
 		}
-		
+			
 		// locate and initiate call to controller responsible for the requested route
 		if(!empty($this->controller))
 		{
