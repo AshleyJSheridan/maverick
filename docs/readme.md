@@ -329,4 +329,159 @@ This allows you to couple a lot of simple rules to create some quite useful vali
 ###<a name="rules"></a>Rules
 There are many types of validation rules:
 
-* 
+* [accepted](#rule-accepted)
+* [after](#rule-after)
+* [alpha](#rule-alpha)
+* [alpha_apos](#rule-alpha_apos)
+* [alpha_dash](#rule-alpha_dash)
+* [alpha_numeric](#rule-alpha_numeric)
+* [before](#rule-before)
+* [between](#rule-between)
+* [confirmed](#rule-confirmed)
+* [email](#rule-email)
+* [in](#rule-in)
+* [ip](#rule-ip)
+* [min](#rule-min)
+* [max](#rule-max)
+* [numeric](#rule-numeric)
+* [phone](#rule-phone)
+* [regex](#rule-regex)
+* [required](#rule-required)
+* [url](#rule-url)
+
+####<a name="rule-accepted"></a>Accepted
+This checks to see that a field has a value that is one of '1' (the string 1), 'y', 'yes', or 'checked'
+
+####<a name="rule-after"></a>After
+The <code>after</code> rule is given a date and the value is checked to see if it contains a date after the one in the rule. Note that dates are parsed by the <code>strtotime()</code> function so they should be in a format that PHP can understand.
+The usage is:
+
+```php
+'birth' => array('after:2000-01-01'),
+```
+
+####<a name="rule-alpha"></a>Alpha
+This rule checks that a fields value consists only of letters or spaces, using the regular expression <code>\p{L}</code> to check for letters instead of the older and incorrect <code>[a-z]</code>
+
+####<a name="rule-alpha_apos"></a>Alpha_Apos
+This rule is like the alpha rule but also allows apostrophes, to account for names like *O'Reilly*, for example
+
+####<a name="rule-alpha_dash"></a>Alpha_Dash
+Like the alpha rule, but it allows for hyphens and underscores also.
+
+####<a name="rule-alpha_numeric"></a>Alpha_Numeric
+Like the alpha rule but allows for numbers, including the characters <code>. - +</code>
+
+####<a name="rule-before"></a>Before
+The before rule behaves the same as the <code>[after](#rule-after)</code> rule, but checks that the field date is before the one specified in the rule
+
+####<a name="rule-between"></a>Between
+The between rule checks that the given fields value is a number (floating point values are allowed too) between two given values:
+
+```php
+'age' => array('between:18:100'),
+```
+
+Note that the field value will be converted to a number by the normal PHP parsing rules, so a value of <code>123abc</code> becomes <code>(int)123</code>
+
+####<a name="rule-confirmed"></a>Confirmed
+The Confirmed rule can be used to check that one field matches another, e.g. for passwords or email checking. The usage is:
+
+```php
+'email' => array('confirmed:name_of_field_to_match'),
+```
+
+This rule will fail if either the named field does not exist or its value does not match the field this rule is being applied to.
+
+####<a name="rule-email"></a>Email
+The email rule uses the internal <code>filter_var()</code> functionality to determine if the specified value is a valid email address. This is always preferred over [attempting to validate an email address with a regular expression](https://www.google.co.uk/search?q=why+not+to+validate+an+email+with+a+regex&oq=why+not+to+validate+an+email+with+a+regex).
+
+####<a name="rule-in"></a>In
+This rule checks that the given field value is within a finite range of values:
+
+```php
+'gender' => array('in:male:female:other'),
+```
+
+####<a name="rule-ip"></a>IP
+The ip rule checks that the field value is a valid IPv4 or IPv6 formatted address, using the internal <code>filter_var()</code> function of PHP
+
+####<a name="rule-min"></a>Min
+This rule checks a given field value is ≥ the value specified in the rule:
+
+```php
+'age' = array('min:18'),
+```
+
+####<a name="rule-max"></a>Max
+This is like the min rule but checks that a field value is ≤ the one specified in the rule.
+
+```php
+'age' = array('max:100'),
+```
+
+####<a name="rule-numeric"></a>Numeric
+The numeric rule just checks that the field value is recognised by PHP as being a number.
+
+####<a name="rule-phone"></a>Phone
+The phone rule checks that the field is at least 8 characters long and is made up of digits, spaces, or plus and minus sign.
+
+####<a name="rule-regex"></a>Regex
+The regex rule is fairly complicated, and allows you to create a regular expression by which you validate the user input. So, for example, to validate a valid UK postcode:
+
+```php
+'postcode' => array('required', 'regex:/^([a-pr-uwyz][a-hk-y]{0,1}\d[\da-hjkst]{0,1} \d[abd-hjlnp-uw-z]{2})$/i'),
+```
+####<a name="rule-required"></a>Required
+Probably the most necessary rule, this checks that a field exists in the posted data and has a non-empty value.
+
+####<a name="rule-url"></a>URL
+This rule uses the internal PHP <code>filter_var()</code> function to check that the field value is a valid URL.
+
+###<a name="failure-messages"></a>Failure Messages
+The message that gets returned and made available in your view when a field fails the validation process is set out in the <code>/maverick/config/validator.php</code> file.
+
+The format of these uses <code>%s</code> as placeholders. The first one is the name of the field, the second is the first argument of the rule, the third is the second argument, and so on. So, for example, the between rule uses 3 <code>%s</code> placeholders because it accepts two arguments:
+
+```php
+'between' => 'The %s field must be between %s and %s',
+```
+
+You can change these messages as your application requires. Currently there is no provision to allow for custom validation messages per form.
+
+###<a name="displaying-errors"></a>Displaying Errors
+There are a few different ways to display or return error messages in your view. The simplest and probably the most useful is to just show the first error for a given field:
+
+```php
+echo validator::get_first_error('name');
+```
+
+If you wish to get all errors for a given field, then you would use this syntax:
+
+```php
+echo validator::get_all_errors('name');
+```
+
+
+*Note that the returned value is an array of errors, so you can't just echo is straight out into your view, you will need to loop through it*
+
+If instead you wish to get all errors for the entire form, then you can pass no field name to the <code>get_all_errors()</code> method.
+
+Lastly, if you just want the number of fields with errors (if a field has more than one error it will only count once in this value) then you can use this method of the validator class:
+
+```php
+validator::get_error_count();
+```
+
+You could use this in your view to determine how best to display errors if there are a lot of them, for example.
+
+####<a name="wrapping-tags-around-errors"></a>Wrapping Tags Around Errors
+Displaying an error as-is might not be what you always want, and it may be beneficial to wrap your individual errors with custom HTML tags or other text. For this, both of the error methods mentioned above can take an optional second argument that is an array containing the opening and closing tags:
+
+```php
+validator::get_first_error('name', array('<span class="error">', '</span>'));
+
+validator::get_all_errors(null, array('<span class="error">', '</span>'));
+```
+
+When using the latter method, each error for the every field is wrapped with the given tags. You can still pass in the name of a field to this method to only retrieve errors for a specific field.

@@ -15,7 +15,6 @@ return array(
 	'ip' => 'The %s field must be a valid IPv4 or IPv6 address',
 	'min' => 'The %s field must be greater than %s',
 	'max' => 'The %s field must be less than %s',
-	'in' => 'The %s field must not be a value in %s',
 	'numeric' => 'The %s field must be a valid number',
 	'phone' => 'The %s field must be a valid phone number',
 	'regex' => 'The %s field must match the pattern %s',

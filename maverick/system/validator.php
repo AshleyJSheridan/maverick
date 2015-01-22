@@ -151,7 +151,7 @@ class validator
 	private function rule_alpha_numeric($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return preg_match("/^[\p{L}\d ]+$/", $_REQUEST[$field]);
+			return preg_match("/^[\p{L}\d \.\-\+]+$/", $_REQUEST[$field]);
 		else
 			return true;
 	}
@@ -175,7 +175,7 @@ class validator
 	private function rule_min($field, $value)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return $_REQUEST[$field] > (float)$value[0];
+			return $_REQUEST[$field] >= (float)$value[0];
 		else
 			return true;
 	}
@@ -183,7 +183,7 @@ class validator
 	private function rule_max($field, $value)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return $_REQUEST[$field] < (float)$value[0];
+			return $_REQUEST[$field] <= (float)$value[0];
 		else
 			return true;
 	}
