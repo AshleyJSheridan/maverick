@@ -141,6 +141,20 @@ return $data->fetch();
 
 All queries start with a line like <code>db::table()</code> as this instructs the <code>db</code> class what table in the database you will be operating on. From there, you can chain on various methods to generate more complex queries.
 
+The example above uses a plain <code>get()</code> call, which is the equivalent to:
+
+```sql
+SELECT *
+```
+
+If you want to specify individual fields you want to fetch, or even use functions like <code>COUNT()</code> then you would pass in an array of values to <code>get()</code> like so:
+
+```php
+->get(array('t.*', 'COUNT(t.id) AS total'));
+```
+
+This is particularly useful if you're using aggregate functions in your queries.
+
 ####<a name="where-clauses"></a>WHERE Clauses
 To add a <code>WHERE</code> clause to your query, you could chain on the <code>where()</code> method:
 

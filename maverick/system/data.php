@@ -5,6 +5,6 @@ class data
 	{
 		$app = maverick::getInstance();
 		
-		return (string)($app->view->get_data($var));
+		return ($app->view->get_data($var));
 	}
 }

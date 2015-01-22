@@ -13,13 +13,14 @@ class content
 				array('t2.test_id', '=', 't.id'),
 				array('t2.display', '=', db::raw('yes')),
 			))*/
-			->whereIn('t.id', array(1,3))
+			//->whereIn('t.id', array(1,3))
 			//->leftJoin('test2 AS t2', array('t2.test_id', '=', 't.id') )
 			//->where('t.id', '>', db::raw('1'))
 			//->where(db::raw(1), '=', db::raw(1))
 			//->orderBy('t2.id', 'desc')
+			->groupBy('t.field_value')
 			//->get(array('t.id', 't.field_key', 't.field_value', 't2.id AS test2_id', 't2.other_value'))
-			->get(array('t.*'))
+			->get(array('t.*', 'COUNT(t.id) AS total'))
 		;
 		
 		return $data->fetch();
