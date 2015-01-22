@@ -68,12 +68,12 @@ class maverick
 				case 1:
 					$config = $this->config->{$matches[0]};
 					break;
-				case 2:
+				/*case 2:
 					$c = ($this->config->{$matches[0]});
 					$p = $matches[1];
 
 					$config = isset($c[$p])?$c[$p]:'';
-					break;
+					break;*/
 				default:
 					$c = ($this->config->{$matches[0]});
 					$p = $config = '';
