@@ -25,7 +25,7 @@ class view
 		$v->reset();
 		
 		if(!strlen($view))
-			return $v;	// TODO: consider throwing an error here
+			error::show('View not specified');
 		
 		$v->set_view($view);
 		$app->set_view($v);
@@ -38,7 +38,7 @@ class view
 		$v = view::getInstance();
 		
 		if(!strlen($name) || empty($data))
-			return false;	// TODO: consider throwing an error here
+			return $v;	// probably nicest to just return the view without modification so that it doesn't break the chain
 		
 		$v->data[$name] = $data;
 		
@@ -53,7 +53,7 @@ class view
 		$view_file_path = MAVERICK_BASEDIR . "views/$v->view.php";
 
 		if(!file_exists($view_file_path))
-			return false;
+			error::show("View '$v->view' does not exist");
 		else
 		{
 			ob_start();
