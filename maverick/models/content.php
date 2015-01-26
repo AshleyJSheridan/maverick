@@ -26,6 +26,13 @@ class content
 		return $data->fetch();
 	}
 	
+	static function get_all_from_unspecified_table()
+	{
+		$data = db::table('')->get();
+		
+		return $data->fetch();
+	}
+	
 	static function get_from_test_with_matching_id($id)
 	{
 		$data = db::table('test2 AS t')->where('t.id', '=', $id)->get();

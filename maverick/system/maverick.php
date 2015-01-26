@@ -44,6 +44,7 @@ class maverick
 	private function __construct()
 	{
 		$this->load_config();
+
 		$this->get_request_uri();
 		$this->db = new stdClass();
 	}
