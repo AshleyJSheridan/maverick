@@ -80,6 +80,27 @@ The routing in MaVeriCk is fairly flexible, and allows you to route different ty
 
 A point to note is that if the config setting <code>config.xss_protection</code> is enabled then the routes that are requested are filtered. This can prevent against some URL injection attacks.
 
+A typical route to the URL <code>/form</code> would be setup like this:
+
+```php
+route::get('form', 'main_controller->form');
+```
+
+The first argument is the URL path you're trying to match against (without the leading forward slash). This does not have to be a plain string either, and you can pass it a string regex, for example:
+
+```php
+route::any('^te[st]{2}', 'main_controller->regex_route_test_controller');
+```
+
+This would match the following requests made to the application:
+
+* /test
+* /tess
+* /tets
+* /tett
+
+Regular expression matching in the routes can be a very powerful and flexible way of building your application.
+
 ###<a name="post-and-get-routing"></a>POST and GET Routing
 So, for example, imagine a form that posts to itself. You can have one route set up that just displays the form and does nothing more, and a second route that handles submitted data and processes it:
 

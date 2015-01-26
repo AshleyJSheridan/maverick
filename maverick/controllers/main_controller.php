@@ -19,6 +19,11 @@ class main_controller extends base_controller
 		$view = view::make('includes/template')->with('page', 'form')->render();
 	}
 	
+	function regex_route_test_controller()
+	{
+		echo 'route ok';
+	}
+	
 	function form_post()
 	{
 		$app = maverick::getInstance();

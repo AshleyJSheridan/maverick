@@ -4,4 +4,6 @@ route::get('form', 'main_controller->form');
 route::post('form', 'main_controller->form_post');
 route::any('', 'main_controller->home');
 
+route::any('^te[st]{2}', 'main_controller->regex_route_test_controller');
+
 route::error('404', 'main_controller->error');
