@@ -13,12 +13,14 @@ class error
 	
 	static function log($message, $show=false, $http_code=500)
 	{
+		$log_date = date("y-m-d");
+		
 		$caller = debug_backtrace();
 		$message .= error::generate_call_trace();
 		
 		$maverick = maverick::getInstance();
 		if($maverick->get_config('config.log_errors'))	// only log the errors if the config says to
-			error_log("\n\n$message", 3, MAVERICK_BASEDIR . '../logs/error.log');
+			error_log("\n\n$message", 3, MAVERICK_BASEDIR . "../logs/error-$log_date.log");
 		
 		if($show)
 			error::show(nl2br($message), $http_code);
