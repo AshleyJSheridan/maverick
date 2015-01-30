@@ -34,6 +34,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 	* [Failure Messages](#failure-messages)
 	* [Displaying Errors](#displaying-errors)
 		* [Wrapping Tags Around Errors](#wrapping-tags-around-errors)
+* [Error Logging](#error-logging)
 
 ##<a name="installing"></a>Installing
 
@@ -518,3 +519,25 @@ validator::get_all_errors(null, array('<span class="error">', '</span>'));
 ```
 
 When using the latter method, each error for the every field is wrapped with the given tags. You can still pass in the name of a field to this method to only retrieve errors for a specific field.
+
+##<a name="error-logging"></a>Error Logging
+MaVeriCk comes with a basic class for logging errors in your application, aptly named <code>error</code>, which are saved to the <code>/logs</code> directory (outside of the web root for security).
+
+There are two static methods available:
+
+* <code>log</code>
+* <code>show</code>
+
+The first method just displays a given message with a <code>die()</code> call (I have plans to turn this into something nicer later) with an optional argument to specify the HTTP error code (defaults to 500 - Internal Server Error). This is probably not ideal for your application as it won't contain any more detail than you pass in the <code>$message</code> argument.
+
+If you require more detail, you can use the <code>log()</code> method:
+
+```php
+error::log('Table not specified', true, 501);
+```
+
+The first argument is the error message, just like the <code>show()</code> method, and the second and third are optional arguments to determine whether to show the message (using the aforementioned method) and what error code to use (defaults to 500).
+
+Note that logging to a file only occurs if the <code>log_errors</code> option is set to <code>true</code> in the config.
+
+You can also specify the level of detail which gets logged by changing the value of the <code>log_detail</code> config option. When set to <code>true</code>, a stack trace is generated and added to the log message. Bear in mind that this can potentially generate large logs if you have unresolved errors in your code, so it is not advised to leave this set to <code>true</code> on a production environment.
