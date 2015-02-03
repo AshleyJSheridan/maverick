@@ -21,7 +21,6 @@ class main_controller extends base_controller
 	
 	function regex_route_test_controller()
 	{
-		echo 'regex route controller';
 		$data = content::get_all_from_unspecified_table();
 	}
 	

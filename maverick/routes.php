@@ -6,4 +6,5 @@ route::any('', 'main_controller->home');
 
 route::any('^te[st]{2}', 'main_controller->regex_route_test_controller');
 
-route::error('404', 'main_controller->error');
+route::error('404', 'error');
+route::error('500', 'error');

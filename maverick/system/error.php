@@ -5,10 +5,20 @@ class error
 	
 	static function show($message, $http_code=500)
 	{
-		//TODO: check to see of debug mode is on before spitting out errors - maybe show something nicer if debug is off
-		http_response_code($http_code);
+		$maverick = maverick::getInstance();
 		
-		die($message);
+		if($maverick->get_config('config.debug'))
+		{
+			http_response_code($http_code);
+
+			die($message);
+		}
+		else
+		{
+			$file = MAVERICK_BASEDIR . "views/{$maverick->error_routes[$http_code]['method']}.php";
+			if(isset($maverick->error_routes[$http_code]) && file_exists($file) )
+				$view = view::make($maverick->error_routes[$http_code]['method'])->render();
+		}
 	}
 	
 	static function log($message, $show=false, $http_code=500)
@@ -16,7 +26,7 @@ class error
 		$maverick = maverick::getInstance();
 		
 		//$caller = debug_backtrace();
-		if($maverick->get_config('config.log_detail'))
+		if($maverick->get_config('config.error_detail'))
 			$message .= error::generate_call_trace();	
 		
 		if($maverick->get_config('config.log_errors'))	// only log the errors if the config says to

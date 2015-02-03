@@ -50,7 +50,7 @@ class route
 	private static function get_full_action($action, $args)
 	{
 		list($a['controller_name'], $a['method'], $a['protocol'], $a['args']) = array_merge(
-			explode('->', $action),
+			((strpos($action, '->'))?explode('->', $action):array(null, $action)),
 			array(
 				strtolower($_SERVER['REQUEST_METHOD']),
 				$args
