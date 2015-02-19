@@ -1,12 +1,37 @@
 <?php
 function __autoload($class)
 {
+	// a more traditional autoloader - kept in until everything can be transitioned to PSR-0 standard
 	$maverick = maverick::getInstance();
+	$class_found = false;
 	
 	foreach($maverick->get_config('config.paths') as $path)
 	{
-		if(file_exists("/$path/$class.php"))
-			require_once "/$path/$class.php";
+		if(file_exists("$path/$class.php"))
+		{
+			require_once "$path/$class.php";
+			$class_found = true;
+			break;
+		}
+	}
+	
+	// PSR-0 autoloader - sourced from http://www.sitepoint.com/autoloading-and-the-psr-0-standard/
+	if(!$class_found)
+	{
+		$className = ltrim($class, '\\');
+		$fileName  = '';
+		$namespace = '';
+		if ($lastNsPos = strripos($className, '\\'))
+		{
+			$namespace = substr($className, 0, $lastNsPos);
+			$className = substr($className, $lastNsPos + 1);
+			$fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+		}
+		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+		set_include_path(MAVERICK_BASEDIR . 'libraries');
+		
+		require $fileName;
 	}
 }
 
