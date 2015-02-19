@@ -40,14 +40,14 @@ class route
 			
 			// route match - assign the information back to the main maverick object
 			if(!empty($matches))
-				$maverick->controller = route::get_full_action($action, $args);
+				$maverick->controller = route::get_full_action($action, $args, $matches);
 
 		}
 		else
 			return false;
 	}
 	
-	private static function get_full_action($action, $args)
+	private static function get_full_action($action, $args, $matches=array() )
 	{
 		list($a['controller_name'], $a['method'], $a['protocol'], $a['args']) = array_merge(
 			((strpos($action, '->'))?explode('->', $action):array(null, $action)),
@@ -56,6 +56,32 @@ class route
 				$args
 			)
 		);
+		
+		// individual segments of the URL have been matched by a route are and have been requested by the route to be passed on as arguments to the controller
+		if(!empty($args) && count($matches) > 1 )
+		{
+			$a['args'] = (array)$a['args'];
+
+			// go through array of arguments that are being passed and check them for placeholders ($1, $2, etc)
+			foreach($a['args'] as $key => &$arg)
+			{
+				// the placeholder check
+				if(preg_match_all('/\$(\d+)/', $arg, $arg_matches) && !empty($arg_matches[1]) )
+				{
+					// now go through the matched arguments and see if they are valid, and replace each one with the part of the route matched by the regex in the routes file
+					foreach($arg_matches[1] as $arg_key => $arg_m)
+					{
+						$arg_m = intval($arg_m);
+						if(!$arg_m || !isset($matches[$arg_m]) )
+							continue;
+						
+						//var_dump($arg, $arg_key, $arg_m, $matches[$arg_m]);
+						$arg = str_replace($arg_matches[0][$arg_key], $matches[$arg_m], $arg);
+					}
+				}
+			}
+		}
+		
 		return $a;
 	}
 }

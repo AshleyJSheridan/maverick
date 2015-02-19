@@ -136,7 +136,7 @@ class maverick
 		if(!empty($this->controller))
 		{
 			if($this->check_class_method_exists($this->controller['controller_name'], $this->controller['method'], $this->controller['controller']))
-				$this->controller['controller']->{$this->controller['method']}();
+				$this->controller['controller']->{$this->controller['method']}($this->controller['args']);
 			else
 				error::show("controller '{$this->controller['controller_name']}' or method '{$this->controller['method']}' not found");
 		}
