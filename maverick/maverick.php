@@ -15,6 +15,10 @@ function __autoload($class)
 		}
 	}
 	
+	// add the maverick directory in as the namespace if it doesn't exist
+	if(strpos($class, DIRECTORY_SEPARATOR) === false)
+		$class = 'maverick' . DIRECTORY_SEPARATOR . $class;
+	
 	// PSR-0 autoloader - sourced from http://www.sitepoint.com/autoloading-and-the-psr-0-standard/
 	if(!$class_found)
 	{
@@ -29,8 +33,8 @@ function __autoload($class)
 		}
 		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-		set_include_path(MAVERICK_BASEDIR . 'libraries');
-		
+		set_include_path(MAVERICK_BASEDIR . 'vendors');
+
 		require $fileName;
 	}
 }

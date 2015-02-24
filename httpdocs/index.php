@@ -6,7 +6,7 @@ if(!defined('MAVERICK_VIEWSDIR'))
 	define('MAVERICK_VIEWSDIR', dirname(__FILE__) . '/../maverick/views/');
 
 
-require_once MAVERICK_BASEDIR . 'system/maverick.php';
+require_once MAVERICK_BASEDIR . 'maverick.php';
 
 $app = maverick::getInstance();
 $app->build();

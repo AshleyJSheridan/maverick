@@ -12,7 +12,6 @@ return array(
 	'paths' => array(
 		MAVERICK_BASEDIR . 'controllers',
 		MAVERICK_BASEDIR . 'models',
-		MAVERICK_BASEDIR . 'system',
 	),
 	
 	
