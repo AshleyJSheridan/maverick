@@ -15,6 +15,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 * [Configuration](#configuration)
 	* [Retrieving Config Settings](#retrieving-config-settings)
 * [Routing](#routing)
+	* [Route Arguments](#route-arguments)
 	* [POST and GET Routing](#post-and-get-routing)
 	* [Error Routing](#error-routing)
 * [Controllers](#controllers)
@@ -101,6 +102,21 @@ This would match the following requests made to the application:
 * /tett
 
 Regular expression matching in the routes can be a very powerful and flexible way of building your application.
+
+###<a name="route-arguments"></a>Route Arguments
+You can pass in arguments to your controller from matched parts of the route, and even construct strings that allow you to include multiple parts of a match by using the third argument to the <code>get()</code> method:
+
+```php
+route::get('articles/([a-z]{2})/([a-z]{2})', 'main_controller->articles', '$1-$2');
+```
+
+This would take the two matched arguments from the regular expression (each one matches 2 letters) and pass them in as a string in the form <code>'aa-bb'</code> to your controller method.
+
+If you wish to pass the matched URL parameters in as separate arguments, then you can do that by passing them in with an array:
+
+```php
+route::get('articles/([a-z]{2})/([a-z]{2})', 'main_controller->articles', array('$1', '$2') );
+```
 
 ###<a name="post-and-get-routing"></a>POST and GET Routing
 So, for example, imagine a form that posts to itself. You can have one route set up that just displays the form and does nothing more, and a second route that handles submitted data and processes it:
