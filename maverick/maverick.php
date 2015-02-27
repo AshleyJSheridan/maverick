@@ -50,10 +50,12 @@ class maverick
 	public $validator;
 	public $db;
 	public $view;
+	private $language_culture = 'en_GB';
+	
 
 	public function __get($name)
 	{
-		if(in_array($name, array('requested_route_string', 'matched_route', 'controller', 'error_routes') ) )
+		if(in_array($name, array('requested_route_string', 'matched_route', 'controller', 'error_routes', 'language_culture') ) )
 			return $this->$name;
 		else
 			return null;
@@ -74,6 +76,22 @@ class maverick
 	{
 		$this->load_config();
 
+		// TODO: consider moving this out of here and only run if a config option is set to turn on multilingual stuff
+		
+		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
+		if(strlen($this->get_config('lang.default')) )
+			$this->language_culture = str_replace('-', '_', $this->get_config('lang.default') );
+		
+		// I18N support information here
+		putenv("LANG=$this->language_culture.utf8");
+		setlocale(LC_ALL, "$this->language_culture.utf8");
+		
+		// Set the text domain as the app_name in config
+		$domain = $this->get_config('config.app_name');
+		bindtextdomain($domain, MAVERICK_BASEDIR . 'locale');
+		bind_textdomain_codeset($domain, 'UTF-8');
+		textdomain($domain);
+		
 		$this->get_request_uri();
 		$this->db = new stdClass();
 	}

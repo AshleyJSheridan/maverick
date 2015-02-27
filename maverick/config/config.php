@@ -7,7 +7,7 @@ return array(
 	
 	'xss_protection' => true,
 	
-	'app_name' => 'MaVeriCk',
+	'app_name' => 'maverick',
 	
 	'paths' => array(
 		MAVERICK_BASEDIR . 'controllers',
