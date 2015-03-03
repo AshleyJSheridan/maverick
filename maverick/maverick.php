@@ -77,20 +77,9 @@ class maverick
 		$this->load_config();
 
 		// TODO: consider moving this out of here and only run if a config option is set to turn on multilingual stuff
-		
-		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
-		if(strlen($this->get_config('lang.default')) )
-			$this->language_culture = str_replace('-', '_', $this->get_config('lang.default') );
-		
-		// I18N support information here
-		putenv("LANG=$this->language_culture.utf8");
-		setlocale(LC_ALL, "$this->language_culture.utf8");
-		
-		// Set the text domain as the app_name in config
-		$domain = $this->get_config('config.app_name');
-		bindtextdomain($domain, MAVERICK_BASEDIR . 'locale');
-		bind_textdomain_codeset($domain, 'UTF-8');
-		textdomain($domain);
+		if($this->get_config('lang.active') === true)
+			$this->set_lang_culture();
+
 		
 		$this->get_request_uri();
 		$this->db = new stdClass();
@@ -107,6 +96,8 @@ class maverick
 	
 	public function get_config($item)
 	{
+		$config = ''; // set a default return value of empty string - probably the safest option
+		
 		if(preg_match('/^([a-z\d_-]+)(\.([a-z\d_-]+))*$/i', $item))
 		{
 			$matches = explode('.', $item);
@@ -116,37 +107,37 @@ class maverick
 				case 1:
 					$config = $this->config->{$matches[0]};
 					break;
-				/*case 2:
-					$c = ($this->config->{$matches[0]});
-					$p = $matches[1];
-
-					$config = isset($c[$p])?$c[$p]:'';
-					break;*/
 				default:
-					$c = ($this->config->{$matches[0]});
-					$p = $config = '';
-					array_shift($matches);
-					
-					foreach($matches as $item)
+					// a check to see if we're loading from an non-existant config file (which would mean the member variable doesn't exist)
+					if(isset($this->config->{$matches[0]}) )
 					{
-						if(isset($c[$item]))
+						$c = ($this->config->{$matches[0]});
+						$p = $config = '';
+						array_shift($matches);
+
+						foreach($matches as $item)
 						{
-							$config = $c[$item];
-							$c = $c[$item];
-						}
-						else
-						{
-							$config = '';
-							break;
+							if(isset($c[$item]))
+							{
+								$config = $c[$item];
+								$c = $c[$item];
+							}
+							else
+							{
+								//$config = '';
+								break;
+							}
 						}
 					}
+					//else
+						//$config = '';
 					
 					break;
 			}
 
 		}
-		else
-			$config = '';
+		//else
+			//$config = '';
 
 		return $config;
 	}
@@ -212,6 +203,23 @@ class maverick
 	{
 		if($this->check_required_fields($details, array('args', 'protocol', 'method', 'controller_name') ) )
 			$this->error_routes[$code] = $details;
+	}
+	
+	private function set_lang_culture()
+	{
+		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
+		if(strlen($this->get_config('lang.default')) )
+			$this->language_culture = str_replace('-', '_', $this->get_config('lang.default') );
+		
+		// I18N support information here
+		putenv("LANG=$this->language_culture.utf8");
+		setlocale(LC_ALL, "$this->language_culture.utf8");
+		
+		// Set the text domain as the app_name in config
+		$domain = $this->get_config('config.app_name');
+		bindtextdomain($domain, MAVERICK_BASEDIR . 'locale');
+		bind_textdomain_codeset($domain, 'UTF-8');
+		textdomain($domain);
 	}
 	
 	private function get_error_route($code)
