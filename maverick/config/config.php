@@ -14,5 +14,5 @@ return array(
 		MAVERICK_BASEDIR . 'models',
 	),
 	
-	
+	'route_preparser' => 'route_controller->lang_filter',
 );

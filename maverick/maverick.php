@@ -76,7 +76,6 @@ class maverick
 	{
 		$this->load_config();
 
-		// TODO: consider moving this out of here and only run if a config option is set to turn on multilingual stuff
 		if($this->get_config('lang.active') === true)
 			$this->set_lang_culture();
 
@@ -156,6 +155,9 @@ class maverick
 	
 	public function build()
 	{
+		if(strlen($this->get_config('config.route_preparser') ) )
+			$this->route_preparser();
+		
 		// look at routes to find out which route the requested path best matches
 		require_once (MAVERICK_BASEDIR . 'routes.php');
 
@@ -169,7 +171,7 @@ class maverick
 			
 			$this->db->pdo = $pdo = new PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
 		}
-			
+
 		// locate and initiate call to controller responsible for the requested route
 		if(!empty($this->controller))
 		{
@@ -205,6 +207,20 @@ class maverick
 			$this->error_routes[$code] = $details;
 	}
 	
+	private function route_preparser()
+	{
+		$preparser = $this->get_config('config.route_preparser');
+
+		// just check that the controller->method string is in the right format
+		// TODO - consider making a better method of this, as the routing code could benefit from this also
+		if(!strpos($preparser, '->'))
+			return false;
+		
+		list($controller_name, $method) = explode('->', $preparser);
+
+		// TODO - code here for dealing with the extra controller that preparses the route
+	}
+	
 	private function set_lang_culture()
 	{
 		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
@@ -221,7 +237,7 @@ class maverick
 		bind_textdomain_codeset($domain, 'UTF-8');
 		textdomain($domain);
 	}
-	
+
 	private function get_error_route($code)
 	{
 		return isset($this->error_routes[$code])?array('controller_name'=>$this->error_routes[$code]['controller_name'], 'method'=>$this->error_routes[$code]['method']):array('controller_name'=>'', 'method'=>'');
