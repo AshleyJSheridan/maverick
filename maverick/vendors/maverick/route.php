@@ -49,6 +49,7 @@ class route
 	
 	private static function get_full_action($action, $args, $matches=array() )
 	{
+		// some routes don't specify the controller (e.g. errors), hence the check for the -> and assignment of null to the controller part otherwise
 		list($a['controller_name'], $a['method'], $a['protocol'], $a['args']) = array_merge(
 			((strpos($action, '->'))?explode('->', $action):array(null, $action)),
 			array(
@@ -75,7 +76,6 @@ class route
 						if(!$arg_m || !isset($matches[$arg_m]) )
 							continue;
 						
-						//var_dump($arg, $arg_key, $arg_m, $matches[$arg_m]);
 						$arg = str_replace($arg_matches[0][$arg_key], $matches[$arg_m], $arg);
 					}
 				}

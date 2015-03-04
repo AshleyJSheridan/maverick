@@ -50,7 +50,7 @@ class maverick
 	public $validator;
 	public $db;
 	public $view;
-	private $language_culture = 'en_GB';
+	private $language_culture = '';
 	
 
 	public function __get($name)
@@ -63,7 +63,7 @@ class maverick
 	
 	public function __set($name, $value)
 	{
-		if(in_array($name, array('matched_route', 'controller', 'error_routes') ) )
+		if(in_array($name, array('matched_route', 'controller', 'error_routes', 'language_culture') ) )
 		{
 			$this->$name = $value;
 			return true;
@@ -75,13 +75,6 @@ class maverick
 	private function __construct()
 	{
 		$this->load_config();
-
-		if($this->get_config('lang.active') === true)
-			$this->set_lang_culture();
-
-		
-		$this->get_request_uri();
-		$this->db = new stdClass();
 	}
 	
 	private function __clone() {}
@@ -122,21 +115,15 @@ class maverick
 								$c = $c[$item];
 							}
 							else
-							{
-								//$config = '';
 								break;
-							}
+
 						}
 					}
-					//else
-						//$config = '';
 					
 					break;
 			}
 
 		}
-		//else
-			//$config = '';
 
 		return $config;
 	}
@@ -157,6 +144,12 @@ class maverick
 	{
 		if(strlen($this->get_config('config.route_preparser') ) )
 			$this->route_preparser();
+		
+		$this->get_request_uri();
+		$this->db = new stdClass();
+		
+		if($this->get_config('lang.active') === true)
+			$this->set_lang_culture();
 		
 		// look at routes to find out which route the requested path best matches
 		require_once (MAVERICK_BASEDIR . 'routes.php');
@@ -218,13 +211,15 @@ class maverick
 		
 		list($controller_name, $method) = explode('->', $preparser);
 
-		// TODO - code here for dealing with the extra controller that preparses the route
+		// deal with the extra controller/method that preparses the route - ideally this will be a separate controller without a construct magic method
+		if(class_exists($controller_name) && ($class_holder = new $controller_name) && method_exists($class_holder, $method) )
+			$this->language_culture = $class_holder->$method();
 	}
 	
 	private function set_lang_culture()
 	{
 		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
-		if(strlen($this->get_config('lang.default')) )
+		if(strlen($this->get_config('lang.default')) && !strlen($this->language_culture) )
 			$this->language_culture = str_replace('-', '_', $this->get_config('lang.default') );
 		
 		// I18N support information here
