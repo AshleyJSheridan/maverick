@@ -36,6 +36,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 	* [Failure Messages](#failure-messages)
 	* [Displaying Errors](#displaying-errors)
 		* [Wrapping Tags Around Errors](#wrapping-tags-around-errors)
+* [Multiple Languages](#multiple-languages)
 * [Error Logging](#error-logging)
 
 ##<a name="installing"></a>Installing
