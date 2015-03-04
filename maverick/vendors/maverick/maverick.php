@@ -213,7 +213,7 @@ class maverick
 
 		// deal with the extra controller/method that preparses the route - ideally this will be a separate controller without a construct magic method
 		if(class_exists($controller_name) && ($class_holder = new $controller_name) && method_exists($class_holder, $method) )
-			$this->language_culture = $class_holder->$method();
+			$class_holder->$method();
 	}
 	
 	private function set_lang_culture()

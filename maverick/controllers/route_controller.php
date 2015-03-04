@@ -17,7 +17,8 @@ class route_controller extends base_controller
 				$_SERVER['REDIRECT_URL'] = '/' . substr($_SERVER['REDIRECT_URL'], 6);
 			
 			// return the language culture member variable on main app object
-			return "{$matches[1]}_" . strtoupper($matches[2]);
+			$app = maverick::getInstance();
+			$app->language_culture = "{$matches[1]}_" . strtoupper($matches[2]);
 		}
 	}
 }

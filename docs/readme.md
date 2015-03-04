@@ -18,6 +18,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 	* [Route Arguments](#route-arguments)
 	* [POST and GET Routing](#post-and-get-routing)
 	* [Error Routing](#error-routing)
+	* [Route Pre-Parsing](#route-pre-parsing)
 * [Controllers](#controllers)
 * [Models](#models)
 	* [Select Queries](#select-queries)
@@ -142,6 +143,42 @@ route::error('404', 'main_controller->error');
 ```
 
 This allows you to set up a default action when there is a request to a route that does not yet exist.
+
+###<a name="route-pre-parsing"></a>Route Pre-Parsing
+At times it may be necessary to pre-parse the requested URLs before the routing happens, such as when you want to automatically set the language of the application based on URL segments.
+
+In order to do this, you need to set a controller and method to call in your main config file, like this:
+
+```php
+'route_preparser' => 'route_controller->lang_filter',
+```
+
+This instructs the framework to call the <code>lang_filter()</code> method of the <code>route_controller</code> class before routing begins. <em>Note, it's not required that the route pre-parse method be in its own controller, but that can keep things a little tidier.</em>
+
+The pre-parser has no requirements of what it must do. An example of how one might detect language culture parameters in the URL and set the application logic would be like this:
+
+```php
+function lang_filter()
+{
+	// any URL pre-parsing logic goes here
+	// for example, this method will look for language culture segments in the URL, and return the default language of the app
+	$regex = '/^\/?([a-z]{2})\/([a-z]{2})\b/';
+		
+	if(preg_match($regex, $_SERVER['REQUEST_URI'], $matches) )
+	{
+		// remove those matched segments from the URL so that regular routing can take place
+		$_SERVER['REQUEST_URI'] = '/' . substr($_SERVER['REQUEST_URI'], 6);
+			
+		// as the app will use this if it exists - we should also strip the same parts out of this if they exist there
+		if(isset($_SERVER['REDIRECT_URL']) && preg_match($regex, $_SERVER['REDIRECT_URL']) )
+			$_SERVER['REDIRECT_URL'] = '/' . substr($_SERVER['REDIRECT_URL'], 6);
+			
+		// return the language culture member variable on main app object
+		$app = maverick::getInstance();
+		$app->language_culture = "{$matches[1]}_" . strtoupper($matches[2]);
+	}
+}
+```
 
 ##<a name="controllers"></a>Controllers
 Controllers in your application should handle the business logic, and all controllers should inherit from the <code>base_controller</code> class:
@@ -535,6 +572,42 @@ validator::get_all_errors(null, array('<span class="error">', '</span>'));
 ```
 
 When using the latter method, each error for the every field is wrapped with the given tags. You can still pass in the name of a field to this method to only retrieve errors for a specific field.
+
+##<a name="multiple-languages"></a>Multiple Languages
+MaVeriCk supports i18n language cultures using <code>gettext()</code> and <code>.po</code> files. Firstly, you need a config file called <code>lang.php</code> in your main config directory. The contents of the file should look like this:
+
+```php
+<?php
+return array(
+	
+	// see https://msdn.microsoft.com/en-gb/library/ee825488%28v=cs.20%29.aspx for a full list of language cultures
+	// this *is* case-sensitive and match the culture exactly for best interoperability with translating tools
+	// this will be used as the defaul language culture
+	// if this is set to empty, then it will default to en-GB from within the base maverick class itself, you should not specify the .utf8 ending for this!
+	// finally, you can use either hyphens or the underscore here, as hyphens will be replaced by underscores internally
+	'default' => 'en-GB',
+	
+	'active' => true,	// set this to true if you want to make use of i18n translation features in your application
+);
+```
+
+This sets the default language to use for the application, and instructs MaVeriCk to use multiple languages. If <code>active</code> is missing or not set to true then the framework will not properly set the language environment settings, so you may get unexpected output from your <code>gettext()</code> calls.
+
+That's it set up. From within your views you can then call any of the <code>gettext()</code> functions, such as:
+
+```php
+echo _('test');
+```
+
+The <code>.po</code> and <code>.mo</code> files should be kept within the <code>/maverick/locale/</code> directory, in the normal gettext structure, e.g.:
+
+* /maverick/locale
+	* en_GB
+		* LC_MESSAGES
+	* de_DE
+		* LC_MESSAGE
+
+Each <code>.po</code> file should be called <code>maverick.po</code> unless you change the gettext message space in any of your calls (such as with <code>dcgettext()</code> ).
 
 ##<a name="error-logging"></a>Error Logging
 MaVeriCk comes with a basic class for logging errors in your application, aptly named <code>error</code>, which are saved to the <code>/logs</code> directory (outside of the web root for security).
