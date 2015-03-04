@@ -1,8 +1,8 @@
 #MaVeriCk
 
-The general idea behind this was to create a tiny PHP MVC framework that had the basic features in a week.
+The general idea behind this was to create a tiny PHP MVC framework that had the basic features in a week. Since that initial week, I've been adding to it and building up its featureset while keeping the slimline concept I started with.
 
-The features of this include:
+The features of this framework include:
 
 * Versatile config across multiple files - so you can split the DB config from your validation error messages, etc.
 * Class autoloading - don't worry about everything being included at the beginning of your code, and load only what you use
