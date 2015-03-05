@@ -4,6 +4,7 @@ namespace helpers;
 class file
 {
 	private $path = '';
+	private $magic_file = '';
 	
 	function __construct($path='')
 	{
@@ -12,7 +13,7 @@ class file
 	
 	function __set($name, $value)
 	{
-		if(in_array($name, array('path') ) )
+		if(in_array($name, array('path', 'magic_file') ) )
 		{
 			$this->$name = $value;
 			return true;
@@ -56,6 +57,9 @@ class file
 	{
 		$path = ($dir)?$dir:$this->path;
 		
+		if(!file_exists($path) && !is_dir($path) )
+			return false;
+		
 		$files = array();
 		$dh = opendir($path);
 		
@@ -72,6 +76,39 @@ class file
 		
 		sort($files);
 		return $files;
+	}
+	
+	function info()
+	{
+		if(!file_exists($this->path) )
+			return false;
+		else
+		{
+			$info = new \stdClass();
+			
+			if(!empty($this->magic_file))
+				$finfo = finfo_open(FILEINFO_MIME_TYPE, $this->magic_file);
+			else
+				$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			
+			$info->mime = finfo_file($finfo, $this->path);
+			$info->name = basename($this->path);
+			$info->size = filesize($this->path);
+			$info->human_size = self::human_size($info->size);
+			$info->created = filectime($this->path);
+			$info->human_created = date("F d Y H:i:s", $info->created);
+			$info->modified = filemtime($this->path);
+			$info->human_modified = date("F d Y H:i:s", $info->modified);
+			$info->owner_id = fileowner($this->path);
+			$info->group_id = filegroup($this->path);
+			$info->type = filetype($this->path);
+			$info->perms = decoct(fileperms($this->path) & 0777);
+			$info->readable = is_readable($this->path);
+			$info->writable = is_writable($this->path);
+			$info->executable = is_executable($this->path);
+			
+			return $info;
+		}
 	}
 	
 	// originally sourced from http://aidanlister.com/2004/04/human-readable-file-sizes/ with argument order changes
