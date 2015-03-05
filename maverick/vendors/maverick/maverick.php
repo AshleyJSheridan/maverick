@@ -16,8 +16,8 @@ function __autoload($class)
 	}
 	
 	// add the maverick directory in as the namespace if it doesn't exist
-	if(strpos($class, DIRECTORY_SEPARATOR) === false)
-		$class = 'maverick' . DIRECTORY_SEPARATOR . $class;
+	if(strpos($class, '\\') === false)
+		$class = 'maverick/' . $class;
 	
 	// PSR-0 autoloader - sourced from http://www.sitepoint.com/autoloading-and-the-psr-0-standard/
 	if(!$class_found)
