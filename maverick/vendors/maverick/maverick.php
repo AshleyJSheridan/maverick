@@ -1,7 +1,7 @@
 <?php
 function __autoload($class)
 {
-	// a more traditional autoloader - kept in until everything can be transitioned to PSR-0 standard
+	// a more traditional autoloader - used for loading in controllers and models
 	$maverick = maverick::getInstance();
 	$class_found = false;
 	
@@ -47,11 +47,10 @@ class maverick
 	private $requested_route_string;
 	private $controller;
 	private $error_routes = array();
+	private $language_culture = '';
 	public $validator;
 	public $db;
 	public $view;
-	private $language_culture = '';
-	
 
 	public function __get($name)
 	{
@@ -93,36 +92,30 @@ class maverick
 		if(preg_match('/^([a-z\d_-]+)(\.([a-z\d_-]+))*$/i', $item))
 		{
 			$matches = explode('.', $item);
-			
-			switch(count($matches))
+
+			if(count($matches)==1)
+				$config = $this->config->{$matches[0]};
+			else
 			{
-				case 1:
-					$config = $this->config->{$matches[0]};
-					break;
-				default:
-					// a check to see if we're loading from an non-existant config file (which would mean the member variable doesn't exist)
-					if(isset($this->config->{$matches[0]}) )
+				// a check to see if we're loading from an non-existant config file (which would mean the member variable doesn't exist)
+				if(isset($this->config->{$matches[0]}) )
+				{
+					$c = ($this->config->{$matches[0]});
+					//$p = $config = '';
+					array_shift($matches);
+
+					foreach($matches as $item)
 					{
-						$c = ($this->config->{$matches[0]});
-						$p = $config = '';
-						array_shift($matches);
-
-						foreach($matches as $item)
+						if(isset($c[$item]))
 						{
-							if(isset($c[$item]))
-							{
-								$config = $c[$item];
-								$c = $c[$item];
-							}
-							else
-								break;
-
+							$config = $c[$item];
+							$c = $c[$item];
 						}
+						else
+							break;
 					}
-					
-					break;
+				}
 			}
-
 		}
 
 		return $config;
