@@ -1,43 +1,5 @@
 <?php
-function __autoload($class)
-{
-	// a more traditional autoloader - used for loading in controllers and models
-	$maverick = maverick::getInstance();
-	$class_found = false;
-	
-	foreach($maverick->get_config('config.paths') as $path)
-	{
-		if(file_exists("$path/$class.php"))
-		{
-			require_once "$path/$class.php";
-			$class_found = true;
-			break;
-		}
-	}
-	
-	// add the maverick directory in as the namespace if it doesn't exist
-	if(strpos($class, '\\') === false)
-		$class = 'maverick/' . $class;
-	
-	// PSR-0 autoloader - sourced from http://www.sitepoint.com/autoloading-and-the-psr-0-standard/
-	if(!$class_found)
-	{
-		$className = ltrim($class, '\\');
-		$fileName  = '';
-		$namespace = '';
-		if ($lastNsPos = strripos($className, '\\'))
-		{
-			$namespace = substr($className, 0, $lastNsPos);
-			$className = substr($className, $lastNsPos + 1);
-			$fileName  = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-		}
-		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-
-		set_include_path(MAVERICK_BASEDIR . 'vendors');
-
-		require $fileName;
-	}
-}
+namespace maverick;
 
 class maverick
 {
@@ -139,7 +101,7 @@ class maverick
 			$this->route_preparser();
 		
 		$this->get_request_uri();
-		$this->db = new stdClass();
+		$this->db = new \stdClass();
 		
 		if($this->get_config('lang.active') === true)
 			$this->set_lang_culture();
@@ -155,7 +117,7 @@ class maverick
 			$dbuser = $this->get_config('db.username');
 			$dbpass = $this->get_config('db.password');
 			
-			$this->db->pdo = $pdo = new PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
+			$this->db->pdo = $pdo = new \PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
 		}
 
 		// locate and initiate call to controller responsible for the requested route
@@ -233,7 +195,7 @@ class maverick
 	
 	private function load_config()
 	{
-		$this->config = new stdClass();
+		$this->config = new \stdClass();
 		
 		//TODO: add functionality to allow sub-directories to override configs per environment
 		foreach(glob(MAVERICK_BASEDIR . 'config/*.php') as $config_file)
@@ -246,7 +208,7 @@ class maverick
 	
 	private function get_request_uri()
 	{
-		$this->requested_route = new stdClass();
+		$this->requested_route = new \stdClass();
 		
 		foreach(array('get', 'post', 'cookie') as $request)
 		{

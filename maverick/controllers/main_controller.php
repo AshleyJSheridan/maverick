@@ -55,9 +55,6 @@ class main_controller extends base_controller
 	{
 		$data = content::get_all_from_test_table();
 		
-		$file = new \helpers\file(MAVERICK_BASEDIR . '/routes.php');
-		var_dump($file->info() );
-		
 		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->render();
 	}
 

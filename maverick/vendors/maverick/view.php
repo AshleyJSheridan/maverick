@@ -1,4 +1,6 @@
 <?php
+use \maverick\data as data;
+
 class view
 {
 	static $_instance;
@@ -20,7 +22,7 @@ class view
 	public static function make($view)
 	{
 		$v = view::getInstance();
-		$app = maverick::getInstance();
+		$app = \maverick\maverick::getInstance();
 		
 		$v->reset();
 		
@@ -48,9 +50,9 @@ class view
 	public static function render($echo=true)
 	{
 		$v = view::getInstance();
-		$app = maverick::getInstance();
+		$app = \maverick\maverick::getInstance();
 		
-		$view_file_path = MAVERICK_BASEDIR . "views/$v->view.php";
+		$view_file_path = MAVERICK_VIEWSDIR . "/$v->view.php";
 
 		if(!file_exists($view_file_path))
 			error::show("View '$v->view' does not exist");

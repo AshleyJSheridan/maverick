@@ -1,4 +1,6 @@
 <?php
+namespace maverick;
+
 class db_raw
 {
 	public $value='';

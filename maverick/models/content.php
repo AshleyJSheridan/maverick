@@ -1,4 +1,6 @@
 <?php
+use \maverick\db as db;
+
 class content
 {
 	static function get_day()
@@ -15,7 +17,7 @@ class content
 			))*/
 			//->whereIn('t.id', array(1,3))
 			//->leftJoin('test2 AS t2', array('t2.test_id', '=', 't.id') )
-			//->where('t.id', '>', db::raw('1'))
+			->where('t.id', '>', db::raw('1'))
 			//->where(db::raw(1), '=', db::raw(1))
 			//->orderBy('t2.id', 'desc')
 			->groupBy('t.field_value')

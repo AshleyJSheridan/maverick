@@ -1,4 +1,6 @@
 <?php
+namespace maverick;
+
 class db
 {
 	private function __construct() {}
@@ -6,7 +8,7 @@ class db
 	// all queries should start with a table request
 	public static function table($table)
 	{
-		$q = query::getInstance(true);
+		$q = \maverick\query::getInstance(true);
 		
 		if(!strlen($table))
 			error::log('Table not specified', true);
@@ -18,7 +20,7 @@ class db
 	
 	public static function raw($value)
 	{
-		$v = new db_raw($value);
+		$v = new \maverick\db_raw($value);
 		
 		return $v;
 	}

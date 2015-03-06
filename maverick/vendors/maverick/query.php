@@ -1,4 +1,6 @@
 <?php
+namespace maverick;
+
 class query
 {
 	static $_instance;
@@ -233,7 +235,7 @@ class query
 
 	private function result($type)
 	{
-		$maverick = maverick::getInstance();
+		$maverick = \maverick\maverick::getInstance();
 		$q = query::getInstance();
 		
 		if(!strlen($q->from)) return false;

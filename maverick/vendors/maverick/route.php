@@ -1,4 +1,6 @@
 <?php
+namespace maverick;
+
 class route
 {
 	private function __clone() {}
