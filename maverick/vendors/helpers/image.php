@@ -31,6 +31,144 @@ class image
 		return (!empty($this->image))?$this:false;
 	}
 	
+	public function effect($filter, $params = array(), $repeat = 1 )
+	{
+		if(!is_array($params)) $params = (array)$params;	// force the params to be an array if they're not already
+		$repeat = !is_numeric($repeat)?1:(int)$repeat;		// the number of times to repeat a filter - i.e. to get a stronger blur, for example
+		$filter_type = 'standard';	// determines the type of filter that gets applied
+		$param_length = 4;	// determines how many parameters get passed to certain types of filters
+
+		switch($filter)
+		{
+			case 'brightness':
+			case 'smooth':
+				$param_length = 1;
+				$params[0] = $this->constrain_int($params[0]);
+				break;
+			case 'contrast':
+				$param_length = 1;
+				$params[0] = $this->constrain_int($params[0], -100, 100);
+				break;
+			case 'colorize':
+				$param_length = 3;
+				$params[0] = $this->constrain_int($params[0]);
+				$params[1] = $this->constrain_int($params[1]);
+				$params[2] = $this->constrain_int($params[2]);
+				break;
+			case 'multiply':
+				$param_length = 3;
+				$params[0] = abs(255 - $this->constrain_int($params[0]) ) * -1;
+				$params[1] = abs(255 - $this->constrain_int($params[1]) ) * -1;
+				$params[2] = abs(255 - $this->constrain_int($params[2]) ) * -1;
+				
+				$filter = 'colorize';
+				break;
+			case 'pixelate':
+				$param_length = 2;
+				$params[0] = $this->constrain_int($params[0], 0);
+				$params[1] = (isset($params[1]) && is_bool($params[1]))?$params[1]:false;
+				break;
+			case 'negate':
+			case 'grayscale':
+			case 'edgedetect':
+			case 'emboss':
+			case 'gaussian_blur':
+			case 'selective_blur':
+			case 'mean_removal':
+				$param_length = 0;
+				break;
+			case 'emboss2':
+				$matrix = array(array(2, 0, 0), array(0, -1, 0), array(0, 0, -1));
+				$divisor = 1;
+				$offset = 127;
+				$filter_type = 'matrix';
+				break;
+			case 'emboss3':
+				$matrix = array(array(1, 1, -1), array(1, 1, -1), array(1, -1, -1));
+				$divisor = 1;
+				$offset = 127;
+				$filter_type = 'matrix';
+				break;
+			case 'edgedetect2':
+				$matrix = array(array(1, 1, 1), array(1, 7, 1), array(1, 1, -1));
+				$divisor = 1;
+				$offset = 127;
+				$filter_type = 'matrix';
+				break;
+			case 'edgedetect3':
+				$matrix = array(array(-1, -1, -1), array(0, 0, 0), array(1, 1, 1));
+				$divisor = 1;
+				$offset = 127;
+				$filter_type = 'matrix';
+				break;
+			case 'gaussian_blur2':
+				$matrix = array(array(1, 2, 1), array(2, 4, 2), array(1, 2, 1));
+				$divisor = 16;
+				$offset = -1;
+				$filter_type = 'matrix';
+				break;
+			case 'sharpen':
+				$matrix = array(array(0, -1, 0), array(-1, 5, -1), array(0, -1, 0));
+				$divisor = 1;
+				$offset = 63;
+				$filter_type = 'matrix';
+				break;
+			case 'rotate':
+				$param_length = 2;
+				$filter_type = 'function';
+				$filter_function = "image$filter";
+				$params[0] = $this->constrain_int($params[0], -360, 360);
+				$params[1] = 0;
+				break;
+		}
+		
+		for($i=0; $i<4; $i++)
+		{
+			if(!isset($params[$i]))
+				$params[$i] = null;
+		}
+
+		if($filter_type == 'standard')
+		{
+			$filter_const = constant('IMG_FILTER_' . strtoupper($filter));
+			// bit ugly, but for filters that expect 2 or 3 extra parameters, PHP gives a warning when more are passed
+			// conversely, PHP doesn't care about extra parameters passed when it expects none
+			switch($param_length)
+			{
+				case 0:
+					for($i=0; $i<$repeat; $i++)
+						imagefilter($this->image, $filter_const);
+					break;
+				case 1:
+					for($i=0; $i<$repeat; $i++)
+						imagefilter($this->image, $filter_const, $params[0]);
+					break;
+				case 2:
+					for($i=0; $i<$repeat; $i++)
+						imagefilter($this->image, $filter_const, $params[0], $params[1]);
+					break;
+				case 3:
+					for($i=0; $i<$repeat; $i++)
+						imagefilter($this->image, $filter_const, $params[0], $params[1], $params[2]);
+					break;
+				default:
+					for($i=0; $i<$repeat; $i++)
+						imagefilter($this->image, $filter_const, $params[0], $params[1], $params[2], $params[3]);
+					break;
+			}
+		}
+		if($filter_type == 'matrix')
+		{
+			for($i=0; $i<$repeat; $i++)
+				imageconvolution($this->image, $matrix, $divisor, $offset);
+		}
+		if($filter_type == 'function')
+		{
+			$this->image = call_user_func($filter_function, $this->image, $params[0], $params[1]);
+			//$this->image = imagerotate($this->image, 180, 0);
+		}
+	}
+	
 	public function resize($width, $height, $type='regular')
 	{
 		$type = in_array($type, array('crop', 'regular') )?$type:'regular';
@@ -126,26 +264,6 @@ class image
 		}
 	}
 	
-	private function set_dimension($input_val, $type)
-	{
-		$return_val = 0;
-
-		switch(true)
-		{
-			case ($type=='nochange'):
-				$return_val = $input_val;
-				break;
-			case (is_numeric($type)):
-				$return_val = $type;
-				break;
-			case (!is_numeric($type)):
-				$return_val = intval($type) / 100 * $input_val;
-				break;
-		}
-		
-		return (int)$return_val;
-	}
-	
 	public function output($filename=null)
 	{
 		if(empty($filename))
@@ -164,6 +282,16 @@ class image
 				break;
 		}
 
+	}
+	
+	private function constrain_int($int, $min=-255, $max=255)
+	{
+		if($int < $min)
+			$int = $min;
+		if($int > $max)
+			$int = $max;
+		
+		return $int;
 	}
 	
 	private function create_from_file($from_file)
@@ -191,4 +319,25 @@ class image
 			}
 		}
 	}
+		
+	private function set_dimension($input_val, $type)
+	{
+		$return_val = 0;
+
+		switch(true)
+		{
+			case ($type=='nochange'):
+				$return_val = $input_val;
+				break;
+			case (is_numeric($type)):
+				$return_val = $type;
+				break;
+			case (!is_numeric($type)):
+				$return_val = intval($type) / 100 * $input_val;
+				break;
+		}
+		
+		return (int)$return_val;
+	}
+
 }
