@@ -31,25 +31,77 @@ class image
 		return (!empty($this->image))?$this:false;
 	}
 	
-	public function resize($width, $height)
+	public function resize($width, $height, $type='crop')
 	{
-		// if both sizes are set to auto then do nothing
-		if($width === 'auto' && $height === 'auto')
+		$type = in_array($type, array('crop', 'distort') )?$type:'crop';
+		
+		// if both sizes are auto then do nothing
+		if(preg_match('/^(auto|nochange)$/', $width) && preg_match('/^(auto|nochange)$/', $height))
 			return false;
 		
-		if(preg_match('/^(auto|\d+%?)$/', $width) && preg_match('/^(auto|\d+%?)$/', $height) )
+		// if both sizes are not within constrained limits then do nothing
+		if(!preg_match('/^(auto|nochange|(\d+)%?)$/', $width) && preg_match('/^(auto|nochange|(\d+)%?)$/', $height) )
+			return false;
+		
+		// some types of resize also require a cropping action too
+		switch($type)
 		{
-			if($width === 'auto')
+			case 'distort':
 			{
-				if(!is_numeric($this->height) )
-					$this->width = $this->height;
-				else
+				// determine the new width
+				if($width == 'auto')
 				{
-					
+					if(is_numeric($height))
+						$width = (int)(intval($height) / $this->height * $this->width);
+					else
+						$width = $this->set_dimension($this->width, $height);
 				}
+				else
+					$width = $this->set_dimension($this->width, $width);
+				
+				// determine the new height
+				if($height == 'auto')
+				{
+					if(is_numeric($width))
+						$height = (int)(intval($width) / $this->width * $this->height);
+					else
+						$height = $this->set_dimension($this->height, $width);
+				}
+				else
+					$height = $this->set_dimension($this->height, $height);
+
+				break;
+			}
+			case 'crop':
+			{
+				
+				break;
 			}
 		}
+		
+		
+		var_dump($this, $width, $height);
 		exit;
+	}
+	
+	private function set_dimension($input_val, $type)
+	{
+		$return_val = 0;
+
+		switch(true)
+		{
+			case ($type=='nochange'):
+				$return_val = $input_val;
+				break;
+			case (is_numeric($type)):
+				$return_val = $type;
+				break;
+			case (!is_numeric($type)):
+				$return_val = intval($type) / 100 * $input_val;
+				break;
+		}
+		
+		return (int)$return_val;
 	}
 	
 	public function output($filename=null)
