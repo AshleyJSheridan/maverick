@@ -120,6 +120,32 @@ class image
 				$params[0] = $this->constrain_int($params[0], -360, 360);
 				$params[1] = 0;
 				break;
+			case 'round_pixelate':
+				$param_length = 1;
+				$filter_type = 'custom_method';
+				$filter_function = "custom_$filter";
+				$params[0] = $this->constrain_int($params[0], 0);
+				break;
+			case 'scatter':
+				$param_length = 1;
+				$filter_type = 'custom_method';
+				$filter_function = "custom_$filter";
+				$params[0] = $this->constrain_int($params[0], 0, 50);
+				break;
+			case 'noise':
+				$param_length = 1;
+				$filter_type = 'custom_method';
+				$filter_function = "custom_$filter";
+				$params[0] = $this->constrain_int($params[0], 0);
+				break;
+			case 'oil':
+				$param_length = 3;
+				$filter_type = 'custom_method';
+				$filter_function = "custom_$filter";
+				$params[0] = $this->constrain_int($params[0], 0);
+				$params[1] = $this->constrain_int($params[1], 0, 20);
+				$params[2] = $this->constrain_int($params[2], 0, 50);
+				break;
 		}
 		
 		for($i=0; $i<4; $i++)
@@ -164,8 +190,24 @@ class image
 		}
 		if($filter_type == 'function')
 		{
-			$this->image = call_user_func($filter_function, $this->image, $params[0], $params[1]);
-			//$this->image = imagerotate($this->image, 180, 0);
+			for($i=0; $i<$repeat; $i++)
+				$this->image = call_user_func($filter_function, $this->image, $params[0], $params[1]);
+		}
+		if($filter_type == 'custom_method')
+		{
+			switch($param_length)
+			{
+				case 1:
+					for($i=0; $i<$repeat; $i++)
+						$this->$filter_function($params[0]);
+				case 2:
+					for($i=0; $i<$repeat; $i++)
+						$this->$filter_function($params[0], $params[1]);
+				case 3:
+					for($i=0; $i<$repeat; $i++)
+						$this->$filter_function($params[0], $params[1], $params[2]);
+			}
+			
 		}
 	}
 	
@@ -340,4 +382,114 @@ class image
 		return (int)$return_val;
 	}
 
+	// custom image effect filters - they must all start with custom_ in their name
+	private function custom_round_pixelate($blocksize)
+	{
+		$imagex = imagesx($this->image);
+		$imagey = imagesy($this->image);
+
+		for ($x=0; $x<$imagex; $x+=$blocksize)
+		{
+			for ($y = 0; $y < $imagey; $y += $blocksize)
+			{
+				$colour = imagecolorat($this->image, $x, $y);
+				imagefilledellipse($this->image, $x - $blocksize / 2, $y - $blocksize / 2, $blocksize, $blocksize, $colour);
+			}
+		}
+	}
+	
+	private function custom_scatter($dist)
+	{
+		$imagex = imagesx($this->image);
+		$imagey = imagesy($this->image);
+
+		for ($x = 0; $x < $imagex; ++$x)
+		{
+			for ($y = 0; $y < $imagey; ++$y)
+			{
+
+				$distx = rand($dist * -1, $dist);
+				$disty = rand($dist * -1, $dist);
+
+				if ($x + $distx >= $imagex) continue;
+				if ($x + $distx < 0) continue;
+				if ($y + $disty >= $imagey) continue;
+				if ($y + $disty < 0) continue;
+
+				$oldcol = imagecolorat($this->image, $x, $y);
+				$newcol = imagecolorat($this->image, $x + $distx, $y + $disty);
+				imagesetpixel($this->image, $x, $y, $newcol);
+				imagesetpixel($this->image, $x + $distx, $y + $disty, $oldcol);
+
+			}
+		}
+	}
+	
+	private function custom_noise($diff)
+	{
+		$imagex = imagesx($this->image);
+		$imagey = imagesy($this->image);
+
+		for ($x = 0; $x < $imagex; ++$x)
+		{
+			for ($y = 0; $y < $imagey; ++$y)
+			{
+				if (rand(0,1)) {
+					$rgb = imagecolorat($this->image, $x, $y);
+					$red = ($rgb >> 16) & 0xFF;
+					$green = ($rgb >> 8) & 0xFF;
+					$blue = $rgb & 0xFF;
+					$modifier = rand($diff * -1, $diff);
+					$red += $modifier;
+					$green += $modifier;
+					$blue += $modifier;
+
+					if ($red > 255) $red = 255;
+					if ($green > 255) $green = 255;
+					if ($blue > 255) $blue = 255;
+					if ($red < 0) $red = 0;
+					if ($green < 0) $green = 0;
+					if ($blue < 0) $blue = 0;
+
+					$newcol = imagecolorallocate($this->image, $red, $green, $blue);
+					imagesetpixel($this->image, $x, $y, $newcol);
+				}
+			}
+		}
+	}
+	
+	private function custom_oil($strength, $diff, $brushsize)
+	{
+		$imagex = imagesx($this->image);
+		$imagey = imagesy($this->image);
+
+		for ($x = 0; $x < $imagex; ++$x)
+		{
+			for ($y = 0; $y < $imagey; ++$y)
+			{
+				if (rand(0,$strength) < 2)
+				{
+					$rgb = imagecolorat($this->image, $x, $y);
+					$red = ($rgb >> 16) & 0xFF;
+					$green = ($rgb >> 8) & 0xFF;
+					$blue = $rgb & 0xFF;
+					$modifier = rand($diff * -1, $diff);
+					$red += $modifier;
+					$green += $modifier;
+					$blue += $modifier;
+
+					if ($red > 255) $red = 255;
+					if ($green > 255) $green = 255;
+					if ($blue > 255) $blue = 255;
+					if ($red < 0) $red = 0;
+					if ($green < 0) $green = 0;
+					if ($blue < 0) $blue = 0;
+
+					$colour = imagecolorallocate($this->image, $red, $green, $blue);
+					//imagesetpixel($image, $x, $y, $newcol);
+					imagefilledellipse($this->image, $x, $y, $brushsize, $brushsize, $colour);
+				}
+			}
+		}
+	}
 }

@@ -56,7 +56,7 @@ class main_controller extends base_controller
 		//$data = content::get_all_from_test_table();
 		$image = new \helpers\image("img/BlueMarbleWest.jpg");
 		$image->resize('auto', '500');
-		$image->effect('rotate', 45 );
+		$image->effect('oil', array(50,4,6) );
 		$image->output();
 		exit;
 		
