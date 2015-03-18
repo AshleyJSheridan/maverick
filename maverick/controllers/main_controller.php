@@ -55,7 +55,7 @@ class main_controller extends base_controller
 	{
 		//$data = content::get_all_from_test_table();
 		$image = new \helpers\image("img/BlueMarbleWest.jpg");
-		$image->resize('auto', '500', 'distort');
+		$image->resize('50%', '500', 'crop');
 		$image->output();
 		exit;
 		

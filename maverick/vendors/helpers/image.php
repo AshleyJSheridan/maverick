@@ -31,22 +31,23 @@ class image
 		return (!empty($this->image))?$this:false;
 	}
 	
-	public function resize($width, $height, $type='crop')
+	public function resize($width, $height, $type='regular')
 	{
-		$type = in_array($type, array('crop', 'distort') )?$type:'crop';
+		$type = in_array($type, array('crop', 'regular') )?$type:'regular';
 		
-		// if both sizes are auto then do nothing
-		if(preg_match('/^(auto|nochange)$/', $width) && preg_match('/^(auto|nochange)$/', $height))
+		// if both sizes are auto or the type is crop and either size is auto then do nothing
+		if( (preg_match('/^(auto|nochange)$/', $width) && preg_match('/^(auto|nochange)$/', $height) ) || ( $type == 'crop' && ($width == 'auto' || $height == 'auto') ) )
 			return false;
 		
-		// if both sizes are not within constrained limits then do nothing
+		// if both sizes are not within constrained type limits then do nothing
+		// they should be either 'auto', 'nochange', a % value, or an integer representing the pixel dimensions
 		if(!preg_match('/^(auto|nochange|(\d+)%?)$/', $width) && preg_match('/^(auto|nochange|(\d+)%?)$/', $height) )
 			return false;
 		
-		// some types of resize also require a cropping action too
+		// some types of resize also require a cropping action too so switch between them here
 		switch($type)
 		{
-			case 'distort':
+			case 'regular':
 			{
 				// determine the new width
 				if($width == 'auto')
@@ -70,18 +71,59 @@ class image
 				else
 					$height = $this->set_dimension($this->height, $height);
 
+				$image_p = imagecreatetruecolor($width, $height);
+				return (imagecopyresampled($image_p, $this->image, 0, 0, 0, 0, $width, $height, $this->width, $this->height) && $this->image = $image_p);
+				
 				break;
 			}
 			case 'crop':
 			{
+				$width = $this->set_dimension($this->width, $width);
+				$height = $this->set_dimension($this->height, $height);
+
+				if(($width / $height) < ($this->width / $this->height))
+				{
+					// landscape
+					$ratio = $width / $height;
+					$image_p = imagecreatetruecolor($width, $height);
+					
+					imagecopyresampled(
+						$image_p, // dst_im
+						$this->image, // src_im
+						0, // dst_x
+						0, // dst_y
+						($this->width / 2) - ($this->height * $ratio) / 2, // src_x
+						0, // src_y
+						$width, // dst_w
+						$height, // dst_h
+						$this->height * $ratio, // src_w
+						$this->height // src_h
+					);
+				}
+				else
+				{
+					// portrait
+					$ratio = $height / $width;
+					$image_p = imagecreatetruecolor($width, $height);
+					
+					imagecopyresampled(
+						$image_p, // dst_im
+						$this->image, // src_im
+						0, // dst_x
+						0, // dst_y
+						0, // src_x
+						0, // src_y
+						$width, // dst_w
+						$height, // dst_h
+						$this->width, // src_w
+						$this->width * $ratio // src_h
+					);
+				}
+				return ($this->image = $image_p);
 				
 				break;
 			}
 		}
-		
-		
-		var_dump($this, $width, $height);
-		exit;
 	}
 	
 	private function set_dimension($input_val, $type)
