@@ -53,9 +53,13 @@ class main_controller extends base_controller
 	
 	function home()
 	{
-		$data = content::get_all_from_test_table();
+		//$data = content::get_all_from_test_table();
+		$image = new \helpers\image("img/BlueMarbleWest.jpg");
+		$image->resize('auto', '50%');
+		$image->output();
+		exit;
 		
-		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->render();
+		$view = view::make('includes/template')->with('page', 'home')->render();
 	}
 
 	function error()
