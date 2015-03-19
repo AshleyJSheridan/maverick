@@ -706,33 +706,33 @@ Below are the filter effects available and the parameters you will need to pass 
 * <code>contrast</code> - this accepts a single number between -100 and 100 which adjusts the contrast
 * <code>colorize</code> - this accepts 3 values in an array, each between -255 and 255 which is the colour adjustment you wish to apply. For example, passing in <code>array(-255, 0, 0)</code> will remove the red from the image
 * <code>multiply</code> - this behaves like the multiply colour effect filter in Photoshop and accepts the same array of colour values as the <code>colorize</code> filter
-![Multiply filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_multiply.jpg)
+<br/>![Multiply filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_multiply.jpg)
 * <code>pixelate</code> - this pixellates the image, and accepts two parameters in an array. The first is the pixel block size, the second is a boolean that determines whether ot not to use advanced pixellation or not
-![Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_pixelate.jpg)
+<br/>![Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_pixelate.jpg)
 * <code>negate</code> - inverts the colours of the image
 * <code>grayscale</code> - turns the image greyscale
 * <code>edgedetect</code> - applies the edgedetect filter
 * <code>emboss</code> - applies the GD emboss filter
-![Emboss filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_emboss.jpg)
+<br/>![Emboss filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_emboss.jpg)
 * <code>gaussian_blur</code> - applies the GD gaussian_blur filter
 * <code>selective_blur</code> - applies the GD selective_blur filter
 * <code>mean_removal</code> - applies the GD mean_removal filter
 * <code>emboss2</code> & <code>emboss3</code> - different emboss methods which utilise the <code>imageconvolution()</code> matrix function
 * <code>edgedetect2</code> & <code>edgedetect3</code> - different edgedetect methods which utilise the <code>imageconvolution()</code> matrix function
-![Edge Detect 3 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_edgedetect3.jpg)
+<br/>![Edge Detect 3 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_edgedetect3.jpg)
 * <code>gaussian_blur2</code> - a different blur method which utilises the <code>imageconvolution()</code> matrix function
-![Gaussian Blur 2 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_gaussian_blur2.jpg)
+<br/>![Gaussian Blur 2 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_gaussian_blur2.jpg)
 * <code>sharpen</code> - sharpens the image
 * <code>rotate</code> - rotates the image byetween -360 or 360 degrees. This can alter the dimensions of the image
-![Rotate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_rotate.jpg)
+<br/>![Rotate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_rotate.jpg)
 * <code>round_pixelate</code> - a pixellation method which accepts a value between 0 and 255 which is the size of the pixels. The effect is a pixelised image which uses round instead of square pixels
-![Round Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_round_pixelate.jpg)
+<br/>![Round Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_round_pixelate.jpg)
 * <code>scatter</code> - an effect which scatters the pixels of the image. It accepts a parameter value between 0 and 50, which affects how much pixels can be scattered
-![Scatter filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_scatter.jpg)
+<br/>![Scatter filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_scatter.jpg)
 * <code>noise</code> - accepts a value between 0 and 255 which is how much noise is added to the image
-![Noise filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_noise.jpg)
+<br/>![Noise filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_noise.jpg)
 * <code>oil</code> - creates an oil painting effect. This effect accepts an array of 3 numbers: strength (0-255), difference (0-20), and brush size (0-50). The difference parameter affects the change in colour before it's reapplied as a brush
-![Oil filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_oil.jpg)
+<br/>![Oil filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_oil.jpg)
 
 ## <a name="licensing"></a>Licensing
 MaVeriCk is available under the MIT License
