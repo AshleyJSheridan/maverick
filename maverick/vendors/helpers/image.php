@@ -31,6 +31,30 @@ class image
 		return (!empty($this->image))?$this:false;
 	}
 	
+	public function __set($param, $value)
+	{
+		switch($param)
+		{
+			case 'width':
+			case 'height':
+				if(intval($value) )
+					$this->$param = intval($value);
+				break;
+			case 'format':
+				if(in_array($value, array('jpg', 'jpeg') ) )
+				{
+					$this->format = 'jpg';
+					$this->mime = 'images/jpeg';
+				}
+				if(in_array($value, array('png', 'gif') ) )
+				{
+					$this->format = $value;
+					$this->mime = "image/$value";
+				}
+				break;
+		}
+	}
+	
 	public function effect($filter, $params = array(), $repeat = 1 )
 	{
 		if(!is_array($params)) $params = (array)$params;	// force the params to be an array if they're not already

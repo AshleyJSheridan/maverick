@@ -38,6 +38,11 @@ This documentation will instruct on how to get it set up on a server and how to 
 		* [Wrapping Tags Around Errors](#wrapping-tags-around-errors)
 * [Multiple Languages](#multiple-languages)
 * [Error Logging](#error-logging)
+* [Helpers](#helpers)
+	* [File Helper](#helpers-file)
+	* [Image Helper](#helpers-image)
+		* [Image Helper Effects Filters](#helpers-image-effects)
+* [Licensing](#licensing)
 
 ##<a name="installing"></a>Installing
 
@@ -631,3 +636,112 @@ The first argument is the error message, just like the <code>show()</code> metho
 Note that logging to a file only occurs if the <code>log_errors</code> option is set to <code>true</code> in the config.
 
 You can also specify the level of detail which gets logged by changing the value of the <code>log_detail</code> config option. When set to <code>true</code>, a stack trace is generated and added to the log message. Bear in mind that this can potentially generate large logs if you have unresolved errors in your code, so it is not advised to leave this set to <code>true</code> on a production environment.
+
+## <a name="helpers"></a>Helpers
+MaVeriCk includes serveral helper classes that are kept within the <code>/maverick/vendors/helpers</code> directory. All helpers are within the <code>helpers</code> namespace.
+
+### <a name="helpers-file"></a>File Helper
+The file helper contains methods for dealing with files (obviously!) and are used like this:
+
+```php
+$file = new \helpers\file();
+echo $file->type();
+```
+
+The constructor can accept an optional string path, but this can be set later:
+
+```php
+$file = new \helpers\file('/path/to/file');
+```
+
+The available methods for this class are:
+
+```php
+type($no_symbolic_check = false); // determine what a path points to, either a file or directory. The optional argument highlights if it's also a symbolic link.
+
+size($human_size = false); // determines the size in bytes of a file (or directory on some file systems). The optional argument returns the size in a human-readable string
+
+tree($dir=false); // creates a multi-dimensional array representing the directory/file tree of a given path
+
+info(); // returns a stdClass object containing information on a file, such as mime type, creation dates, and permissions
+```
+
+### <a name="helpers-image"></a> Image Helper
+The image helper contains methods for dealing with images. This is still in progress so the helper methods are limited. The constructor works in one of two ways:
+
+```php
+$image = new \helpersimage('path/to/existing/image');
+$image2 = new \helpers\image(null, 100, 100, 'jpg');
+```
+
+The second method accepts as arguments the width and height of your new image and the format you wish it to be. Currently only jpg, gif, and png are supported.
+
+The available methods are:
+
+```php
+resize($width, $height, $type='regular');
+/* the $width and $height arguments can be any of the following:
+* # auto - will force $width to depend on the value of $height and vice-versa
+* # nochange - force this dimension to remain unchanged
+* # nn - a value of the pixel size for this dimension
+* # nn% - a value of a percentage increase (above 100%) or decrease (below 100%) in size of the existing dimension value
+*
+* the $type is either 'regular' which allows the image to become distorted if no dimension is set to auto, or 'crop' which allows the image to be smart-cropped if necessary
+*
+* note that if both dimensions are set to 'auto' or 'nochange' then this method returns false and does nothing
+*/
+
+output($filename=null); // this outputs the image to the browser - currently saving to a local image file has not been implemented
+
+effect($filter, $params = array(), $repeat = 1 ); // this applies a filter effect to the image, the list of effects and their parameters is below
+```
+
+####<a name="helpers-image-effects"></a>Image Helper Effects Filter
+
+Below are the filter effects available and the parameters you will need to pass in, and a reference image:
+
+![Reference image of earth](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth.jpg)
+
+* <code>brightness</code> - this accepts a single number between -255 and 255 which is the brightness to apply
+* <code>contrast</code> - this accepts a single number between -100 and 100 which adjusts the contrast
+* <code>colorize</code> - this accepts 3 values in an array, each between -255 and 255 which is the colour adjustment you wish to apply. For example, passing in <code>array(-255, 0, 0)</code> will remove the red from the image
+* <code>multiply</code> - this behaves like the multiply colour effect filter in Photoshop and accepts the same array of colour values as the <code>colorize</code> filter
+![Multiply filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_multiply.jpg)
+* <code>pixelate</code> - this pixellates the image, and accepts two parameters in an array. The first is the pixel block size, the second is a boolean that determines whether ot not to use advanced pixellation or not
+![Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_pixelate.jpg)
+* <code>negate</code> - inverts the colours of the image
+* <code>grayscale</code> - turns the image greyscale
+* <code>edgedetect</code> - applies the edgedetect filter
+* <code>emboss</code> - applies the GD emboss filter
+![Emboss filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_emboss.jpg)
+* <code>gaussian_blur</code> - applies the GD gaussian_blur filter
+* <code>selective_blur</code> - applies the GD selective_blur filter
+* <code>mean_removal</code> - applies the GD mean_removal filter
+* <code>emboss2</code> & <code>emboss3</code> - different emboss methods which utilise the <code>imageconvolution()</code> matrix function
+* <code>edgedetect2</code> & <code>edgedetect3</code> - different edgedetect methods which utilise the <code>imageconvolution()</code> matrix function
+![Edge Detect 3 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_edgedetect3.jpg)
+* <code>gaussian_blur2</code> - a different blur method which utilises the <code>imageconvolution()</code> matrix function
+![Gaussian Blur 2 filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_gaussian_blur2.jpg)
+* <code>sharpen</code> - sharpens the image
+* <code>rotate</code> - rotates the image byetween -360 or 360 degrees. This can alter the dimensions of the image
+![Rotate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_rotate.jpg)
+* <code>round_pixelate</code> - a pixellation method which accepts a value between 0 and 255 which is the size of the pixels. The effect is a pixelised image which uses round instead of square pixels
+![Round Pixelate filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_round_pixelate.jpg)
+* <code>scatter</code> - an effect which scatters the pixels of the image. It accepts a parameter value between 0 and 50, which affects how much pixels can be scattered
+![Scatter filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_scatter.jpg)
+* <code>noise</code> - accepts a value between 0 and 255 which is how much noise is added to the image
+![Noise filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_noise.jpg)
+* <code>oil</code> - creates an oil painting effect. This effect accepts an array of 3 numbers: strength (0-255), difference (0-20), and brush size (0-50). The difference parameter affects the change in colour before it's reapplied as a brush
+![Oil filter](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/earth_oil.jpg)
+
+## <a name="licensing"></a>Licensing
+MaVeriCk is available under the MIT License
+
+The MIT License (MIT)
+
+Copyright (c) [year] [fullname]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
