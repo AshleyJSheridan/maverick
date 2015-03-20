@@ -333,21 +333,40 @@ class image
 	public function output($filename=null)
 	{
 		if(empty($filename))
+		{
 			header("Content-Type: $this->mime");
 		
-		switch($this->format)
-		{
-			case 'png':
-				imagepng($this->image);
-				break;
-			case 'gif':
-				imagegif($this->image);
-				break;
-			case 'jpg':
-				imagejpeg($this->image);
-				break;
+			switch($this->format)
+			{
+				case 'png':
+					imagepng($this->image);
+					break;
+				case 'gif':
+					imagegif($this->image);
+					break;
+				case 'jpg':
+					imagejpeg($this->image);
+					break;
+			}
 		}
+		else
+		{
+			if(!file_exists(dirname($filename) ) )
+				mkdir(dirname($filename), 0777, true);
 
+			switch($this->format)
+			{
+				case 'png':
+					imagepng($this->image, $filename, 9);
+					break;
+				case 'gif':
+					imagegif($this->image, $filename);
+					break;
+				case 'jpg':
+					imagejpeg($this->image, $filename);
+					break;
+			}
+		}
 	}
 	
 	private function constrain_int($int, $min=-255, $max=255)

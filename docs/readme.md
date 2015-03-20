@@ -691,7 +691,7 @@ resize($width, $height, $type='regular');
 * note that if both dimensions are set to 'auto' or 'nochange' then this method returns false and does nothing
 */
 
-output($filename=null); // this outputs the image to the browser - currently saving to a local image file has not been implemented
+output($filename=null); // this outputs the image to the browser. Passing in a path and filename as a string argument will instead save the image to that location
 
 effect($filter, $params = array(), $repeat = 1 ); // this applies a filter effect to the image, the list of effects and their parameters is below
 ```

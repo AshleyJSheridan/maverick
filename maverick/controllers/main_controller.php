@@ -57,7 +57,7 @@ class main_controller extends base_controller
 		$image = new \helpers\image("img/BlueMarbleWest.jpg");
 		$image->resize('400', 'auto');
 		$image->effect('oil', array(50,4,6) );
-		$image->output();
+		$image->output('img/400/earth_oil.jpg');
 		exit;
 		
 		$view = view::make('includes/template')->with('page', 'home')->render();
