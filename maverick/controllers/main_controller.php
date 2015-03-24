@@ -56,8 +56,14 @@ class main_controller extends base_controller
 		//$data = content::get_all_from_test_table();
 		$image = new \helpers\image("img/BlueMarbleWest.jpg");
 		$image->resize('400', 'auto');
-		$image->effect('oil', array(50,4,6) );
-		$image->output('img/400/earth_oil.jpg');
+
+		//$image->font = MAVERICK_BASEDIR.'views/LiberationSerif-Regular.ttf';
+		$image->foreground = '#fff';
+		$image->font_size = 18;
+		//$image->line_height = 18;
+		$image->write('This is a test of a long sentence made up of a lot of words of differing sizes', 0, 18, 200);
+		
+		$image->output();
 		exit;
 		
 		$view = view::make('includes/template')->with('page', 'home')->render();

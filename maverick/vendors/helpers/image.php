@@ -9,9 +9,18 @@ class image
 	private $format = 'jpg';
 	private $mime = 'image/jpeg';
 	private $image;
+	private $font = '';
+	private $font_size = 12;	// default size in points
+	private $line_height = 0;
+	private $colours = array();
+	private $foreground = '';
 
 	public function __construct($from_file=null, $width=100, $height=100, $format='jpg')
 	{
+		// set some defaults here as we can't use the string concatenator or method calls in the initial variable initalisation
+		$this->font = MAVERICK_BASEDIR . 'views/LiberationSans-Regular.ttf';
+		//$this->foreground = $this->add_colour('f00');
+		
 		if(!is_null($from_file) && file_exists($from_file) )
 			$this->create_from_file($from_file);
 
@@ -37,6 +46,8 @@ class image
 		{
 			case 'width':
 			case 'height':
+			case 'font_size':
+			case 'line_height':
 				if(intval($value) )
 					$this->$param = intval($value);
 				break;
@@ -51,6 +62,15 @@ class image
 					$this->format = $value;
 					$this->mime = "image/$value";
 				}
+				break;
+			case 'font':
+				// you can only use OTF fonts if it contains TTF outlines, otherwise the font may not work at all with GD
+				if(file_exists($value) && preg_match('/(\.[to]tf)$/', $value) )
+					$this->font = $value;
+				break;
+			case 'foreground':
+				if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/', $value, $matches))
+					$this->$param = $this->add_colour($matches[1]);
 				break;
 		}
 	}
@@ -367,6 +387,99 @@ class image
 					break;
 			}
 		}
+	}
+	
+	public function write($text='', $x=0, $y=0, $width=0)
+	{
+		if(!strlen($text))
+			return false;
+		
+		// break the text into individual words, and make an empty array to hold the widths of each word
+		$words = array_merge(explode(' ', $text), array(' '));	// add in the space so that we also calculate the width of that too
+		$height = 0;
+		$widths = array();
+		
+		for($i=0; $i<count($words); $i++)
+		{
+			$textbox = imagettfbbox($this->font_size, 0, $this->font, $words[$i]);
+			$widths[$words[$i]] = $textbox[2] - $textbox[0];
+		
+			// this is necessary, because different words will create different heights due to parts of letters being below the baseline, etc
+			$temp_height = $textbox[3] - $textbox[5];
+			if($temp_height > $height)
+				$height = $temp_height;
+		}
+		
+		if($width)
+		{
+			// assume the text will need to be broken across several lines
+			$lines = array();	// array to hold each line of the heading
+			$current_line = 0;	// pointer indicating the current line
+			$running_total = 0;	// running width for each line of text
+			
+			for($i=0; $i<count($words)-1; $i++)	// the -1 ensures the last space in the words width array is not added to the resulting string
+			{
+				if(!isset($lines[$current_line]))
+					$lines[$current_line] = '';
+				
+				if(($running_total + $widths[$words[$i]] + $widths[' ']) < $width)
+				{
+					$lines[$current_line] .= $words[$i] . ' ';
+					$running_total += $widths[$words[$i]];
+				}
+				else
+				{
+					$lines[$current_line] = rtrim($lines[$current_line]);	// trim the trailing space from the last line
+					
+					$current_line ++;
+					$lines[$current_line] = $words[$i] . ' ';
+					$running_total = $widths[$words[$i]];
+				}
+			}
+			$lines[$current_line] = rtrim($lines[$current_line]);	// trim the trailing space from the last line
+			
+			$line_height = $this->line_height?$this->line_height:$height;	// set the line height to use - this uses the parameter set by the user code if not 0, otherwise it sets it to what it determines the height of the text is
+			
+			for($i=0; $i<count($lines); $i++)
+				imagettftext($this->image, $this->font_size, 0, $x, ($line_height*$i)+$y, $this->foreground, $this->font, $lines[$i]);
+
+		}
+		else
+			imagettftext($this->image, $this->font_size, 0, $x, $y, $this->foreground, $this->font, $text);
+	}
+	
+	private function add_colour($colour)
+	{
+		$alpha = 0;
+		$original_colour = $colour;
+		
+		// this deals with the colours coming in various different formats: #rgb, #rgba, #rrggbb, and #rrggbbaa
+		switch(strlen($colour) )
+		{
+			case 3:
+				$colour = preg_replace('/^([0-9a-z])([0-9a-z])([0-9a-z])$/', '$1$1$2$2$3$3', $colour);
+				break;
+			case 4:
+				$alpha = intval(floor(hexdec(substr($colour, -1).substr($colour, -1) ) / 2 ) );
+				$colour = preg_replace('/^([0-9a-z])([0-9a-z])([0-9a-z])([0-9a-z])$/', '$1$1$2$2$3$3', $colour);
+				break;
+			case 8:
+				$alpha = intval(floor(hexdec(substr($colour, -2) ) / 2 ) );
+				$colour = substr($colour, 0, 6);
+				break;
+		}
+
+		if(!array_key_exists($original_colour, $this->colours))
+		{
+			$rgb = sscanf($colour, '%2x%2x%2x');
+			
+			if($alpha)
+				$this->colours[$original_colour] = imagecolorallocatealpha($this->image, $rgb[0], $rgb[1], $rgb[2], $alpha);
+			else
+				$this->colours[$original_colour] = imagecolorallocate($this->image, $rgb[0], $rgb[1], $rgb[2]);
+		}
+
+		return $this->colours[$original_colour];
 	}
 	
 	private function constrain_int($int, $min=-255, $max=255)
