@@ -41,6 +41,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 * [Helpers](#helpers)
 	* [File Helper](#helpers-file)
 	* [Image Helper](#helpers-image)
+		* [Image Helper Write Method](#helpers-image-write)
 		* [Image Helper Effects Filters](#helpers-image-effects)
 * [Licensing](#licensing)
 
@@ -693,8 +694,36 @@ resize($width, $height, $type='regular');
 
 output($filename=null); // this outputs the image to the browser. Passing in a path and filename as a string argument will instead save the image to that location
 
+write($text='', $x=0, $y=0, $width=0); // adds text to an image using the existing font, font size, and foreground colour
+
 effect($filter, $params = array(), $repeat = 1 ); // this applies a filter effect to the image, the list of effects and their parameters is below
 ```
+
+####<a name="helpers-image-write"></a>Image Helper Write Method
+The <code>write()</code> method is a little more complicated than some of the other image methods. First, you can set many of the font details by setting the member variables directly:
+
+```php
+$image->font = MAVERICK_BASEDIR.'views/LiberationSerif-Regular.ttf';
+$image->foreground = '#fff';
+$image->font_size = 18;
+$image->line_height = 18;
+```
+
+The only requirements are:
+
+* <code>font</code> must be a path to a valid ttf file. Some otf fonts can be used, but only if they contain ttf outlines
+* <code>font_size</code> and <code>line_height</code> must be valid integers, representing the pixel sizes respectively
+* <code>foreground</code> can be any valid hex colour value in the form:
+	* &#35;rgb
+	* &#35;rgba
+	* &#35;rrggbb
+	* &#35;rrggbbaa
+
+The <code>write()</code> method itself takes 4 arguments (all optional):
+
+* <code>$text</code> - the string to use, if empty the method does nothing and returns false
+* <code>$x</code> and <code>$y</code> - the coordinates of the bottom left position for the line of text (or first line of text when forcing multi-line text)
+* <code>$width</code> - the width of the text block to fit the text into. If this is 0 or not specified, the text will be all on one line. If it is a positive value, the text will wrap onto multiple lines in order to fit the width of the bounding box
 
 ####<a name="helpers-image-effects"></a>Image Helper Effects Filter
 
