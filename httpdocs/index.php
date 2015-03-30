@@ -48,7 +48,7 @@ function __autoload($class)
 
 		set_include_path(MAVERICK_BASEDIR . 'vendors');
 
-		require $fileName;
+		require_once $fileName;
 	}
 }
 
