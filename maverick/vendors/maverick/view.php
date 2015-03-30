@@ -63,6 +63,11 @@ class view
 			$view = ob_get_contents();
 			ob_end_clean();
 
+			// this just stores the view if the config value is set to cache it
+			if($app->get_config('cache.on') !== false)
+				\maverick\cache::store($app->get_request_route_hash(), $view);
+			
+			
 			if($echo)
 				echo $view;
 			else

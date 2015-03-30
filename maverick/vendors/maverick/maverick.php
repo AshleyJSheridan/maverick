@@ -97,6 +97,15 @@ class maverick
 	
 	public function build()
 	{
+		// load from the cache if that is on and this is a GET request
+		if($this->get_config('cache.on') !== false && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET')
+		{
+			$view = \maverick\cache::fetch($this->get_request_route_hash());
+			
+			if($view)
+				die($view);
+		}
+		
 		if(strlen($this->get_config('config.route_preparser') ) )
 			$this->route_preparser();
 		
@@ -206,6 +215,12 @@ class maverick
 		}
 	}
 	
+	public function get_request_route_hash()
+	{
+		// this generates a hash from a combination of the $_GET values and the requested URL
+		return md5(implode($_GET) . (isset($_SERVER['REDIRECT_URL'])?$_SERVER['REDIRECT_URL']:$_SERVER['REQUEST_URI'] ) );
+	}
+
 	private function get_request_uri()
 	{
 		$this->requested_route = new \stdClass();
