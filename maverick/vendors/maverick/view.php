@@ -68,8 +68,6 @@ class view
 			else
 				return $view;
 		}
-		
-		return $v;
 	}
 
 	public function get_data($var)
