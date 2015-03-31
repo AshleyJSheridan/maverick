@@ -11,9 +11,7 @@ class cache
 		
 		// if apc is selected as the mechanism, but not available on the system, switch to file-based caching
 		if($app->get_config('cache.type') == 'apc' && function_exists('apc_fetch') )
-		{
-			var_dump('apc');
-		}
+			apc_add($key, $value, $cache_duration);
 		else
 		{
 			$cache_file = MAVERICK_BASEDIR . "cache/$key";
@@ -40,9 +38,7 @@ class cache
 		
 		// if apc is selected as the mechanism, but not available on the system, switch to file-based caching
 		if($app->get_config('cache.type') == 'apc' && function_exists('apc_fetch') )
-		{
-			var_dump('apc');
-		}
+			$contents = apc_fetch($key);
 		else
 		{
 			$cache_file = MAVERICK_BASEDIR . "cache/$key";
@@ -57,5 +53,27 @@ class cache
 		}
 		
 		return $contents;
+	}
+	
+	static function clear()
+	{
+		$app = \maverick\maverick::getInstance();
+		
+		// if apc is selected as the mechanism, but not available on the system, switch to file-based caching
+		if($app->get_config('cache.type') == 'apc' && function_exists('apc_fetch') )
+			apc_clear_cache('user');
+		else
+		{
+			$cache_dir = MAVERICK_BASEDIR . "cache";
+			
+			if($dh = opendir($cache_dir))
+			{
+				while (false !== ($file = readdir($dh)))
+				{
+					if(substr($file, 0, 1) != '.')
+						unlink("$cache_dir/$file");
+				}
+			}
+		}
 	}
 }
