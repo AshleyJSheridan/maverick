@@ -36,6 +36,7 @@ This documentation will instruct on how to get it set up on a server and how to 
 	* [Failure Messages](#failure-messages)
 	* [Displaying Errors](#displaying-errors)
 		* [Wrapping Tags Around Errors](#wrapping-tags-around-errors)
+* [Caching](#caching)
 * [Multiple Languages](#multiple-languages)
 * [Error Logging](#error-logging)
 * [Helpers](#helpers)
@@ -579,6 +580,23 @@ validator::get_all_errors(null, array('<span class="error">', '</span>'));
 ```
 
 When using the latter method, each error for the every field is wrapped with the given tags. You can still pass in the name of a field to this method to only retrieve errors for a specific field.
+
+## <a name="caching"></a>Caching
+MaVeriCk comes with support for APC or file-based caching, configured through the cache config file. The options within are obvious and well-commented.
+
+To force clear the cache there is a method to force clear the cache, but in order for it to work you must use it within the `index.php` file before the call to the `getInstance()` method, like this:
+
+```php
+require_once MAVERICK_BASEDIR . 'vendors/maverick/maverick.php';
+
+\maverick\cache::clear();	// insert this line here
+
+$app = \maverick\maverick::getInstance();
+//$app = maverick::getInstance();
+$app->build();
+```
+
+Alternatively, you can put it within any route that is called only via POST, as POST routes are not cached because they could change the server state.
 
 ##<a name="multiple-languages"></a>Multiple Languages
 MaVeriCk supports i18n language cultures using <code>gettext()</code> and <code>.po</code> files. Firstly, you need a config file called <code>lang.php</code> in your main config directory. The contents of the file should look like this:
