@@ -17,12 +17,12 @@ class main_controller extends base_controller
 	function form()
 	{
 		$elements = '{
-			"name":{"type":"text","label":"Name","class":"form_name","validation":["required","alpha"]},
-			"age":{"type":"number","label":"Age","class":"form_age","validation":["required","numeric","between:18:100"]},
-			"email":{"type":"email","label":"Email","class":"form_email","validation":["required","email"]},
-			"postcode":{"type":"text","label":"Postcode","class":"form_postcode","validation":["required","regex:/^([a-pr-uwyz][a-hk-y]{0,1}\\\d[\\\da-hjkst]{0,1} \\\d[abd-hjlnp-uw-z]{2})$/i"]},
-			"web_address":{"type":"text","label":"Web Address","class":"form_web_address","validation":["url"]},
-			"phone":{"type":"text","label":"Phone","class":"form_phone","validation":["phone"]}
+			"name":{"type":"text","label":"Name","class":"form_name","value":"John Smith","placeholder":"John Smith","validation":["required","alpha"]},
+			"age":{"type":"number","label":"Age","class":"form_age","placeholder":"42","validation":["required","numeric","between:18:100"]},
+			"email":{"type":"email","label":"Email","class":"form_email","placeholder":"email@test.com","validation":["required","email"]},
+			"postcode":{"type":"text","label":"Postcode","class":"form_postcode","placeholder":"w1 1ab","validation":["required","regex:/^([a-pr-uwyz][a-hk-y]{0,1}\\\d[\\\da-hjkst]{0,1} \\\d[abd-hjlnp-uw-z]{2})$/i"]},
+			"web_address":{"type":"text","label":"Web Address","class":"form_web_address","placeholder":"http://www.somesite.com","validation":["url"]},
+			"phone":{"type":"text","label":"Phone","class":"form_phone","placeholder":"0123456789","validation":["phone"]}
 		}';
 		$form = new \helpers\html\form('form', $elements);
 		

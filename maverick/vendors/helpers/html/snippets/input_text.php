@@ -1,0 +1,11 @@
+<input
+		type="text"
+		class="{{class}}"
+		id="{{id}}"
+		{{size}}
+		name="{{name}}"
+		value="{{value}}"
+		placeholder="{{placeholder}}"
+		{{required}}
+		pattern="{{regex}}"
+	/>

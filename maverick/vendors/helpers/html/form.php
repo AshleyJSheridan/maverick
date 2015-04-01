@@ -70,7 +70,19 @@ class form
 		switch($element->type)
 		{
 			case 'text':
-				$html .= "<input type=\"text\" name=\"\"/>";	// TODO: find a better way to do this, adding this sort of html through code like this seems very ugly
+			case 'number':
+				$snippet = __DIR__ . "/snippets/input_{$element->type}.php";	// TODO: allow this snippets directory to be overloaded with userland views
+				$html .= \helpers\html\html::load_snippet($snippet, array(
+					'class' => $element->class,
+					'id' => $element->id,
+					'name' => $element->name,
+					'value' => $element->value,
+					'placeholder' => $element->placeholder,
+					'required' => in_array('required', $element->validation)?'required="required"':'',
+				) );
+				
+				var_dump($element);
+
 				break;
 		}
 
@@ -96,13 +108,16 @@ class form_element
 	private $name;
 	private $label;
 	private $class;
+	private $id;
+	private $value;
+	private $placeholder;
 	private $validation = array();
 	
 	public function __construct($name, $element_obj)
 	{
 		$this->name = $name;
 		
-		foreach(array('type', 'name', 'label', 'class', 'validation') as $part)
+		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'placeholder', 'validation') as $part)
 		{
 			if(isset($element_obj->$part))
 				$this->$part = $element_obj->$part;
