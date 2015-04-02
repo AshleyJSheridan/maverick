@@ -35,7 +35,7 @@ class form
 					$this->enctype = $value;
 				break;
 			case 'labels':
-				if(in_array($value, array('wrap', 'wrap-after', 'before', 'after') ) )
+				if(in_array($value, array('wrap', 'wrap-after', 'before', 'after', 'none') ) )
 					$this->labels = $value;
 				break;
 		}
@@ -55,15 +55,14 @@ class form
 		
 		// build the form elements
 		foreach($this->elements as $element)
-			$html .= $this->render_element($element);
-		
-		
+			$html .= $this->render_element($element, (isset($element->labels)?$element->labels:$this->labels) );
+
 		$html .= '</form>';
 		
 		return $html;
 	}
 	
-	private function render_element($element)
+	private function render_element($element, $labels=null)
 	{
 		$html = '';
 		
@@ -71,13 +70,14 @@ class form
 		{
 			case 'text':
 			case 'number':
+			case 'email':
 				$snippet = __DIR__ . "/snippets/input_{$element->type}.php";	// TODO: allow this snippets directory to be overloaded with userland views
 				$html .= \helpers\html\html::load_snippet($snippet, array(
-					'class' => $element->class,
-					'id' => $element->id,
+					'class' => ($element->class)?"class=\"{$element->class}\"":'',
+					'id' => ($element->id)?"id=\"{$element->id}\"":'',
 					'name' => $element->name,
-					'value' => $element->value,
-					'placeholder' => $element->placeholder,
+					'value' => ($element->value)?"value=\"{$element->value}\"":'',
+					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
 					'required' => in_array('required', $element->validation)?'required="required"':'',
 				) );
 				
@@ -86,7 +86,20 @@ class form
 				break;
 		}
 
-		// TODO: add the labels in with sprintf call
+		if(!is_null($labels) && $labels != 'none')
+			$html = $this->wrap_element($element, $html, $labels);
+		
+		return $html;
+	}
+	
+	private function wrap_element($element, $element_html, $labels_type)
+	{
+		$snippet = __DIR__ . "/snippets/label_$labels_type.php";	// TODO: allow this snippets directory to be overloaded with userland views
+		$html = \helpers\html\html::load_snippet($snippet, array(
+			'label' => $element->label,
+			'element' => $element_html,
+			'id' => ($element->id)?$element->id:'',
+		) );
 		
 		return $html;
 	}

@@ -1,11 +1,11 @@
 <input
 		type="text"
-		class="{{class}}"
-		id="{{id}}"
+		{{class}}
+		{{id}}
 		{{size}}
 		name="{{name}}"
-		value="{{value}}"
-		placeholder="{{placeholder}}"
+		{{value}}
+		{{placeholder}}
 		{{required}}
-		pattern="{{regex}}"
+		{{regex}}
 	/>

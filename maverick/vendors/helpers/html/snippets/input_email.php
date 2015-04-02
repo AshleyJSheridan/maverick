@@ -1,7 +1,8 @@
 <input
-		type="number"
+		type="email"
 		{{class}}
 		{{id}}
+		{{size}}
 		name="{{name}}"
 		{{value}}
 		{{placeholder}}

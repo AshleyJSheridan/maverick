@@ -17,7 +17,7 @@ class main_controller extends base_controller
 	function form()
 	{
 		$elements = '{
-			"name":{"type":"text","label":"Name","class":"form_name","value":"John Smith","placeholder":"John Smith","validation":["required","alpha"]},
+			"name":{"type":"text","label":"Name","class":"form_name","id":"form_name","value":"John Smith","placeholder":"John Smith","validation":["required","alpha"]},
 			"age":{"type":"number","label":"Age","class":"form_age","placeholder":"42","validation":["required","numeric","between:18:100"]},
 			"email":{"type":"email","label":"Email","class":"form_email","placeholder":"email@test.com","validation":["required","email"]},
 			"postcode":{"type":"text","label":"Postcode","class":"form_postcode","placeholder":"w1 1ab","validation":["required","regex:/^([a-pr-uwyz][a-hk-y]{0,1}\\\d[\\\da-hjkst]{0,1} \\\d[abd-hjlnp-uw-z]{2})$/i"]},
@@ -25,6 +25,7 @@ class main_controller extends base_controller
 			"phone":{"type":"text","label":"Phone","class":"form_phone","placeholder":"0123456789","validation":["phone"]}
 		}';
 		$form = new \helpers\html\form('form', $elements);
+		$form->labels = 'before';
 		
 		$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
 	}
