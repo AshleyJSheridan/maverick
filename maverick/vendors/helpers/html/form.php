@@ -9,6 +9,7 @@ class form
 	private $action = null;
 	private $enctype = 'application/x-www-form-urlencoded';
 	private $labels = 'wrap';
+	private $novalidate = false;
 	
 	public function __construct($name, $elements = null)
 	{
@@ -38,6 +39,10 @@ class form
 				if(in_array($value, array('wrap', 'wrap-after', 'before', 'after', 'none') ) )
 					$this->labels = $value;
 				break;
+			case 'novalidate':
+				if(is_bool($value))
+					$this->$param = $value;
+				break;
 		}
 	}
 	
@@ -50,6 +55,8 @@ class form
 			if(!is_null($this->$form_attr) )
 				$html .= " $form_attr=\"{$this->$form_attr}\"";
 		}
+		$html .= ($this->novalidate)?' novalidate':'';
+		
 		$html .= '>';
 		
 		
@@ -66,12 +73,14 @@ class form
 	{
 		$html = '';
 		
+		$snippet = __DIR__ . "/snippets/input_{$element->type}.php";	// TODO: allow this snippets directory to be overloaded with userland views
+		
 		switch($element->type)
 		{
 			case 'text':
 			case 'number':
 			case 'email':
-				$snippet = __DIR__ . "/snippets/input_{$element->type}.php";	// TODO: allow this snippets directory to be overloaded with userland views
+			case 'hidden':
 				$html .= \helpers\html\html::load_snippet($snippet, array(
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
@@ -80,9 +89,40 @@ class form
 					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
 					'required' => in_array('required', $element->validation)?'required="required"':'',
 				) );
-				
-				var_dump($element);
-
+				break;
+			case 'submit':
+				$html .= \helpers\html\html::load_snippet($snippet, array(
+					'class' => ($element->class)?"class=\"{$element->class}\"":'',
+					'id' => ($element->id)?"id=\"{$element->id}\"":'',
+					'name' => $element->name,
+					'value' => ($element->value)?"value=\"{$element->value}\"":'',
+				) );
+				$labels = null;	// don't wrap the submit in a label
+				break;
+			case 'select':
+				$html .= \helpers\html\html::load_snippet($snippet, array(
+					'class' => ($element->class)?"class=\"{$element->class}\"":'',
+					'id' => ($element->id)?"id=\"{$element->id}\"":'',
+					'name' => $element->name,
+					'values' => \helpers\html\form_element::build_select_options($element->values, $element->name),
+				) );
+				break;
+			case 'checkbox':
+			case 'radio':
+				foreach($element->values as $value)
+				{
+					$element_html = \helpers\html\html::load_snippet($snippet, array(
+						'class' => ($element->class)?"class=\"{$element->class}\"":'',
+						'id' => ($element->id)?"id=\"{$element->id}\"":'',
+						'name' => $element->name,
+						'value' => $value,
+					) );
+					$fake_element = new \stdClass();
+					$fake_element->label = $value;
+					$fake_element->id = '';
+					$html .= $this->wrap_element($fake_element, $element_html, $labels);
+				}
+				$labels = "{$element->type}_group";
 				break;
 		}
 
@@ -123,6 +163,7 @@ class form_element
 	private $class;
 	private $id;
 	private $value;
+	private $values;
 	private $placeholder;
 	private $validation = array();
 	
@@ -130,7 +171,7 @@ class form_element
 	{
 		$this->name = $name;
 		
-		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'placeholder', 'validation') as $part)
+		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation') as $part)
 		{
 			if(isset($element_obj->$part))
 				$this->$part = $element_obj->$part;
@@ -141,5 +182,23 @@ class form_element
 	{
 		if(isset($this->$param))
 			return $this->$param;
+	}
+	
+	public static function build_select_options($options, $element_name)
+	{
+		$html = '';
+		
+		foreach($options as $option)
+		{
+			$selected = (isset($_REQUEST[$element_name]) && $_REQUEST[$element_name] == $option)?'selected="selected"':'';
+			
+			$snippet = __DIR__ . "/snippets/input_option.php";	// TODO: allow this snippets directory to be overloaded with userland views
+			$html .= \helpers\html\html::load_snippet($snippet, array(
+				'value' => $option,
+				'selected' => $selected,
+			) );
+		}
+		
+		return $html;
 	}
 }

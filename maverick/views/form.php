@@ -1,3 +1,4 @@
+<!--
 <form name="form" method="post">
 	<label>Name <input type="text" name="name"/><?php echo validator::get_first_error('name', array('<span class="error">', '</span>')); ?></label>
 	<label>Age <input type="text" name="age"/></label>
@@ -8,6 +9,7 @@
 	
 	<input type="submit" value="submit" name="submit"/>
 </form>
+-->
 
 <?php
 echo data::get('form')->render();

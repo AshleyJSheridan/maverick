@@ -12,6 +12,7 @@ class html
 	
 	public static function load_snippet($filename, $replacements)
 	{
+		//TODO: cache these views so that they don't require reading in the same files over and over
 		if(!file_exists($filename))
 			return false;
 		

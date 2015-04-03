@@ -20,7 +20,7 @@ class validator
 	public static function make($rules)
 	{
 		$v = validator::getInstance();
-		$app = maverick::getInstance();
+		$app = \maverick\maverick::getInstance();
 		
 		$v->reset();
 		
@@ -82,7 +82,7 @@ class validator
 	public static function run()
 	{
 		$v = validator::getInstance();
-		$app = maverick::getInstance();
+		$app = \maverick\maverick::getInstance();
 		
 		// run through the rules and apply them to any data that exists in the $_REQUEST array
 		foreach($v->rules as $field => $rules)
