@@ -69,7 +69,14 @@ class main_controller extends base_controller
 	
 	function home()
 	{
-		$data = content::get_all_from_test_table();
+		$list_json = '["a","b","c","d",[
+			1,2,3,[
+				"x","y","z"
+				],4,5
+			]
+			,"e","f","g"]';
+		$list_types = array('ul', 'ol', 'ul');
+		$data = new \helpers\html\lists($list_json, $list_types);
 
 		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->render();
 	}

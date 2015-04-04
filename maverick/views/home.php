@@ -1,5 +1,5 @@
 <?php
-var_dump(data::get('data'));
+echo(data::get('data'));
 
 
 echo _('test');
