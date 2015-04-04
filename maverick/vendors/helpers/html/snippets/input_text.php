@@ -9,3 +9,4 @@
 		{{required}}
 		{{regex}}
 	/>
+{{error}}

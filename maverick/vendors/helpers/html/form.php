@@ -69,7 +69,7 @@ class form
 		return $html;
 	}
 	
-	private function render_element($element, $labels=null)
+	private function render_element($element, $labels=null, $error_tags = array('<span class="error">', '</span>') )
 	{
 		$html = '';
 		
@@ -88,6 +88,7 @@ class form
 					'value' => ($element->value)?"value=\"{$element->value}\"":'',
 					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
 					'required' => in_array('required', $element->validation)?'required="required"':'',
+					'error' => \validator::get_first_error($element->name, $error_tags),
 				) );
 				break;
 			case 'submit':
@@ -105,6 +106,7 @@ class form
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
 					'name' => $element->name,
 					'values' => \helpers\html\form_element::build_select_options($element->values, $element->name),
+					'error' => \validator::get_first_error($element->name, $error_tags),
 				) );
 				break;
 			case 'checkbox':
@@ -116,6 +118,7 @@ class form
 						'id' => ($element->id)?"id=\"{$element->id}\"":'',
 						'name' => $element->name,
 						'value' => $value,
+						'error' => \validator::get_first_error($element->name, $error_tags),
 					) );
 					$fake_element = new \stdClass();
 					$fake_element->label = $value;

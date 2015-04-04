@@ -8,3 +8,4 @@
 		{{required}}
 		{{regex}}
 	/>
+{{error}}
