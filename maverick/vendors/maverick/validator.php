@@ -49,7 +49,7 @@ class validator
 
 			return $errors;
 		}
-		else
+		if(!$field)
 		{
 			if(count($wrapper)==2)
 			{
