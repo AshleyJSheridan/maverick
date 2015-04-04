@@ -36,8 +36,6 @@ class html
 			while (!feof($fh))
 				$contents .= fread($fh, 8192);
 			fclose($fh);
-			
-			var_dump($filename);
 		}
 		
 		$h->cached_snippets[$filename] = $contents;
