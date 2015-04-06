@@ -79,7 +79,7 @@ One advantage to keeping the config settings in separate files is that it allows
 At various points in your code, you may need to retrieve a specific config value. This can be done with the <code>get_config()</code> method of a <code>maverick</code> instance:
 
 ```php
-$maverick = maverick::getInstance();
+$maverick = \maverick\maverick::getInstance();
 
 $db = $maverick->get_config('db.database');
 ```
@@ -182,7 +182,7 @@ function lang_filter()
 			$_SERVER['REDIRECT_URL'] = '/' . substr($_SERVER['REDIRECT_URL'], 6);
 			
 		// return the language culture member variable on main app object
-		$app = maverick::getInstance();
+		$app = \maverick\maverick::getInstance();
 		$app->language_culture = "{$matches[1]}_" . strtoupper($matches[2]);
 	}
 }
@@ -592,7 +592,6 @@ require_once MAVERICK_BASEDIR . 'vendors/maverick/maverick.php';
 \maverick\cache::clear();	// insert this line here
 
 $app = \maverick\maverick::getInstance();
-//$app = maverick::getInstance();
 $app->build();
 ```
 

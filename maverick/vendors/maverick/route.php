@@ -21,7 +21,7 @@ class route
 	}
 	static function error($code, $action, $args=null)
 	{
-		$maverick = maverick::getInstance();
+		$maverick = \maverick\maverick::getInstance();
 		
 		$maverick->set_error_route(intval($code), route::get_full_action($action, $args));
 	}
@@ -29,7 +29,7 @@ class route
 	
 	private static function match_route($protocol, $route, $action, $args)
 	{
-		$maverick = maverick::getInstance();
+		$maverick = \maverick\maverick::getInstance();
 		
 		// return if a route has already been matched
 		if(isset($maverick->route))

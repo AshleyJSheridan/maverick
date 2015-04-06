@@ -5,7 +5,7 @@ class error
 	
 	static function show($message, $http_code=500)
 	{
-		$maverick = maverick::getInstance();
+		$maverick = \maverick\maverick::getInstance();
 		
 		if($maverick->get_config('config.debug'))
 		{
@@ -23,7 +23,7 @@ class error
 	
 	static function log($message, $show=false, $http_code=500)
 	{
-		$maverick = maverick::getInstance();
+		$maverick = \maverick\maverick::getInstance();
 		
 		//$caller = debug_backtrace();
 		if($maverick->get_config('config.error_detail'))

@@ -55,5 +55,4 @@ function __autoload($class)
 require_once MAVERICK_BASEDIR . 'vendors/maverick/maverick.php';
 
 $app = \maverick\maverick::getInstance();
-//$app = maverick::getInstance();
 $app->build();
