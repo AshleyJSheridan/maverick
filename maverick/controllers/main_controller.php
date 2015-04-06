@@ -62,7 +62,7 @@ class main_controller extends base_controller
 			$form = new \helpers\html\form('form', $elements);
 			$form->labels = 'wrap';
 			$form->novalidate = true;
-			
+
 			$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
 		}
 	}
@@ -77,8 +77,15 @@ class main_controller extends base_controller
 			,"e","f","g"]';
 		$list_types = array('ul', 'ol', 'ul');
 		$data = new \helpers\html\lists($list_json, $list_types);
-
-		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->render();
+		
+		$headers = array(
+				//'status' => 418,
+				//'content-type' => 'text/html',
+				//'content-type' => 'text/html; charset=UTF-8',
+				//'content-disposition' => 'attachment; filename="download.html"'
+				//'expires' => 'Sat, 26 Jul 1997 05:00:00 GMT',
+			);
+		$view = view::make('includes/template')->with('page', 'home')->with('data', $data)->headers($headers)->render(true, true);
 	}
 
 	function error()

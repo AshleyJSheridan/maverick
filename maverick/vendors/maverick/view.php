@@ -6,6 +6,7 @@ class view
 	static $_instance;
 	private $view = '';
 	private $data = array();
+	private $headers = array();
 	
 	private function __construct() {}
 	
@@ -47,7 +48,58 @@ class view
 		return $v;
 	}
 	
-	public static function render($echo=true)
+	public static function headers($headers = array() )
+	{
+		$v = view::getInstance();
+
+		if(!is_array($headers))
+			return false;
+		
+		foreach($headers as $header => $value)
+		{
+			// try  to validate the values passed to the most commonly used headers set
+			// the $header variable is converted to the correct case in most of these in-case
+			// several headers share the same validation constraints - it's a neatness thing!
+			switch($header)
+			{
+				case 'status':
+					if(intval($value))
+						$v->headers['status'] = $v->set_status_code($value);
+					break;
+				case 'content-type':
+					if(preg_match('/^[a-z0-9]+\/[a-z0-9]+(; charset=.+)?$/', $value) )
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				case 'content-disposition':
+					if(preg_match('/^attachment; ?filename=["\'][^"\']+["\']$/', $value) )
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				case 'cache-control':
+					if(preg_match('/^(public|private|no-cache(, must-revalidate)?|no-store|max-age=\d+(, (public|private))?(, must-revalidate)?)$/' ,$value) )
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				case 'pragma':
+					if(preg_match('/^(cache|no-cache)$/', $value) )
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				case 'expires':
+				case 'last-modified':
+					if($v->check_date($value) )
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				case 'content-length':
+					if(intval($value))
+						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+					break;
+				default:
+					$v->headers[$header] = $v->convert_header_case($header) . ": $value";
+			}
+		}
+
+		return $v;
+	}
+	
+	public static function render($echo=true, $with_headers=false)
 	{
 		$v = view::getInstance();
 		$app = \maverick\maverick::getInstance();
@@ -67,6 +119,11 @@ class view
 			if($app->get_config('cache.on') !== false)
 				\maverick\cache::store($app->get_request_route_hash(), $view);
 			
+			if($with_headers)
+			{
+				foreach($v->headers as $header)
+					header($header);
+			}
 			
 			if($echo)
 				echo $view;
@@ -92,6 +149,104 @@ class view
 			
 		foreach(array('data') as $var)
 			$v->$var = array();
+	}
+	
+	private function check_date($date_string)
+	{
+		$d = DateTime::createFromFormat('D, d M Y H:i:s e', $date_string);
+
+		return $d && $d->format('D, d M Y H:i:s e') == $date_string;
+	}
+	
+	private function convert_header_case($header)
+	{
+		return implode('-', array_map('ucfirst', explode('-', $header) ) );
+	}
+	
+	private function set_status_code($code)
+	{
+		$codes = array(
+			100 => 'Continue',
+			101 => 'Switching Protocols',
+			102 => 'Processing',
+			200 => 'OK',
+			201 => 'Created',
+			202 => 'Accepted',
+			203 => 'Non-Authoritative Information',
+			204 => 'No Content',
+			205 => 'Reset Content',
+			206 => 'Partial Content',
+			207 => 'Multi-Status',
+			208 => 'Already Reported',
+			209 => 'IM Used',
+			301 => 'Moved Permanently',
+			302 => 'Found',
+			303 => 'See Other',
+			304 => 'Not Modified',
+			305 => 'Use Proxy',
+			306 => 'Switch Proxy',
+			307 => 'Temporary Redirect',
+			308 => 'Permanent Redirect',
+			400 => 'Bad Request',
+			401 => 'Unauthorized',
+			402 => 'Payment Required',
+			403 => 'Forbidden',
+			404 => 'Not Found',
+			405 => 'Method Not Allowed',
+			406 => 'Not Acceptable',
+			407 => 'Proxy Authentication Required',
+			408 => 'Request Timeout',
+			409 => 'Conflict',
+			410 => 'Gone',
+			411 => 'Length Required',
+			412 => 'Precondition Failed',
+			413 => 'Request Entity Too Large',
+			414 => 'Request-URI Too Long',
+			415 => 'Unsupported Media Type',
+			416 => 'Requested Range Not Satisfiable',
+			417 => 'Expectation Failed',
+			418 => 'I\'m a teapot',
+			419 => 'Authentication Timeout',
+			420 => 'Method Failure',
+			421 => 'Enhance Your Calm',
+			422 => 'Unprocessable Entity',
+			423 => 'Locked',
+			424 => 'Failed Dependency',
+			426 => 'Upgrade Required',
+			428 => 'Precondition Required',
+			429 => 'Too Many Requests',
+			431 => 'Request Header Fields Too Large',
+			440 => 'Login Timeout',
+			444 => 'No Response',
+			449 => 'Retry With',
+			450 => 'Blocked by Windows Parental Controls',
+			451 => 'Unavailable For Legal Reasons',
+			494 => 'Request Header Too Large',
+			495 => 'Cert Error',
+			496 => 'No Cert',
+			497 => 'HTTP to HTTPS',
+			498 => 'Token expired/invalid',
+			499 => 'Client Closed Request',
+			500 => 'Internal Server Error',
+			501 => 'Not Implemented',
+			502 => 'Bad Gateway',
+			503 => 'Service Unavailable',
+			504 => 'Gateway Timeout',
+			505 => 'HTTP Version Not Supported',
+			506 => 'Variant Also Negotiates',
+			507 => 'Insufficient Storage',
+			508 => 'Loop Detected',
+			509 => 'Bandwidth Limit Exceeded',
+			510 => 'Not Extended',
+			511 => 'Network Authentication Required',
+			598 => 'Network read timeout error',
+			599 => 'Network connect timeout error',
+ 		);
+		
+		if(isset($codes[$code]))
+			return "{$_SERVER["SERVER_PROTOCOL"]} $code {$codes[$code]}";
+		else
+			return $this->set_status_code (200);
 	}
 
 	private function set_view($view)
