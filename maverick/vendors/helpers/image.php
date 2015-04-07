@@ -1,6 +1,9 @@
 <?php
 namespace helpers;
 
+/**
+ * an image helper class allowing creation, resizing, text overlays and image effects
+ */
 class image
 {
 	private $width = 100;
@@ -15,6 +18,14 @@ class image
 	private $colours = array();
 	private $foreground = '';
 
+	/**
+	 * generates the image object, either from a file, or using the supplied parameters
+	 * @param string $from_file the path to an image to use as the basis for this object
+	 * @param int $width the width in pixels to use for a new image
+	 * @param int $height the height in pixels to use for a new image
+	 * @param string $format the type of image to generate, either jpg, gif, or png
+	 * @return GD_ImageResource|bool
+	 */
 	public function __construct($from_file=null, $width=100, $height=100, $format='jpg')
 	{
 		// set some defaults here as we can't use the string concatenator or method calls in the initial variable initalisation
@@ -40,6 +51,11 @@ class image
 		return (!empty($this->image))?$this:false;
 	}
 	
+	/**
+	 * set various member variables for the image object using limiting constraints
+	 * @param string $param the name of the variable to set
+	 * @param string $value the value to set the variable to
+	 */
 	public function __set($param, $value)
 	{
 		switch($param)
@@ -75,6 +91,12 @@ class image
 		}
 	}
 	
+	/**
+	 * add an image effect to the image
+	 * @param string $filter the name of the effect filter to apply
+	 * @param array $params an optional list of parameters to supply the image effect - some effects require up to 4 parameters to be set
+	 * @param int $repeat the number of times to repeat this filter, e.g. to make it stronger
+	 */
 	public function effect($filter, $params = array(), $repeat = 1 )
 	{
 		if(!is_array($params)) $params = (array)$params;	// force the params to be an array if they're not already
@@ -255,6 +277,14 @@ class image
 		}
 	}
 	
+	/**
+	 * resize an image to a specified width and height
+	 * this method will return false if it determines that no resize will occur due to the passed parameters
+	 * @param string|int $width a width either expressed as pixels, a percentage, or the strings 'auto' or 'nochange'
+	 * @param string|int $height a height either expressed as pixels, a percentage, or the strings 'auto' or 'nochange'
+	 * @param string $type how the resize should occur - regular will resize and distort the image, crop will resize and crop parts of the image that do not fit
+	 * @return boolean
+	 */
 	public function resize($width, $height, $type='regular')
 	{
 		$type = in_array($type, array('crop', 'regular') )?$type:'regular';
@@ -350,6 +380,11 @@ class image
 		}
 	}
 	
+	/**
+	 * outputs the image either to the standard output stream or a file
+	 * if a filename is not specified, then the appropriate content type headers will be set and the image will be output
+	 * @param null|string $filename whether or not to save this image or dump it to the standard output stream
+	 */
 	public function output($filename=null)
 	{
 		if(empty($filename))
@@ -389,6 +424,14 @@ class image
 		}
 	}
 	
+	/**
+	 * write text onto the image using the specified parameters and the font settings set on the image object
+	 * @param string $text the message to write onto the image
+	 * @param int $x the x position of the bottom left pixel of the text (or first line of text in the case of multi-line text)
+	 * @param int $y the y posiiton in pixels of the line of text (or text box for multi-line text)
+	 * @param int $width the width of the text box - if this is 0, then the text will be written out on a single line and will not wrap
+	 * @return boolean
+	 */
 	public function write($text='', $x=0, $y=0, $width=0)
 	{
 		if(!strlen($text))
@@ -448,6 +491,11 @@ class image
 			imagettftext($this->image, $this->font_size, 0, $x, $y, $this->foreground, $this->font, $text);
 	}
 	
+	/**
+	 * add a colour resource to the image object
+	 * @param string $colour the hex string representation of the colour as one of: #rgb, #rgba, #rrggbb, and #rrggbbaa
+	 * @return int a colour identifier
+	 */
 	private function add_colour($colour)
 	{
 		$alpha = 0;
@@ -482,6 +530,13 @@ class image
 		return $this->colours[$original_colour];
 	}
 	
+	/**
+	 * constrains a number to a range of values - used internally by the filter effects as different filters accept different ranges
+	 * @param int $int the number to constrain
+	 * @param int $min the minimum value
+	 * @param int $max the maximum value
+	 * @return int
+	 */
 	private function constrain_int($int, $min=-255, $max=255)
 	{
 		if($int < $min)
@@ -492,6 +547,11 @@ class image
 		return $int;
 	}
 	
+	/**
+	 * generate an image resource from an already existing image
+	 * if the image cannot be read by GD, then do nothing
+	 * @param string $from_file the path to an existing image
+	 */
 	private function create_from_file($from_file)
 	{
 		// only proceed if the file details can be read by GD
@@ -517,7 +577,13 @@ class image
 			}
 		}
 	}
-		
+	
+	/**
+	 * determine a dimension for use with an image resize
+	 * @param string|int $input_val the input dimension to determine as pixels
+	 * @param int $type the pixel value to use as a guide for calculating this dimension
+	 * @return int
+	 */
 	private function set_dimension($input_val, $type)
 	{
 		$return_val = 0;
@@ -539,6 +605,11 @@ class image
 	}
 
 	// custom image effect filters - they must all start with custom_ in their name
+	
+	/**
+	 * a custom image effect filter to create a pixellated image using round pixels
+	 * @param int $blocksize
+	 */
 	private function custom_round_pixelate($blocksize)
 	{
 		$imagex = imagesx($this->image);
@@ -554,6 +625,10 @@ class image
 		}
 	}
 	
+	/**
+	 * a custom image effect filter to create a scatter effect of the pxels in the image
+	 * @param int $dist
+	 */
 	private function custom_scatter($dist)
 	{
 		$imagex = imagesx($this->image);
@@ -581,6 +656,10 @@ class image
 		}
 	}
 	
+	/**
+	 * a custom image effect filter to add white noise to the image - higher values is more noise
+	 * @param int $diff
+	 */
 	private function custom_noise($diff)
 	{
 		$imagex = imagesx($this->image);
@@ -614,6 +693,12 @@ class image
 		}
 	}
 	
+	/**
+	 * a custom image effect filter to create an oil painting effect
+	 * @param int $strength the strength of the effect
+	 * @param int $diff how much random difference to apply to the colours used
+	 * @param int $brushsize the size of the brush to use in pixels
+	 */
 	private function custom_oil($strength, $diff, $brushsize)
 	{
 		$imagex = imagesx($this->image);

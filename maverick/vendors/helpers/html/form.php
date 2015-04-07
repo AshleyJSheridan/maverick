@@ -1,6 +1,9 @@
 <?php
 namespace helpers\html;
 
+/**
+ * a class to render an html form including all of its elements and errors (if the form is posted)
+ */
 class form
 {
 	private $elements = array();
@@ -11,6 +14,26 @@ class form
 	private $labels = 'wrap';
 	private $novalidate = false;
 	
+	/**
+	 * basic constructor for the form html object
+	 * @param string $name the name of the form
+	 * @param string $elements a json formatted string of form elements - the format for which is outlined below:
+	 * 
+	 *	{
+	 *		"title":{"type":"select","label":"Title","class":"form_title","id":"form_title","values":["Mr","Mrs","Miss","Other"],"validation":["required"]},
+	 *		"name":{"type":"text","label":"Name","class":"form_name","id":"form_name","value":"John Smith","placeholder":"John Smith","validation":["required","alpha"]},
+	 *		"age":{"type":"number","label":"Age","class":"form_age","placeholder":"42","validation":["required","numeric","between:18:100"]},
+	 *		"email":{"type":"email","label":"Email","class":"form_email","placeholder":"email@test.com","validation":["required","email"]},
+	 *		"postcode":{"type":"text","label":"Postcode","class":"form_postcode","placeholder":"w1 1ab","validation":["required","regex:/^([a-pr-uwyz][a-hk-y]{0,1}\\\d[\\\da-hjkst]{0,1} \\\d[abd-hjlnp-uw-z]{2})$/i"]},
+	 *		"web_address":{"type":"text","label":"Web Address","class":"form_web_address","placeholder":"http://www.somesite.com","validation":["url"]},
+	 *		"phone":{"type":"text","label":"Phone","class":"form_phone","placeholder":"0123456789","validation":["phone"]},
+	 *		"colour":{"type":"radio","label":"Favourite Colour","class":"form_colour","values":["Red","Blue","Green","Yellow","Black"]},
+	 *		"submit":{"type":"submit","value":"Submit","class":"form_submit"}
+	 *	}
+	 * 
+	 * each element is a name object with a series of parameters for that item, including type, value (or values for things like checkboxes and select lists,)
+	 * class, id, etc. 
+	 */
 	public function __construct($name, $elements = null)
 	{
 		$this->name = $name;
@@ -19,6 +42,11 @@ class form
 			$this->set_elements ($elements);
 	}
 	
+	/**
+	 * a magic setter for the form html object
+	 * @param string $param the name of the element to set
+	 * @param string $value the value to set - which will be subject to certain constraints per element
+	 */
 	public function __set($param, $value)
 	{
 		switch($param)
@@ -46,6 +74,10 @@ class form
 		}
 	}
 	
+	/**
+	 * generates the html for the form object using the options set on the object itself
+	 * @return string
+	 */
 	public function render()
 	{
 		// build the main form tag
@@ -69,6 +101,13 @@ class form
 		return $html;
 	}
 	
+	/**
+	 * generates the html for an individual form element using a template file for that form element type
+	 * @param \helpers\html\form_element $element the form element object
+	 * @param string $labels a string representing the position of the element label in relation to the element
+	 * @param array $error_tags an array of two strings which should be used to wrap errors when the form is posted, defaults to a span with an error class
+	 * @return string
+	 */
 	private function render_element($element, $labels=null, $error_tags = array('<span class="error">', '</span>') )
 	{
 		$html = '';
@@ -135,6 +174,13 @@ class form
 		return $html;
 	}
 	
+	/**
+	 * add a label to a form element, using the specified type of label layout and using the corresponding template file
+	 * @param \helpers\html\form_element $element the form element object
+	 * @param string $element_html the rendered html of the element
+	 * @param string $labels_type the template to use for the label
+	 * @return string
+	 */
 	private function wrap_element($element, $element_html, $labels_type)
 	{
 		$snippet = __DIR__ . "/snippets/label_$labels_type.php";	// TODO: allow this snippets directory to be overloaded with userland views
@@ -147,6 +193,12 @@ class form
 		return $html;
 	}
 	
+	/**
+	 * add the form elements to the form, generating an form element object for each element
+	 * returns false if a$elements is not an object
+	 * @param \stdClass $elements an object generated from a json decoded string representing all the form elements for the form
+	 * @return boolean
+	 */
 	private function set_elements($elements)
 	{
 		if(!is_object($elements))
@@ -158,6 +210,9 @@ class form
 	}
 }
 
+/**
+ * a class for individual form elements to be attached to a form
+ */
 class form_element
 {
 	private $type;
@@ -170,6 +225,11 @@ class form_element
 	private $placeholder;
 	private $validation = array();
 	
+	/**
+	 * constructor for the form element objects
+	 * @param string $name the name for this form element
+	 * @param \stdClass $element_obj the json decoded object representing a form element
+	 */
 	public function __construct($name, $element_obj)
 	{
 		$this->name = $name;
@@ -181,12 +241,23 @@ class form_element
 		}
 	}
 	
+	/**
+	 * getter method for the form element object
+	 * @param string $param the name of the member variable to fetch
+	 * @return mixed
+	 */
 	public function __get($param)
 	{
 		if(isset($this->$param))
 			return $this->$param;
 	}
 	
+	/**
+	 * a static method to build a list of select list options using a template and return that list as an html string
+	 * @param array $options a list of values for the select list
+	 * @param string $element_name the name of the select list element - used to determine if this should be marked as selected in the rendered html or not (e.g. for a form posted with errors)
+	 * @return string
+	 */
 	public static function build_select_options($options, $element_name)
 	{
 		$html = '';

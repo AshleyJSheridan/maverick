@@ -1,6 +1,9 @@
 <?php
 namespace maverick;
 
+/**
+ * the main database class, which just handles as a factory for the other database classes
+ */
 class db
 {
 	private function __construct() {}

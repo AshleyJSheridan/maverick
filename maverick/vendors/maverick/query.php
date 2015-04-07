@@ -1,6 +1,9 @@
 <?php
 namespace maverick;
 
+/**
+ * the main query builder class
+ */
 class query
 {
 	static $_instance;
@@ -21,6 +24,11 @@ class query
 	
 	private function __clone() {}
 	
+	/**
+	 * returns the singleton of this query class
+	 * @param bool $reset an optional argument that determines whether or not to blank this instance out for a new query
+	 * @return \maverick\query
+	 */
 	public static function getInstance($reset=false)
 	{
 		if($reset)
@@ -39,6 +47,10 @@ class query
 		return self::$_instance;
 	}
 	
+	/**
+	 * get all generated queries created with this class
+	 * @return array
+	 */
 	public function get_queries()
 	{
 		$q = query::getInstance();
@@ -46,11 +58,21 @@ class query
 		return $q->queries;
 	}
 	
+	/**
+	 * set the table to use in the FROM clause
+	 * @param string $table
+	 */
 	public function set_from_table($table)
 	{
 		$this->set_param('from', $table);
 	}
 	
+	/**
+	 * creates a standard JOIN clause
+	 * @param string $table the table to join
+	 * @param array $on the conditions on which to join
+	 * @return \maverick\query
+	 */
 	public static function leftJoin($table, $on)
 	{
 		$q = query::getInstance();
@@ -60,6 +82,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates a RIGHT JOIN clause
+	 * @param string $table the table to join
+	 * @param array $on the conditions on which to join
+	 * @return \maverick\query
+	 */
 	public static function rightJoin($table, $on)
 	{
 		$q = query::getInstance();
@@ -69,6 +97,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates an OUTER JOIN clause
+	 * @param string $table the table to join
+	 * @param array $on the conditions on which to join
+	 * @return \maverick\query
+	 */
 	public static function outerJoin($table, $on)
 	{
 		$q = query::getInstance();
@@ -78,6 +112,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates a WHERE IN clause
+	 * @param string $field the field to WHERE
+	 * @param array $values the list of values to IN
+	 * @return \maverick\query
+	 */
 	public static function whereIn($field, $values)
 	{
 		$q = query::getInstance();
@@ -90,6 +130,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create a WHERE IN ... OR clause
+	 * @param string $field the field to WHERE
+	 * @param array $values the list of values to IN
+	 * @return \maverick\query
+	 */
 	public static function whereInOr($field, $values)
 	{
 		$q = query::getInstance();
@@ -102,6 +148,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create a WHERE NOT IN clause
+	 * @param string $field the field to WHERE NOT
+	 * @param array $values the list of values to IN
+	 * @return \maverick\query
+	 */
 	public static function whereNotIn($field, $values)
 	{
 		$q = query::getInstance();
@@ -114,6 +166,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates a wHERE NOT IN ... OR clause
+	 * @param string $field the field to WHERE NOT
+	 * @param array $values the list of values to IN
+	 * @return \maverick\query
+	 */
 	public static function whereNotInOr($field, $values)
 	{
 		$q = query::getInstance();
@@ -126,6 +184,13 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates a WHERE clause
+	 * @param string $field the field to WHERE
+	 * @param array $condition the conditions to create the WHERE on
+	 * @param mixed $value the value(s) to use in the WHERE
+	 * @return \maverick\query
+	 */
 	public static function where($field, $condition, $value)
 	{
 		$q = query::getInstance();
@@ -138,6 +203,13 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create a WHERE ... OR clause
+	 * @param string $field the field to WHERE
+	 * @param array $condition the conditions to create the WHERE on
+	 * @param mixed $value the value(s) to use in the WHERE
+	 * @return \maverick\query
+	 */
 	public static function whereOr($field, $condition, $value)
 	{
 		$q = query::getInstance();
@@ -150,6 +222,11 @@ class query
 		return $q;
 	}
 
+	/**
+	 * create a GROUP BY clause
+	 * @param string $field the field to group by
+	 * @return \maverick\query
+	 */
 	public static function groupBy($field)
 	{
 		$q = query::getInstance();
@@ -161,6 +238,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create an ORDER BY clause
+	 * @param string $field the field to order by
+	 * @param string $direction the direction to order results
+	 * @return \maverick\query
+	 */
 	public static function orderBy($field, $direction='asc')
 	{
 		$q = query::getInstance();
@@ -176,6 +259,11 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create a SELECT clause
+	 * @param array $fields the fields to fetch
+	 * @return \maverick\query
+	 */
 	public static function get($fields=array('*'))
 	{
 		$q = query::getInstance();
@@ -196,6 +284,11 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create an INSERT clause
+	 * @param array $data the data to insert
+	 * @return boolean|\maverick\query
+	 */
 	public static function insert($data)
 	{
 		$q = query::getInstance();
@@ -210,6 +303,11 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * creates an UPDATE clause
+	 * @param array $data the data to use in the update
+	 * @return boolean|\maverick\query
+	 */
 	public static function update($data)
 	{
 		$q = query::getInstance();
@@ -224,6 +322,10 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * create a DELETE clause
+	 * @return \maverick\query
+	 */
 	public static function delete()
 	{
 		$q = query::getInstance();
@@ -233,6 +335,11 @@ class query
 		return $q;
 	}
 
+	/**
+	 * builds a query, executes it, and returns the results of the query
+	 * @param string $type the type of query being executed
+	 * @return boolean
+	 */
 	private function result($type)
 	{
 		$maverick = \maverick\maverick::getInstance();
@@ -309,6 +416,12 @@ class query
 		$q->results = $results;
 	}
 	
+	/**
+	 * compiles the list of updates, generates that part of the query string and 
+	 * adds values to be escaped into the $params array
+	 * @param array $data the data to use in the UPDATE
+	 * @return array
+	 */
 	private function compile_updates($data)
 	{
 		$update_string = '';
@@ -329,6 +442,12 @@ class query
 		return array($update_string, $params);
 	}
 
+	/**
+	 * compiles the list of inserts, generates that part of the query string and 
+	 * adds values to be escaped into the $params array
+	 * @param array $data the data to use in the INSERT
+	 * @return array
+	 */
 	private function compile_inserts($data)
 	{
 		$insert_string = '';
@@ -357,7 +476,13 @@ class query
 		
 		return array($insert_string, $params);
 	}
-		
+	
+	/**
+	 * compile the joins, create those parts of the query string and adds any
+	 * values to be parameterised into the $params array
+	 * @param array $joins the array of joins
+	 * @return array
+	 */
 	private function compile_joins($joins)
 	{
 		$join_string = '';
@@ -401,6 +526,12 @@ class query
 		return array($join_string, $params);
 	}
 	
+	/**
+	 * compile the wheres, create those parts of the query string and adds any
+	 * values to be parameterised into the $params array
+	 * @param array $wheres the array of where clauses
+	 * @return array
+	 */
 	private function compile_wheres($wheres)
 	{
 		$where_string = '';
@@ -457,6 +588,12 @@ class query
 		return array($where_string, $params);
 	}
 	
+	/**
+	 * compile the group bys, create those parts of the query string and adds any
+	 * values to be parameterised into the $params array
+	 * @param array $group_bys the array of group by clauses
+	 * @return array
+	 */
 	private function compile_group_bys($group_bys)
 	{
 		$group_by_string = '';
@@ -478,6 +615,12 @@ class query
 		return array($group_by_string, $params);
 	}
 
+	/**
+	 * compile the order bys, create those parts of the query string and adds any
+	 * values to be parameterised into the $params array
+	 * @param array $order_bys the array of order by clauses
+	 * @return array
+	 */
 	private function compile_order_bys($order_bys)
 	{
 		$order_by_string = '';
@@ -501,11 +644,23 @@ class query
 		return array($order_by_string, $params);
 	}
 
+	/**
+	 * get the results from an executed query
+	 * @return mixed
+	 */
 	public function fetch()
 	{
 		return $this->results;
 	}
 	
+	/**
+	 * adds a where clause to the query object
+	 * @param string $condition the condition to WHERE on
+	 * @param string $field the field to WHERE on
+	 * @param mixed $value the value to WHERE on
+	 * @param string $type the type of WHERE, either 'and' or 'or'
+	 * @return \maverick\query
+	 */
 	private function add_where($condition, $field, $value, $type='and')
 	{
 		$q = query::getInstance();
@@ -523,6 +678,13 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * add a join clause to the query object
+	 * @param string $type the type of join, e.g. LEFT, RIGHT, etc
+	 * @param string $table the table to join
+	 * @param array $on the join conditions
+	 * @return \maverick\query
+	 */
 	private function join($type, $table, $on)
 	{
 		$q = query::getInstance();
@@ -542,6 +704,12 @@ class query
 		return $q;
 	}
 	
+	/**
+	 * add an ON clause to the query object and return an array of consistent structure
+	 * to use throughout the rest of the class
+	 * @param array $on the ON conditions
+	 * @return array
+	 */
 	private function on($on)
 	{
 		$ons = array();
@@ -563,11 +731,22 @@ class query
 		return $ons;
 	}
 	
+	/**
+	 * set a member variable on the query class
+	 * @todo why am I doing this and not using a magic setter here? it's only called in one place!
+	 * @param string $param the variable to set
+	 * @param string $value the value to set it to
+	 */
 	private function set_param($param, $value)
 	{
 		$this->$param = $value;
 	}
 	
+	/**
+	 * verify that a join condition is in the safe set of allowed join conditions
+	 * @param string $condition the condition to check
+	 * @return bool
+	 */
 	private function check_join_condition($condition)
 	{
 		return in_array($condition, $this->join_conditions);

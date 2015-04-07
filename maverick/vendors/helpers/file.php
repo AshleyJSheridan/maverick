@@ -1,16 +1,29 @@
 <?php
 namespace helpers;
 
+/**
+ * a file helper class to deal with providing information about files and directories
+ */
 class file
 {
 	private $path = '';
 	private $magic_file = '';
 	
+	/**
+	 * creates the file object from a path
+	 * @param string $path the path to use for this file object
+	 */
 	function __construct($path='')
 	{
 		$this->path = $path;
 	}
 	
+	/**
+	 * magic setter for the file object
+	 * @param string $name the name of the member variable to set
+	 * @param string $value the value to set the member variable to
+	 * @return boolean
+	 */
 	function __set($name, $value)
 	{
 		if(in_array($name, array('path', 'magic_file') ) )
@@ -22,6 +35,11 @@ class file
 			return false;
 	}
 	
+	/**
+	 * returns a string determining the type of object this represents - returns false if the path is invalid
+	 * @param bool $no_symbolic_check whether or not to check if this file/directory is also a symbolic link
+	 * @return boolean|string
+	 */
 	function type($no_symbolic_check = false)
 	{
 		if(!file_exists($this->path))
@@ -43,6 +61,13 @@ class file
 		}
 	}
 	
+	/**
+	 * returns the size of the file/directory
+	 * if the file object points to a directory and the host system is Linux (for example), 
+	 * the size will represent the size that that directory only takes on disk, and not its contents. This is typically something like 4096 bytes
+	 * @param bool $human_size whether or not to represent the size in human-readable terms rather than just bytes
+	 * @return type
+	 */
 	function size($human_size = false)
 	{
 		$bytes = filesize($this->path);
@@ -53,6 +78,13 @@ class file
 			return self::human_size($bytes);
 	}
 	
+	/**
+	 * generate a directory tree as a multi-dimensional array using the path set in the file object
+	 * a path can be supplied in the call to this method, but typically that is reserved for the method 
+	 * to use when calling itself on sub-directories
+	 * @param type $dir
+	 * @return array
+	 */
 	function tree($dir=false)
 	{
 		$path = ($dir)?$dir:$this->path;
@@ -78,6 +110,10 @@ class file
 		return $files;
 	}
 	
+	/**
+	 * returns an object containing information about a file or directory, including size, permissions, dates, etc
+	 * @return boolean|\stdClass
+	 */
 	function info()
 	{
 		if(!file_exists($this->path) )
@@ -111,7 +147,17 @@ class file
 		}
 	}
 	
-	// originally sourced from http://aidanlister.com/2004/04/human-readable-file-sizes/ with argument order changes
+	/**
+	 * converts a number of bytes into a human-readable value
+	 * 
+	 * originally sourced from http://aidanlister.com/2004/04/human-readable-file-sizes/ with argument order changes
+	 * 
+	 * @param int $size the byte value to convert
+	 * @param string $retstring the sprintf format of the string to return
+	 * @param string $system the byte system to use, si is 1000 bytes to a kilobyte, bi is 1024 bytes to a kibibyte
+	 * @param string|null $max the maximum unit to measure to, null means no maximum
+	 * @return string
+	 */
 	static function human_size($size, $retstring = '%01.0f %s', $system = 'bi', $max = null)
 	{
 		// Pick units

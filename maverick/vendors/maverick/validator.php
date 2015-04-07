@@ -1,4 +1,7 @@
 <?php
+/**
+ * a validation class for checking form submissions
+ */
 class validator
 {
 	static $_instance;
@@ -9,6 +12,10 @@ class validator
 	
 	private function __clone() {}
 	
+	/**
+	 * returns a reference to ths singleton instance of this class - there can be only one!
+	 * @return validator
+	 */
 	public static function getInstance()
 	{
 		if(!(self::$_instance instanceof self))
@@ -17,6 +24,11 @@ class validator
 		return self::$_instance;
 	}
 		
+	/**
+	 * applies the passed rules to the instance of this class and returns a reference to itself for chaining
+	 * @param array $rules an array of rules to apply to the submitted data
+	 * @return validator
+	 */
 	public static function make($rules)
 	{
 		$v = validator::getInstance();
@@ -33,6 +45,13 @@ class validator
 		return $v;
 	}
 	
+	/**
+	 * gets all the errors with submitted data, or all errors for a specific field if given,
+	 * with individual errors wrapped with a specified set of tags
+	 * @param string|null $field an optional field name
+	 * @param array $wrapper an array containing a pair of strings to wrap around an individual error
+	 * @return array
+	 */
 	public static function get_all_errors($field=null, $wrapper=array())
 	{
 		$v = validator::getInstance();
@@ -62,6 +81,12 @@ class validator
 			
 	}
 	
+	/**
+	 * return only the first error for the specified field
+	 * @param string $field the name of a field
+	 * @param array $wrapper an array containing a pair of strings to wrap around an individual error
+	 * @return string
+	 */
 	public static function get_first_error($field, $wrapper=array())
 	{
 		$v = validator::getInstance();
@@ -72,6 +97,11 @@ class validator
 			return '';
 	}
 	
+	/**
+	 * get the number of fields with errors
+	 * note that this does not return the number of total errors where a field may have more than one error
+	 * @return int
+	 */
 	public static function get_error_count()
 	{
 		$v = validator::getInstance();
@@ -79,6 +109,11 @@ class validator
 		return count($v->errors);
 	}
 
+	/**
+	 * run the rules attached to this instance and apply them to the submitted data
+	 * populating the internal errors array with any errors found
+	 * @return bool
+	 */
 	public static function run()
 	{
 		$v = validator::getInstance();
@@ -119,11 +154,21 @@ class validator
 	}
 	
 	
+	/**
+	 * apply the required rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_required($field)
 	{
 		return isset($_REQUEST[$field]) && strlen($_REQUEST[$field]);
 	}
 	
+	/**
+	 * apply the accepted rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_accepted($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -132,6 +177,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the alpha rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_alpha($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -140,6 +190,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the alpha_apos rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_alpha_apos($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -148,6 +203,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the alpha_numeric rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_alpha_numeric($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -156,6 +216,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the alpha_dash rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_alpha_dash($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -164,6 +229,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the numeric rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_numeric($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -172,6 +242,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the min rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param int the value to use for this rule
+	 * @return bool
+	 */
 	private function rule_min($field, $value)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -180,6 +256,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the max rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param int the value to use for this rule
+	 * @return bool
+	 */
 	private function rule_max($field, $value)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -188,6 +270,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the email rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_email($field, $value)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -196,6 +283,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the regex rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param string $regex the regular expression to apply to the field
+	 * @return bool
+	 */
 	private function rule_regex($field, $regex)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -204,7 +297,12 @@ class validator
 			return true;
 	}
 	
-	private function rule_url($field, $url)
+	/**
+	 * apply the url rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
+	private function rule_url($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
 			return filter_var($_REQUEST[$field], FILTER_VALIDATE_URL);
@@ -212,6 +310,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the phone rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_phone($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -220,6 +323,11 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the ip rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @return bool
+	 */
 	private function rule_ip($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -228,6 +336,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the before rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param string $date the date to use for this field
+	 * @return bool
+	 */
 	private function rule_before($field, $date)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -236,6 +350,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the after rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param string $date the date to use for this field
+	 * @return bool
+	 */
 	private function rule_after($field, $date)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -244,6 +364,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the between rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param array $numbers an array of two numbers to use as the min and max values for this rule
+	 * @return bool
+	 */
 	private function rule_between($field, $numbers)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -266,6 +392,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the confirmed rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param array $field2 an array (because of the way the arguments are passed) of one element specifying the name of the field to compare this field to
+	 * @return bool
+	 */
 	private function rule_confirmed($field, $field2)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -274,6 +406,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the in rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param array $array an array of values to use for this rule
+	 * @return bool
+	 */
 	private function rule_in($field, $array)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -282,6 +420,12 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * apply the notin rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param array $array an array of values to use for this rule
+	 * @return bool
+	 */
 	private function rule_notin($field, $array)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
@@ -290,7 +434,10 @@ class validator
 			return true;
 	}
 	
-	
+	/**
+	 * set the rules to this validator instance
+	 * @param array $rules the rules to use
+	 */
 	private function set_rules($rules)
 	{
 		$v = validator::getInstance();
@@ -298,6 +445,9 @@ class validator
 		$v->rules = $rules;
 	}
 	
+	/**
+	 * reset this singleton back to base values
+	 */
 	private function reset()
 	{
 		$v = validator::getInstance();

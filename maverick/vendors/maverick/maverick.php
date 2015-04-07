@@ -1,6 +1,9 @@
 <?php
 namespace maverick;
 
+/**
+ * the main framework class that everything else is built around
+ */
 class maverick
 {
 	static $_instance;
@@ -14,6 +17,11 @@ class maverick
 	public $db;
 	public $view;
 
+	/**
+	 * magic getter for specific object values - returns null if the specified value is not in the array
+	 * @param string $name the name of the member variable to retreive
+	 * @return mixed
+	 */
 	public function __get($name)
 	{
 		if(in_array($name, array('requested_route_string', 'matched_route', 'controller', 'error_routes', 'language_culture') ) )
@@ -22,6 +30,12 @@ class maverick
 			return null;
 	}
 	
+	/**
+	 * magic setter for the main class - returns false for any member variable not in the array of allowed values to set
+	 * @param string $name the member variable to set
+	 * @param mixed $value the value to set it to
+	 * @return boolean
+	 */
 	public function __set($name, $value)
 	{
 		if(in_array($name, array('matched_route', 'controller', 'error_routes', 'language_culture') ) )
@@ -33,6 +47,9 @@ class maverick
 			return false;
 	}
 
+	/**
+	 * the main constructor - this just sets up the basic config
+	 */
 	private function __construct()
 	{
 		$this->load_config();
@@ -40,6 +57,10 @@ class maverick
 	
 	private function __clone() {}
 	
+	/**
+	 * return the single instance of this class - there can be only one!
+	 * @return \maverick\maverick
+	 */
 	public static function getInstance()
 	{
 		if(!(self::$_instance instanceof self))
@@ -47,6 +68,12 @@ class maverick
 		return self::$_instance;
 	}
 	
+	/**
+	 * retrieve a specific config option using dot syntax
+	 * this method allows for deeply nested items to be fetched from the returned arrays within the config files themselves
+	 * @param string $item the specific item to fetch
+	 * @return mixed
+	 */
 	public function get_config($item)
 	{
 		$config = ''; // set a default return value of empty string - probably the safest option
@@ -83,6 +110,11 @@ class maverick
 		return $config;
 	}
 	
+	/**
+	 * filter a string using PHP's built-in sanitisation filter
+	 * @param string $data the string to sanitise
+	 * @return string
+	 */
 	public function xss_filter($data)
 	{
 		foreach($data as $key => &$datum)
@@ -95,6 +127,11 @@ class maverick
 		return $data;
 	}
 	
+	/**
+	 * the main workhorse of the maverick class - this performs tasks like fetching views from cache to bypass the rest of the framework,
+	 * handles route pre-parsing if that's set up, sets up any initial database connections if requested in the config and calls the 
+	 * first controller matched by the requested route
+	 */
 	public function build()
 	{
 		// load from the cache if that is on and this is a GET request
@@ -164,17 +201,30 @@ class maverick
 		}
 	}
 	
+	/**
+	 * sets the view on the main class
+	 * @param \maverick\view $view the view being set
+	 */
 	public function set_view(&$view)
 	{
 		$this->view = $view;
 	}
 
+	/**
+	 * set the error route to use for a specific type of error
+	 * @param int $code the HTTP status code
+	 * @param array $details an array of details for the route
+	 */
 	public function set_error_route($code, $details)
 	{
 		if($this->check_required_fields($details, array('args', 'protocol', 'method', 'controller_name') ) )
 			$this->error_routes[$code] = $details;
 	}
 	
+	/**
+	 * handle a route pre-parser method if it's been specified in the config
+	 * @return boolean
+	 */
 	private function route_preparser()
 	{
 		$preparser = $this->get_config('config.route_preparser');
@@ -191,6 +241,10 @@ class maverick
 			$class_holder->$method();
 	}
 	
+	/**
+	 * set the language culture if the corresponding settings exist in the config
+	 * this uses the standard I18N language functions
+	 */
 	private function set_lang_culture()
 	{
 		// language specific stuff - this sets the language the app will use and sets up ini and location of translation bits
@@ -208,11 +262,21 @@ class maverick
 		textdomain($domain);
 	}
 
+	/**
+	 * fetch the error route details as an array for a specific error code
+	 * @param int $code the HTTP status code of the error
+	 * @return array
+	 */
 	private function get_error_route($code)
 	{
 		return isset($this->error_routes[$code])?array('controller_name'=>$this->error_routes[$code]['controller_name'], 'method'=>$this->error_routes[$code]['method']):array('controller_name'=>'', 'method'=>'');
 	}
 	
+	/**
+	 * load in the config files that exist in the config directory
+	 * each config file will contain a returned array
+	 * this generates an array of \stdClass objects, one for each config file
+	 */
 	private function load_config()
 	{
 		$this->config = new \stdClass();
@@ -226,12 +290,20 @@ class maverick
 		}
 	}
 	
+	/**
+	 * get a hash for the requested route - used to create a unique identifier for the requested route to be used in caching methods
+	 * the reason to include the $_GET array details is so that / and /?abc=xyz return different hashes
+	 * @return string
+	 */
 	public function get_request_route_hash()
 	{
 		// this generates a hash from a combination of the $_GET values and the requested URL
 		return md5(implode($_GET) . (isset($_SERVER['REDIRECT_URL'])?$_SERVER['REDIRECT_URL']:$_SERVER['REQUEST_URI'] ) );
 	}
 
+	/**
+	 * get the requested URI and set the corresponding parts of it to the correct member variables of this class
+	 */
 	private function get_request_uri()
 	{
 		$this->requested_route = new \stdClass();
@@ -254,12 +326,27 @@ class maverick
 		$this->requested_route_string = implode('/', $this->requested_route->path);
 	}
 	
+	/**
+	 * determines if a method exists in a specified class
+	 * note that this creates an instance of the class, so be wary of certain actions in class constructor 
+	 * methods that you don't actually want to execute
+	 * @param string $class the name of the class
+	 * @param string $method the name of the method
+	 * @param \maverick\class $class_holder the object used to hold the instantiated instance of this class
+	 * @return type
+	 */
 	private function check_class_method_exists($class, $method, &$class_holder)
 	{
 		return (class_exists($class) && ($class_holder = new $class) && method_exists($class_holder, $method) );
 	}
 	
-	//TODO: consider breaking this out into a static helper class
+	/**
+	 * check that required fields exist in a data set
+	 * @todo consider breaking this out into a static helper class
+	 * @param array $data the dataset
+	 * @param array $fields a list of fields to check exist
+	 * @return bool
+	 */
 	private function check_required_fields($data, $fields)
 	{
 		$data_keys = array_keys($data);

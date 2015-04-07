@@ -1,6 +1,9 @@
 <?php
 use \maverick\data as data;
 
+/**
+ * the view class responsible for creating the final view to give to a controller
+ */
 class view
 {
 	static $_instance;
@@ -12,6 +15,10 @@ class view
 	
 	private function __clone() {}
 	
+	/**
+	 * return the singleton instance of this class - there can be only one!
+	 * @return view
+	 */
 	public static function getInstance()
 	{
 		if(!(self::$_instance instanceof self))
@@ -20,6 +27,11 @@ class view
 		return self::$_instance;
 	}
 
+	/**
+	 * reset the instance and set the view to use for this view instance
+	 * @param string $view
+	 * @return view
+	 */
 	public static function make($view)
 	{
 		$v = view::getInstance();
@@ -36,6 +48,12 @@ class view
 		return $v;
 	}
 	
+	/**
+	 * set a named parameter to add to the main classes data array
+	 * @param string $name the name by which to reference this data
+	 * @param mixed $data the data to add
+	 * @return view
+	 */
 	public static function with($name, $data)
 	{
 		$v = view::getInstance();
@@ -48,6 +66,12 @@ class view
 		return $v;
 	}
 	
+	/**
+	 * add HTTP headers to this view
+	 * depending on the header being added, certain restrictions may apply
+	 * @param array $headers the headers to pass to the view
+	 * @return view
+	 */
 	public static function headers($headers = array() )
 	{
 		$v = view::getInstance();
@@ -99,6 +123,13 @@ class view
 		return $v;
 	}
 	
+	/**
+	 * use object buffering to build up the views into a single string and either return or echo it
+	 * optionally output any headers that have been added to the view instance
+	 * @param bool $echo whether to echo the view or return it as a string
+	 * @param bool $with_headers if set to true and $echo is also set to true, then send headers to the browser, otherwise do nothing
+	 * @return string
+	 */
 	public static function render($echo=true, $with_headers=false)
 	{
 		$v = view::getInstance();
@@ -138,6 +169,11 @@ class view
 		}
 	}
 
+	/**
+	 * get the contents of a variable in the data member array
+	 * @param string $var the variable to return contents for
+	 * @return mixed
+	 */
 	public function get_data($var)
 	{
 		$v = view::getInstance();
@@ -145,6 +181,9 @@ class view
 		return (isset($v->data[$var]))?$v->data[$var]:'';
 	}
 	
+	/**
+	 * reset this singleton instance back to the beginning values
+	 */
 	private function reset()
 	{
 		// not everything needs to be reset, only those variables pertaining to an individual view
@@ -157,6 +196,12 @@ class view
 			$v->$var = array();
 	}
 	
+	/**
+	 * verify that a date string is in the correct format
+	 * this is used to verify dates used in the headers
+	 * @param string $date_string the date string to validate
+	 * @return bool
+	 */
 	private function check_date($date_string)
 	{
 		$d = DateTime::createFromFormat('D, d M Y H:i:s e', $date_string);
@@ -164,11 +209,22 @@ class view
 		return $d && $d->format('D, d M Y H:i:s e') == $date_string;
 	}
 	
+	/**
+	 * convert a lowercase header to the correct capitalised case by casting to lower,
+	 * breaking apart, and then capitalising, before joing together again
+	 * @param string $header the header to convert the case for
+	 * @return string
+	 */
 	private function convert_header_case($header)
 	{
-		return implode('-', array_map('ucfirst', explode('-', $header) ) );
+		return implode('-', array_map('ucfirst', explode('-', strtolower($header) ) ) );
 	}
 	
+	/**
+	 * set the full status code from an HTTP status code
+	 * @param int $code the HTTP status code
+	 * @return string
+	 */
 	private function set_status_code($code)
 	{
 		$codes = array(
@@ -255,6 +311,10 @@ class view
 			return $this->set_status_code (200);
 	}
 
+	/**
+	 * set the view to use on this instance
+	 * @param string $view the view to use
+	 */
 	private function set_view($view)
 	{
 		$this->view = $view;

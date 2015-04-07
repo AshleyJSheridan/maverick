@@ -1,24 +1,52 @@
 <?php
 namespace maverick;
 
+/**
+ * a routing class used to parse routes and match them against what is requested by the user
+ */
 class route
 {
 	private function __clone() {}
 	
+	/**
+	 * match any type of request type
+	 * @param string $route the route to match against
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args an array of matched parameters to pass to the routing controller class
+	 */
 	static function any($route, $action, $args=null)
 	{
 		route::match_route('any', $route, $action, $args);
 	}
 	
+	/**
+	 * match GET request types
+	 * @param string $route the route to match against
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args an array of matched parameters to pass to the routing controller class
+	 */
 	static function get($route, $action, $args=null)
 	{
 		route::match_route('get', $route, $action, $args);
 	}
 
+	/**
+	 * match POST request types
+	 * @param string $route the route to match against
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args an array of matched parameters to pass to the routing controller class
+	 */
 	static function post($route, $action, $args=null)
 	{
 		route::match_route('post', $route, $action, $args);
 	}
+	
+	/**
+	 * set the actions for types of errors
+	 * @param int $code HTTP status code
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args an array of matched parameters to pass to the routing controller class
+	 */
 	static function error($code, $action, $args=null)
 	{
 		$maverick = \maverick\maverick::getInstance();
@@ -26,7 +54,14 @@ class route
 		$maverick->set_error_route(intval($code), route::get_full_action($action, $args));
 	}
 	
-	
+	/**
+	 * match the requested route with one of the routes added to the routes array on the main maverick class
+	 * @param string $protocol the protocol specified in the routes, either post, get, or any
+	 * @param string $route the route string
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args an array of matched parameters to pass to the routing controller class
+	 * @return boolean
+	 */
 	private static function match_route($protocol, $route, $action, $args)
 	{
 		$maverick = \maverick\maverick::getInstance();
@@ -49,6 +84,13 @@ class route
 			return false;
 	}
 	
+	/**
+	 * use the matched routes information and assing the controller, and method if applicable, to the main maverick class member variables
+	 * @param string $action the action to take, usually in the form of controller->method
+	 * @param array $args the arguments to match in the route
+	 * @param array $matches the matches found with preg_match to map against $args
+	 * @return array
+	 */
 	private static function get_full_action($action, $args, $matches=array() )
 	{
 		// some routes don't specify the controller (e.g. errors), hence the check for the -> and assignment of null to the controller part otherwise
