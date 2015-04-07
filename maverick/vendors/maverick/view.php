@@ -117,7 +117,13 @@ class view
 
 			// this just stores the view if the config value is set to cache it
 			if($app->get_config('cache.on') !== false)
-				\maverick\cache::store($app->get_request_route_hash(), $view);
+			{
+				$hash = $app->get_request_route_hash();
+				\maverick\cache::store($hash, $view);
+				
+				if($with_headers)
+					\maverick\cache::store("{$hash}_headers", json_encode($v->headers) );
+			}
 			
 			if($with_headers)
 			{

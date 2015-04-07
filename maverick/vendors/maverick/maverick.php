@@ -100,7 +100,18 @@ class maverick
 		// load from the cache if that is on and this is a GET request
 		if($this->get_config('cache.on') !== false && isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'GET')
 		{
-			$view = \maverick\cache::fetch($this->get_request_route_hash());
+			$hash = $this->get_request_route_hash();
+			
+			$headers = \maverick\cache::fetch("{$hash}_headers");
+			$view = \maverick\cache::fetch($hash);
+			
+			if($headers)
+			{
+				$headers = json_decode($headers);
+				
+				foreach($headers as $header)
+					header($header);
+			}
 			
 			if($view)
 				die($view);
