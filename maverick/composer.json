@@ -1,0 +1,16 @@
+{
+    "name": "maverick/maverick",
+    "description": "Fast and lightweight PHP MVC framework",
+    "license": "mit",
+    "authors": [
+        {
+            "name": "Ashley Sheridan",
+            "email": "ash@ashleysheridan.co.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "laracasts/integrated": "dev-master"
+    }
+}
