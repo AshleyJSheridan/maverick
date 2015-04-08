@@ -46,13 +46,13 @@ function __autoload($class)
 		//$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';	// this is breaking cases where a function name is using underscores instead of camel case
 		$fileName .= $className . '.php';
 
-		set_include_path(MAVERICK_BASEDIR . 'vendors');
+		set_include_path(MAVERICK_BASEDIR . 'vendor');
 
 		require_once $fileName;
 	}
 }
 
-require_once MAVERICK_BASEDIR . 'vendors/maverick/maverick.php';
+require_once MAVERICK_BASEDIR . 'vendor/maverick/maverick.php';
 
 $app = \maverick\maverick::getInstance();
 $app->build();
