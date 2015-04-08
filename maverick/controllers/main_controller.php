@@ -20,6 +20,7 @@ class main_controller extends base_controller
 		$form = new \helpers\html\form('form', $elements);
 		$form->labels = 'wrap';
 		$form->novalidate = true;
+		$form->snippets = MAVERICK_VIEWSDIR . 'includes/snippets';
 		
 		$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
 	}
@@ -62,6 +63,7 @@ class main_controller extends base_controller
 			$form = new \helpers\html\form('form', $elements);
 			$form->labels = 'wrap';
 			$form->novalidate = true;
+			$form->snippets = MAVERICK_VIEWSDIR . 'includes/snippets';
 
 			$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
 		}

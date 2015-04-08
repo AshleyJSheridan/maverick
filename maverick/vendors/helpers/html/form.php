@@ -13,6 +13,7 @@ class form
 	private $enctype = 'application/x-www-form-urlencoded';
 	private $labels = 'wrap';
 	private $novalidate = false;
+	private $snippets;
 	
 	/**
 	 * basic constructor for the form html object
@@ -71,6 +72,10 @@ class form
 				if(is_bool($value))
 					$this->$param = $value;
 				break;
+			case 'snippets':
+				if(is_dir($value))
+					$this->$param = $value;
+				break;
 		}
 	}
 	
@@ -94,7 +99,7 @@ class form
 		
 		// build the form elements
 		foreach($this->elements as $element)
-			$html .= $this->render_element($element, (isset($element->labels)?$element->labels:$this->labels) );
+			$html .= $this->render_element($element, (isset($element->labels)?$element->labels:$this->labels), $this->snippets );
 
 		$html .= '</form>';
 		
@@ -108,11 +113,14 @@ class form
 	 * @param array $error_tags an array of two strings which should be used to wrap errors when the form is posted, defaults to a span with an error class
 	 * @return string
 	 */
-	private function render_element($element, $labels=null, $error_tags = array('<span class="error">', '</span>') )
+	private function render_element($element, $labels=null, $snippets_dir = null, $error_tags = array('<span class="error">', '</span>') )
 	{
 		$html = '';
 		
-		$snippet = __DIR__ . "/snippets/input_{$element->type}.php";	// TODO: allow this snippets directory to be overloaded with userland views
+		if($snippets_dir && file_exists("$snippets_dir/input_{$element->type}.php"))
+			$snippet = "$snippets_dir/input_{$element->type}.php";
+		else
+			$snippet = __DIR__ . "/snippets/input_{$element->type}.php";
 		
 		switch($element->type)
 		{
@@ -144,7 +152,7 @@ class form
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
 					'name' => $element->name,
-					'values' => \helpers\html\form_element::build_select_options($element->values, $element->name),
+					'values' => \helpers\html\form_element::build_select_options($element->values, $element->name, $snippets_dir),
 					'error' => \validator::get_first_error($element->name, $error_tags),
 				) );
 				break;
@@ -162,14 +170,14 @@ class form
 					$fake_element = new \stdClass();
 					$fake_element->label = $value;
 					$fake_element->id = '';
-					$html .= $this->wrap_element($fake_element, $element_html, $labels);
+					$html .= $this->wrap_element($fake_element, $element_html, $labels, $snippets_dir);
 				}
 				$labels = "{$element->type}_group";
 				break;
 		}
 
 		if(!is_null($labels) && $labels != 'none')
-			$html = $this->wrap_element($element, $html, $labels);
+			$html = $this->wrap_element($element, $html, $labels, $snippets_dir);
 		
 		return $html;
 	}
@@ -181,9 +189,13 @@ class form
 	 * @param string $labels_type the template to use for the label
 	 * @return string
 	 */
-	private function wrap_element($element, $element_html, $labels_type)
+	private function wrap_element($element, $element_html, $labels_type, $snippets_dir)
 	{
-		$snippet = __DIR__ . "/snippets/label_$labels_type.php";	// TODO: allow this snippets directory to be overloaded with userland views
+		if($snippets_dir && file_exists("$snippets_dir/label_$labels_type.php"))
+			$snippet = "$snippets_dir/label_$labels_type.php";
+		else
+			$snippet = __DIR__ . "/snippets/label_$labels_type.php";
+			
 		$html = \helpers\html\html::load_snippet($snippet, array(
 			'label' => $element->label,
 			'element' => $element_html,
@@ -258,7 +270,7 @@ class form_element
 	 * @param string $element_name the name of the select list element - used to determine if this should be marked as selected in the rendered html or not (e.g. for a form posted with errors)
 	 * @return string
 	 */
-	public static function build_select_options($options, $element_name)
+	public static function build_select_options($options, $element_name, $snippets_dir)
 	{
 		$html = '';
 		
@@ -266,7 +278,11 @@ class form_element
 		{
 			$selected = (isset($_REQUEST[$element_name]) && $_REQUEST[$element_name] == $option)?'selected="selected"':'';
 			
-			$snippet = __DIR__ . "/snippets/input_option.php";	// TODO: allow this snippets directory to be overloaded with userland views
+			if($snippets_dir && file_exists("$snippets_dir/input_option.php"))
+				$snippet = "$snippets_dir/input_option.php";
+			else
+				$snippet = __DIR__ . "/snippets/input_option.php";
+			
 			$html .= \helpers\html\html::load_snippet($snippet, array(
 				'value' => $option,
 				'selected' => $selected,
