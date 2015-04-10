@@ -9,7 +9,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "phpunit/phpunit": "~4.8@dev"
+    },
     "require-dev": {
         "laracasts/integrated": "dev-master"
     }

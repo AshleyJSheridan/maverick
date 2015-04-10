@@ -1,0 +1,38 @@
+Date: Fri, 10 Apr 2015 09:42:10 GMT
+Server: Apache/2.4.6 (Fedora) OpenSSL/1.0.0-fips PHP/5.4.23
+X-Powered-By: PHP/5.4.23
+Content-Length: 1027
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="UTF-8"/>
+
+	<title>MaVeriCk</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link href="http://fonts.googleapis.com/css?family=Lato&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
+	
+	<link rel="stylesheet" href="/css/main.css">
+	
+</head>
+	
+<body class="home">
+	<div id="main">
+		<header>
+			<nav>
+				
+			</nav>
+			<h1>MaVeriCk</h1>
+		</header><ul><li>a</li><li>b</li><li>c</li><li>d</li><ol><li>1</li><li>2</li><li>3</li><ul><li>x</li><li>y</li><li>z</li></ul></li><li>4</li><li>5</li></ol></li><li>e</li><li>f</li><li>g</li></ul>test!another test!yet another test!</div>
+		<footer>
+			
+		</footer>
+	</div>
+	
+</body>
+</html>
