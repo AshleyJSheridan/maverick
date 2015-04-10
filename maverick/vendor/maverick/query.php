@@ -64,7 +64,7 @@ class query
 	 */
 	public function set_from_table($table)
 	{
-		$this->set_param('from', $table);
+		$this->from = $table;
 	}
 	
 	/**
@@ -729,17 +729,6 @@ class query
 		}
 		
 		return $ons;
-	}
-	
-	/**
-	 * set a member variable on the query class
-	 * @todo why am I doing this and not using a magic setter here? it's only called in one place!
-	 * @param string $param the variable to set
-	 * @param string $value the value to set it to
-	 */
-	private function set_param($param, $value)
-	{
-		$this->$param = $value;
 	}
 	
 	/**
