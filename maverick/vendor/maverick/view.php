@@ -145,8 +145,8 @@ class view
 			include $view_file_path;
 			$view = ob_get_contents();
 			ob_end_clean();
-			
-			if($app->get_config('cache.view_parsing') !== false)
+
+			if($app->get_config('config.view_parsing') !== false)
 				$view = $v->parse_view($view);
 
 			// this just stores the view if the config value is set to cache it
