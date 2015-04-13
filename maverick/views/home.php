@@ -1,7 +1,9 @@
-<?php
-echo(data::get('data'));
-
-
-echo _('test');
-echo _('another test');
-echo _('yet another test');
+<div>
+	{{_("another test")}} {{_("test")}} {{_('yet another test')}}
+	<br/><br/>
+	{{list}}
+	<br/><br/>
+	{{page}}
+	<br/><br/>
+	{{data.4.colour1}}
+</div>

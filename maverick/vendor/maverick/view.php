@@ -145,6 +145,9 @@ class view
 			include $view_file_path;
 			$view = ob_get_contents();
 			ob_end_clean();
+			
+			if($app->get_config('cache.view_parsing') !== false)
+				$view = $v->parse_view($view);
 
 			// this just stores the view if the config value is set to cache it
 			if($app->get_config('cache.on') !== false)
@@ -168,7 +171,7 @@ class view
 				return $view;
 		}
 	}
-
+	
 	/**
 	 * get the contents of a variable in the data member array
 	 * @param string $var the variable to return contents for
@@ -179,6 +182,59 @@ class view
 		$v = view::getInstance();
 		
 		return (isset($v->data[$var]))?$v->data[$var]:'';
+	}
+	
+	/**
+	 * parse the rendered view for {{placeholders}} and replace them
+	 * @todo make this extensible with registered placeholder find/replace methods
+	 * @param string $view the rendered view (typically html) possibly containing {{placeholders}}
+	 * @return string
+	 */
+	private function parse_view($view)
+	{
+		$v = view::getInstance();
+		$app = \maverick\maverick::getInstance();
+		
+		// check for the use of multi-lingual gettext stuff
+		if($app->get_config('lang.active') !== false)
+		{
+			// match the format of {{_('string to translate')}} - the quote style can be either single or double,
+			// and the text to translate must start with a letter \p{L}
+			if(preg_match_all('/\{\{_\(([\'"]\p{L}[^\'"]+[\'"])\)\}\}/', $view, $matches) && !empty($matches[1]) )
+			{
+				$find = $replace = array();
+				
+				foreach($matches[1] as $match)
+				{
+					$find[] = "{{_($match)}}";
+					$replace[] = _(trim($match, "\"'") );
+				}
+				
+				$view = str_replace($find, $replace, $view);
+			}
+			
+			// match simple placeholder formats - this check should always be last in-case the parse
+			// method does allow for parse extensions later on
+			if(preg_match_all('/\{\{(\p{L}[\p{L}\p{N}_\.]+)/', $view, $matches) && !empty($matches[1]) )
+			{
+				$find = $replace = array();
+				
+				foreach($matches[1] as $match)
+				{
+					$find[] = "{{{$match}}}";
+					
+					$r = \data::get($match);
+					if(is_array($r))
+						$r = implode($r);
+					
+					$replace[] = $r;
+				}
+				
+				$view = str_replace($find, $replace, $view);
+			}
+		}
+		
+		return $view;
 	}
 	
 	/**

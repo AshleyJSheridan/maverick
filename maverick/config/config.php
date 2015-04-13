@@ -15,4 +15,6 @@ return array(
 	),
 	
 	'route_preparser' => 'route_controller->lang_filter',
+	
+	'view_parsing' => true,
 );
