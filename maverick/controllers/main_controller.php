@@ -92,11 +92,33 @@ class main_controller extends base_controller
 			)
 		);
 		
-		$view = view::make('includes/template')->with('page', 'home')->with('list', $list)->with('data', $data)->render(true, true);
+		$view = view::make('includes/template')->with('page', 'home')->with('list', $list)->with('data', $data)->parse_handler('custom_snippet', 'main_controller->parse_handler_example')->render(true, true);
 	}
 
 	function error()
 	{
 		echo 'error';
+	}
+	
+	static function parse_handler_example($matches = array() )
+	{
+		$char = '';
+		switch($matches[1])
+		{
+			case 'arrow':
+				$char = '→';
+				break;
+			case 'chess':
+				$char = '♔';
+				break;
+			case 'snowman':
+				$char = '☃';
+				break;
+		}
+		
+		if(strlen($char))
+			$matches[0] = str_repeat ($char, intval($matches[3]));
+		
+		return $matches[0];
 	}
 }

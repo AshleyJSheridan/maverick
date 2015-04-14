@@ -10,6 +10,7 @@ class view
 	private $view = '';
 	private $data = array();
 	private $headers = array();
+	private $parse_handlers = array();
 	
 	private function __construct() {}
 	
@@ -123,6 +124,18 @@ class view
 		return $v;
 	}
 	
+	public static function parse_handler($namespace, $handler)
+	{
+		if(!preg_match('/^\p{L}[\p{L}\p{N}_]+$/', $namespace) || !preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $handler) )
+			return false;
+		
+		$v = view::getInstance();
+		
+		$v->parse_handlers[] = array($namespace, $handler);
+		
+		return $v;
+	}
+	
 	/**
 	 * use object buffering to build up the views into a single string and either return or echo it
 	 * optionally output any headers that have been added to the view instance
@@ -186,7 +199,6 @@ class view
 	
 	/**
 	 * parse the rendered view for {{placeholders}} and replace them
-	 * @todo make this extensible with registered placeholder find/replace methods
 	 * @param string $view the rendered view (typically html) possibly containing {{placeholders}}
 	 * @return string
 	 */
@@ -211,6 +223,20 @@ class view
 				}
 				
 				$view = str_replace($find, $replace, $view);
+			}
+			
+			// run any custom handlers that have been added - the callback will pass up to three matched parameters in the form
+			// {{handler_namespacee:param1:param2:param3}} with each matched parameter being in an array with
+			// param1 being array index 1, param2 being array index 3, and param3 being array index5
+			// the callback method must be a static method, and the return must be a string
+			if(count($v->parse_handlers))
+			{
+				foreach($v->parse_handlers as $parse_handler)
+				{
+					list($controller, $method) = explode('->', $parse_handler[1]);
+
+					$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_]+)(:([\p{L}\p{N}_]+))?(:([\p{L}\p{N}_]+))?\}\}/", array($controller, $method), $view);
+				}
 			}
 			
 			// match simple placeholder formats - this check should always be last in-case the parse
