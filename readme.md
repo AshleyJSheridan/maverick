@@ -13,4 +13,4 @@ The features of this framework include:
 * i18n language culture capabilities so you can implement multiple languages across your application with ease
 * Simple views that you can chain as many extra parameters to as you want
 
-Detailed documentation is available in [/docs](https://github.com/AshleyJSheridan/maverick/tree/master/docs)
+Detailed documentation is available in [the GitHub wiki for this project](https://github.com/AshleyJSheridan/maverick/wiki)
