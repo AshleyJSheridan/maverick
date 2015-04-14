@@ -230,8 +230,7 @@ class maverick
 		$preparser = $this->get_config('config.route_preparser');
 
 		// just check that the controller->method string is in the right format
-		// TODO - consider making a better method of this, as the routing code could benefit from this also
-		if(!strpos($preparser, '->'))
+		if(!preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $preparser) )
 			return false;
 		
 		list($controller_name, $method) = explode('->', $preparser);
@@ -240,7 +239,7 @@ class maverick
 		if(class_exists($controller_name) && ($class_holder = new $controller_name) && method_exists($class_holder, $method) )
 			$class_holder->$method();
 	}
-	
+
 	/**
 	 * set the language culture if the corresponding settings exist in the config
 	 * this uses the standard I18N language functions

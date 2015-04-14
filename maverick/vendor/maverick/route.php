@@ -95,7 +95,7 @@ class route
 	{
 		// some routes don't specify the controller (e.g. errors), hence the check for the -> and assignment of null to the controller part otherwise
 		list($a['controller_name'], $a['method'], $a['protocol'], $a['args']) = array_merge(
-			((strpos($action, '->'))?explode('->', $action):array(null, $action)),
+			((preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $action) )?explode('->', $action):array(null, $action)),
 			array(
 				strtolower($_SERVER['REQUEST_METHOD']),
 				$args
