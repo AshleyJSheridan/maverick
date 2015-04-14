@@ -124,6 +124,13 @@ class view
 		return $v;
 	}
 	
+	/**
+	 * adds a custom parse handler to a member array on the view object that can then be iterated
+	 * to allow userland code to parse the rendered view and replace custom template snippets
+	 * @param string $namespace the namespace given to a template snippet, e.g. {{namespace:
+	 * @param string $handler a string in the form of controller->method, where method is the static method of the given controller which is used as the callback in preg_replace_callback() for the custom parser
+	 * @return view
+	 */
 	public static function parse_handler($namespace, $handler)
 	{
 		if(!preg_match('/^\p{L}[\p{L}\p{N}_]+$/', $namespace) || !preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $handler) )
