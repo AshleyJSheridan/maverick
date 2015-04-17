@@ -56,7 +56,8 @@ class lists
 			if(is_array($item))
 				$list_html .= $this->build_list($item, $level+1);
 			
-			$list_html .= '</li>';
+			if(!is_array($item))
+				$list_html .= '</li>';
 		}
 		
 		$list_html .= '</' . ( (isset($this->types[$level]))?$this->types[$level]:end($this->types) ) . '>';
