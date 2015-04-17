@@ -10,6 +10,7 @@ class view
 	private $view = '';
 	private $data = array();
 	private $headers = array();
+	private $original_headers = array();	// the headers actually specified by the user, which may not actually be set if they are malformed, etc
 	private $parse_handlers = array();
 	
 	private function __construct() {}
@@ -119,6 +120,8 @@ class view
 				default:
 					$v->headers[$header] = $v->convert_header_case($header) . ": $value";
 			}
+			
+			$v->original_headers[$header] = $value;	// make a record of the actual requested header, regardless of whether it was actually successfully added due to parsing rules
 		}
 
 		return $v;
@@ -183,6 +186,14 @@ class view
 			{
 				foreach($v->headers as $header)
 					header($header);
+				
+				// teapot
+				if(isset($v->original_headers['status']) && $v->original_headers['status'] == 418 && $app->get_config('config.teapot') !== false)
+				{
+					$teapot = \helpers\html\html::load_snippet(\MAVERICK_BASEDIR . 'vendor/maverick/teapot.html', array() );
+					$view = preg_replace('/<body/', "<body>$teapot", $view, 1);
+					
+				}
 			}
 			
 			if($echo)

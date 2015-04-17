@@ -92,7 +92,17 @@ class main_controller extends base_controller
 			)
 		);
 		
-		$view = view::make('includes/template')->with('page', 'home')->with('list', $list)->with('data', $data)->parse_handler('custom_snippet', 'main_controller->parse_handler_example')->render(true, true);
+		$headers = array(
+			'status' => 418,
+		);
+		
+		$view = view::make('includes/template')
+			->with('page', 'home')
+			->with('list', $list)
+			->with('data', $data)
+			->parse_handler('custom_snippet', 'main_controller->parse_handler_example')
+			->headers($headers)
+			->render(true, true);
 	}
 
 	function error()
