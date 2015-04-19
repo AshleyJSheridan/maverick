@@ -91,8 +91,13 @@ class main_controller extends base_controller
 				'colour3' => 'pink',
 			)
 		);
-		
-		$view = view::make('includes/template')->with('page', 'home')->with('list', $list)->with('data', $data)->parse_handler('custom_snippet', 'main_controller->parse_handler_example')->render(true, true);
+
+		$view = view::make('includes/template')
+			->with('page', 'home')
+			->with('list', $list)
+			->with('data', $data)
+			->parse_handler('custom_snippet', 'main_controller->parse_handler_example')
+			->render(true, true);
 	}
 
 	function error()
