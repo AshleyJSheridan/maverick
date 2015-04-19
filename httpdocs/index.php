@@ -7,6 +7,9 @@ if(!defined('MAVERICK_BASEDIR'))
 if(!defined('MAVERICK_VIEWSDIR'))
 	define('MAVERICK_VIEWSDIR', dirname(__FILE__) . '/../maverick/views/');
 
+if(!defined('MAVERICK_LOGSDIR'))
+	define('MAVERICK_LOGSDIR', dirname(__FILE__) . '/../logs/');
+
 if(!defined('MAVERICK_HTDOCS'))
 	define('MAVERICK_HTDOCS', dirname(__FILE__) . '/');
 

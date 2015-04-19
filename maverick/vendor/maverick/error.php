@@ -48,7 +48,7 @@ class error
 		if($maverick->get_config('config.log_errors'))	// only log the errors if the config says to
 		{
 			$log_date = date("y-m-d");
-			error_log("\n\n$message", 3, MAVERICK_BASEDIR . "../logs/error-$log_date.log");
+			error_log("\n\n$message", 3, MAVERICK_LOGSDIR . "error-$log_date.log");
 		}		
 		
 		if($show)
