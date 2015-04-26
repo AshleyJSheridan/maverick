@@ -71,32 +71,11 @@ class main_controller extends base_controller
 	
 	function home()
 	{
-		$list_json = '["a","b","c","d",[
-			1,2,3,[
-				"x","y","z"
-				],4,5
-			]
-			,"e","f","g"]';
-		$list_types = array('ul', 'ol', 'ul');
-		$list = new \helpers\html\lists($list_json, $list_types);
+		$image_1 = new \helpers\image(MAVERICK_HTDOCS . 'img/BlueMarbleWest.jpg');
+		$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/400/earth_oil.jpg');
 		
-		$data = array(
-			'red',
-			'green',
-			'blue',
-			'yellow',
-			array(
-				'colour1' => 'orange',
-				'colour2' => 'purple',
-				'colour3' => 'pink',
-			)
-		);
-
 		$view = view::make('includes/template')
 			->with('page', 'home')
-			->with('list', $list)
-			->with('data', $data)
-			->parse_handler('custom_snippet', 'main_controller->parse_handler_example')
 			->render(true, true);
 	}
 
