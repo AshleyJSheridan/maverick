@@ -13,6 +13,7 @@ return array(
 	'email' => 'The %s field must be a valid email address',
 	'in' => 'The %s field must be a value in %s',
 	'ip' => 'The %s field must be a valid IPv4 or IPv6 address',
+	'mimes' => 'The %s field is not of the right type',
 	'min' => 'The %s field must be greater than %s',
 	'max' => 'The %s field must be less than %s',
 	'numeric' => 'The %s field must be a valid number',

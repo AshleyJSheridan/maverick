@@ -128,6 +128,7 @@ class form
 			case 'number':
 			case 'email':
 			case 'hidden':
+			case 'file':
 				$html .= \helpers\html\html::load_snippet($snippet, array(
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',

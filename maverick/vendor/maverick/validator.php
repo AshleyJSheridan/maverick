@@ -161,7 +161,7 @@ class validator
 	 */
 	private function rule_required($field)
 	{
-		return isset($_REQUEST[$field]) && strlen($_REQUEST[$field]);
+		return (isset($_FILES[$field]) && $_FILES[$field]['error'] == 0 ) || (isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) );
 	}
 	
 	/**
@@ -240,6 +240,31 @@ class validator
 			return is_numeric($_REQUEST[$field]);
 		else
 			return true;
+	}
+	
+	private function rule_mimes($field, $value)
+	{
+		if(!is_array($value))
+			$value = (array)$value;
+		
+		// check to see if the file was even uploaded
+		if(empty($_FILES[$field]) || (!empty($_FILES[$field]) && $_FILES[$field]['error'] != 0 ) )
+			return false;
+		
+		foreach($value as $mime)
+		{
+			// check for a mime-type string, or something similar to one
+			// and check for wildcards and replace with regex wildcard
+			if(strpos($mime, '/'))
+				$mime = str_replace('*', '.*', $mime);
+			
+			if(strpos($mime, '/') === false)
+				$mime = ".*/$mime";
+			
+			if(preg_match("~$mime~", $_FILES[$field]['type']) )
+				return true;
+		}
+		return false;
 	}
 	
 	/**
