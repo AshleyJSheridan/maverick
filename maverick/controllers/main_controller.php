@@ -72,10 +72,12 @@ class main_controller extends base_controller
 	function home()
 	{
 		$image_1 = new \helpers\image(MAVERICK_HTDOCS . 'img/BlueMarbleWest.jpg');
-		$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/400/earth_oil.jpg');
+		//$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/BlueMarbleWest2.jpg');
+		$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/Road.jpg');
+		//$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/400/earth_oil.jpg');
 		
 		$similarity = \helpers\image::compare($image_1, $image_2);
-		
+
 		$view = view::make('includes/template')
 			->with('page', 'home')
 			->render(true, true);

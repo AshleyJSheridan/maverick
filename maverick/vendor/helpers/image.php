@@ -98,7 +98,7 @@ class image
 	 */
 	public function __get($param)
 	{
-		if(in_array($param, array('width', 'height') ) )
+		if(in_array($param, array('width', 'height', 'image') ) )
 			return $this->$param;
 	}
 	
@@ -503,7 +503,8 @@ class image
 	}
 	
 	/**
-	 * compares two \helpers\image objects visually and returns a percentage of how similar they appear to be
+	 * compares two \helpers\image objects visually and returns a number of how similar they appear to be
+	 * the lower this number the more similar
 	 * @param \helpers\image $img1
 	 * @param \helpers\image $img2
 	 * @param int $level
@@ -512,23 +513,82 @@ class image
 	public static function compare($img1, $img2, $level=5)
 	{
 		$level *= 10;
+		$differences = array();	// this will keep track of the pixel variations to perform some statistical analysis on later
 		
 		// set up the widths of pixels for each image (as they may not be the same)
 		$px1 = $img1->width / $level;
 		$py1 = $img1->height / $level;
 		$px2 = $img2->width / $level;
 		$py2 = $img2->height / $level;
+		$gd1 = $img1->image;
+		$gd2 = $img2->image;
 		
 		for($x=1; $x<=$level; $x++)
 		{
 			for($y=1; $y<=$level; $y++)
 			{
 				// todo: compare the hue of the pixel value at the specified section of the image
+				$rgb1 = imagecolorsforindex($gd1, imagecolorat($gd1, $x*$px1-($px1/2), $y*$py1-($py1/2) ) );
+				$hsl1 = \helpers\image::rgbToHsl($rgb1['red'], $rgb1['green'], $rgb1['blue']);
 				
+				$rgb2 = imagecolorsforindex($gd2, imagecolorat($gd2, $x*$px2-($px2/2), $y*$py2-($py2/2) ) );
+				$hsl2 = \helpers\image::rgbToHsl($rgb2['red'], $rgb2['green'], $rgb2['blue']);
+				
+				$differences[] = intval(abs($hsl1[0] - $hsl2[0]) );
 			}
 		}
+		return array_sum($differences)/count($differences);
 	}
 
+	/**
+	 * converts rgb values into hsl and returns the three new values as an array
+	 * originally sourced from https://gist.github.com/brandonheyer/5254516
+	 * @param int $r
+	 * @param int $g
+	 * @param int $b
+	 * @return array
+	 */
+	public static function rgbToHsl( $r, $g, $b ) 
+	{
+		$oldR = $r;
+		$oldG = $g;
+		$oldB = $b;
+		
+		$r /= 255;
+		$g /= 255;
+		$b /= 255;
+		
+		$max = max( $r, $g, $b );
+		$min = min( $r, $g, $b );
+		
+		$h;
+		$s;
+		$l = ( $max + $min ) / 2;
+		$d = $max - $min;
+		
+		if( $d == 0 )
+			$h = $s = 0; // achromatic
+		else
+		{
+			$s = $d / ( 1 - abs( 2 * $l - 1 ) );
+			
+			switch( $max )
+			{
+				case $r:
+					$h = 60 * fmod( ( ( $g - $b ) / $d ), 6 );
+					if ($b > $g)
+						$h += 360;
+					break;
+				case $g:
+					$h = 60 * ( ( $b - $r ) / $d + 2 );
+					break;
+				case $b:
+					$h = 60 * ( ( $r - $g ) / $d + 4 );
+					break;
+			}
+		}
+		return array( round( $h, 2 ), round( $s, 2 ), round( $l, 2 ) );
+		} 
 
 	/**
 	 * add a colour resource to the image object
