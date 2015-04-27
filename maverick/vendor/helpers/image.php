@@ -92,6 +92,17 @@ class image
 	}
 	
 	/**
+	 * getter for the image objects
+	 * @param string $param
+	 * @return mixed
+	 */
+	public function __get($param)
+	{
+		if(in_array($param, array('width', 'height') ) )
+			return $this->$param;
+	}
+	
+	/**
 	 * add an image effect to the image
 	 * @param string $filter the name of the effect filter to apply
 	 * @param array $params an optional list of parameters to supply the image effect - some effects require up to 4 parameters to be set
@@ -491,6 +502,34 @@ class image
 			imagettftext($this->image, $this->font_size, 0, $x, $y, $this->foreground, $this->font, $text);
 	}
 	
+	/**
+	 * compares two \helpers\image objects visually and returns a percentage of how similar they appear to be
+	 * @param \helpers\image $img1
+	 * @param \helpers\image $img2
+	 * @param int $level
+	 * @return int
+	 */
+	public static function compare($img1, $img2, $level=5)
+	{
+		$level *= 10;
+		
+		// set up the widths of pixels for each image (as they may not be the same)
+		$px1 = $img1->width / $level;
+		$py1 = $img1->height / $level;
+		$px2 = $img2->width / $level;
+		$py2 = $img2->height / $level;
+		
+		for($x=1; $x<=$level; $x++)
+		{
+			for($y=1; $y<=$level; $y++)
+			{
+				// todo: compare the hue of the pixel value at the specified section of the image
+				
+			}
+		}
+	}
+
+
 	/**
 	 * add a colour resource to the image object
 	 * @param string $colour the hex string representation of the colour as one of: #rgb, #rgba, #rrggbb, and #rrggbbaa
