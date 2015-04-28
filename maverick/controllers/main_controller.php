@@ -6,8 +6,9 @@ class main_controller extends base_controller
 	function form()
 	{
 		$elements = '{
-			"email":{"type":"email","label":"Email","class":"form_email","placeholder":"email@test.com","validation":["required","email"]},
-			"image":{"type":"file","label":"Image","class":"form_image","validation":["required"]},
+			"email":{"type":"email","label":"Email","placeholder":"email@test.com","validation":["required","email"]},
+			"image":{"type":"file","label":"Image","validation":["required"]},
+			"colour":{"type":"radio","label":"Favourite Colour","values":["Red","Yellow","Pink","Green","Orange","Purple","Blue"]},
 			
 			"submit":{"type":"submit","value":"Submit","class":"form_submit"}
 		}';
@@ -40,9 +41,10 @@ class main_controller extends base_controller
 		{
 			// errors - pass back to the form and show errors
 			$elements = '{
-				"email":{"type":"email","label":"Email","class":"form_email","placeholder":"email@test.com","validation":["required","email"]},
-				"image":{"type":"file","label":"image","class":"form_image","validation":["required"]},
-				
+				"email":{"type":"email","label":"Email","placeholder":"email@test.com","validation":["required","email"]},
+				"image":{"type":"file","label":"Image","validation":["required"]},
+				"colour":{"type":"radio","label":"Favourite Colour","values":["Red","Yellow","Pink","Green","Orange","Purple","Blue"]},
+
 				"submit":{"type":"submit","value":"Submit","class":"form_submit"}
 			}';
 			$form = new \helpers\html\form('form', $elements);

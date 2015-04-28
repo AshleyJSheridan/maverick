@@ -4,4 +4,5 @@
 		name="{{name}}[]"
 		{{value}}
 		{{required}}
+		{{checked}}
 	/>

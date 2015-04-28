@@ -129,11 +129,13 @@ class form
 			case 'email':
 			case 'hidden':
 			case 'file':
+				$value = isset($_REQUEST[$element->name])?$_REQUEST[$element->name]:(isset($element->value)?$element->value:'');
+				
 				$html .= \helpers\html\html::load_snippet($snippet, array(
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
 					'name' => $element->name,
-					'value' => ($element->value)?"value=\"{$element->value}\"":'',
+					'value' => strlen($value)?"value=\"$value\"":'',
 					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
 					'required' => in_array('required', $element->validation)?'required="required"':'',
 					'error' => \validator::get_first_error($element->name, $error_tags),
@@ -165,8 +167,9 @@ class form
 						'class' => ($element->class)?"class=\"{$element->class}\"":'',
 						'id' => ($element->id)?"id=\"{$element->id}\"":'',
 						'name' => $element->name,
-						'value' => $value,
+						'value' => "value=\"$value\"",
 						'error' => \validator::get_first_error($element->name, $error_tags),
+						'checked' => (isset($_REQUEST[$element->name]) && ($_REQUEST[$element->name] == $value || (is_array($_REQUEST[$element->name]) && in_array($value, $_REQUEST[$element->name]) ) ) )?'checked="checked"':'',
 					) );
 					$fake_element = new \stdClass();
 					$fake_element->label = $value;

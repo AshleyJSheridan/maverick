@@ -1,4 +1,5 @@
 <select
+	name="{{name}}"
 	{{class}}
 	{{id}}
 	{{required}}
