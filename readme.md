@@ -2,7 +2,6 @@
 ![MaVeriCk Logo](https://raw.githubusercontent.com/AshleyJSheridan/maverick/master/docs/img/large_w600.png)
 
 MaVeriCk is a lightweight PHP MVC framework, that comes with the typical features required for small websites:
-The general idea behind this was to create a tiny PHP MVC framework that had the basic features in a week. Since that initial week, I've been adding to it and building up its featureset while keeping the slimline concept I started with.
 
 The features of this framework include:
 
