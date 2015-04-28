@@ -527,7 +527,6 @@ class image
 		{
 			for($y=1; $y<=$level; $y++)
 			{
-				// todo: compare the hue of the pixel value at the specified section of the image
 				$rgb1 = imagecolorsforindex($gd1, imagecolorat($gd1, $x*$px1-($px1/2), $y*$py1-($py1/2) ) );
 				$hsl1 = \helpers\image::rgbToHsl($rgb1['red'], $rgb1['green'], $rgb1['blue']);
 				
