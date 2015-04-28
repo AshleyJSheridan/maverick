@@ -244,7 +244,9 @@ class validator
 	
 	/**
 	 * applies the mimes rule to a field, which determines that the passed mime-type matches the rules
-	 * @todo this should ideally make use of the \helpers\file class to determine the real type of the file
+	 * if the file exists on the local file system (which it should always under normal circumstances)
+	 * then the \helpers\file class is used to determine the real type of the file, and not the value
+	 * that is passed by the browser, as that can't really be trusted
 	 * @param string $field the name of the field to which this rule applies
 	 * @param array|string $value the mime type(s) that the file must be within bounds of
 	 * @return boolean
@@ -258,6 +260,14 @@ class validator
 		if(empty($_FILES[$field]) || (!empty($_FILES[$field]) && $_FILES[$field]['error'] != 0 ) )
 			return false;
 		
+		$file_mime = $_FILES[$field]['type'];	// this will be used throughout to make it easier to reference
+		
+		if(file_exists($_FILES[$field]['tmp_name']));
+		{
+			$file = new \helpers\file($_FILES[$field]['tmp_name']);
+			$file_mime = $file->info()->mime;
+		}	
+		
 		foreach($value as $mime)
 		{
 			// check for a mime-type string, or something similar to one
@@ -268,7 +278,7 @@ class validator
 			if(strpos($mime, '/') === false)
 				$mime = ".*/$mime";
 			
-			if(preg_match("~$mime~", $_FILES[$field]['type']) )
+			if(preg_match("~$mime~", $file_mime) )
 				return true;
 		}
 		return false;
