@@ -242,6 +242,13 @@ class validator
 			return true;
 	}
 	
+	/**
+	 * applies the mimes rule to a field, which determines that the passed mime-type matches the rules
+	 * @todo this should ideally make use of the \helpers\file class to determine the real type of the file
+	 * @param string $field the name of the field to which this rule applies
+	 * @param array|string $value the mime type(s) that the file must be within bounds of
+	 * @return boolean
+	 */
 	private function rule_mimes($field, $value)
 	{
 		if(!is_array($value))
@@ -275,10 +282,15 @@ class validator
 	 */
 	private function rule_min($field, $value)
 	{
-		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return $_REQUEST[$field] >= (float)$value[0];
+		if(isset($_FILES[$field]) )
+			return ($_FILES[$field]['size'] >= intval($value[0]) );
 		else
-			return true;
+		{
+			if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
+				return $_REQUEST[$field] >= (float)$value[0];
+			else
+				return true;
+		}
 	}
 	
 	/**
@@ -289,10 +301,15 @@ class validator
 	 */
 	private function rule_max($field, $value)
 	{
-		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return $_REQUEST[$field] <= (float)$value[0];
+		if(isset($_FILES[$field]) )
+			return ($_FILES[$field]['size'] <= intval($value[0]) );
 		else
-			return true;
+		{
+			if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
+				return $_REQUEST[$field] <= (float)$value[0];
+			else
+				return true;
+		}
 	}
 	
 	/**
@@ -397,24 +414,29 @@ class validator
 	 */
 	private function rule_between($field, $numbers)
 	{
-		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-		{
-			$min = (float)$numbers[0];
-			$max = (float)$numbers[1];
-			
-			switch(true)
-			{
-				case is_numeric($_REQUEST[$field]):
-					$val = (float)$_REQUEST[$field];
-					break;
-				default:
-					$val = strlen($_REQUEST[$field]);
-					break;
-			}
-			return ($val > $min) && ($val < $max);
-		}
+		$min = (float)$numbers[0];
+		$max = (float)$numbers[1];
+		
+		if(isset($_FILES[$field]) )
+			return ($_FILES[$field]['size'] >= $min) && ($_FILES[$field]['size'] <= $max);
 		else
-			return true;
+		{
+			if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
+			{
+				switch(true)
+				{
+					case is_numeric($_REQUEST[$field]):
+						$val = (float)$_REQUEST[$field];
+						break;
+					default:
+						$val = strlen($_REQUEST[$field]);
+						break;
+				}
+				return ($val >= $min) && ($val <= $max);
+			}
+			else
+				return true;
+		}
 	}
 	
 	/**
@@ -457,6 +479,20 @@ class validator
 			return !in_array($_REQUEST[$field], $array);
 		else
 			return true;
+	}
+	
+	/**
+	 * apply the size rule to a field
+	 * @param string $field the name of the field to which this rule applies
+	 * @param string $size a string representation of the int (due to the way it's parsed) that either a string must match exactly or a file size (in bytes) that a file must be equal to
+	 * @return bool
+	 */
+	private function rule_size($field, $size)
+	{
+		if(isset($_FILES[$field]) )
+			return ($_FILES[$field]['size'] == intval($size[0]) );
+		else
+			return (isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) == intval($size[0]) );
 	}
 	
 	/**

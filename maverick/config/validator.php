@@ -19,5 +19,6 @@ return array(
 	'numeric' => 'The %s field must be a valid number',
 	'phone' => 'The %s field must be a valid phone number',
 	'regex' => 'The %s field must match the pattern %s',
+	'size' => 'The %s field is not of the right size',
 	'url' => 'The %s field must be a valid URL',
 );

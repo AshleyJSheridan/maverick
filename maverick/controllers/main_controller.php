@@ -25,8 +25,8 @@ class main_controller extends base_controller
 		$app = \maverick\maverick::getInstance();
 		
 		$rules = array(
-			'email' => array('required', 'email'),
-			'image' => array('required', 'mimes:jpeg:gif:text/*'),
+			'email' => array('required', 'email', 'size:14'),
+			'image' => array('required', 'mimes:jpeg:gif:png:text/*'),
 		);
 		
 		validator::make($rules);
