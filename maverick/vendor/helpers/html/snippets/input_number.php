@@ -7,5 +7,8 @@
 		{{placeholder}}
 		{{required}}
 		{{regex}}
+		{{step}}
+		{{min}}
+		{{max}}
 	/>
 {{error}}

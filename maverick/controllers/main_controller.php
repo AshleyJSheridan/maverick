@@ -6,15 +6,17 @@ class main_controller extends base_controller
 	function form()
 	{
 		$elements = '{
+			"name":{"type":"text","label":"Name","placeholder":"John Smith","validation":["required","size=50","minlength=2","maxlength=50"],"spellcheck":true},
 			"email":{"type":"email","label":"Email","placeholder":"email@test.com","validation":["required","email"]},
-			"image":{"type":"file","label":"Image","validation":["required"]},
-			"colour":{"type":"radio","label":"Favourite Colour","values":["Red","Yellow","Pink","Green","Orange","Purple","Blue"]},
+			"price":{"type":"number","label":"Price in £","placeholder":"9.99","validation":["required","step=0.01","min=1","max=10"]},
+			"colour":{"type":"color","label":"Favourite Colour","value":"#0070b0","validation":["required"]},
+			"dob":{"type":"date","label":"Date of Birth","validation":["required","min=1997-04-28","max=2015-04-28"]},
 			
 			"submit":{"type":"submit","value":"Submit","class":"form_submit"}
 		}';
 		$form = new \helpers\html\form('form', $elements);
 		$form->labels = 'wrap';
-		$form->novalidate = true;
+		//$form->novalidate = true;
 		$form->enctype = 'multipart/form-data';
 		$form->snippets = MAVERICK_VIEWSDIR . 'includes/snippets';
 		
@@ -27,7 +29,6 @@ class main_controller extends base_controller
 		
 		$rules = array(
 			'email' => array('required', 'email'),
-			'image' => array('required', 'mimes:jpeg:gif:image/png:text/*'),
 		);
 		
 		validator::make($rules);
@@ -41,9 +42,10 @@ class main_controller extends base_controller
 		{
 			// errors - pass back to the form and show errors
 			$elements = '{
+				"name":{"type":"text","label":"Name","placeholder":"John Smith","validation":["required","size=50","minlength=2","maxlength=50"],"spellcheck":true},
 				"email":{"type":"email","label":"Email","placeholder":"email@test.com","validation":["required","email"]},
-				"image":{"type":"file","label":"Image","validation":["required"]},
-				"colour":{"type":"radio","label":"Favourite Colour","values":["Red","Yellow","Pink","Green","Orange","Purple","Blue"]},
+				"price":{"type":"number","label":"Price in £","placeholder":"9.99","validation":["required","step=0.01","min=1","max=10"]},
+				"colour":{"type":"color","label":"Favourite Colour","value":"#0070b0","validation":["required"]},
 
 				"submit":{"type":"submit","value":"Submit","class":"form_submit"}
 			}';

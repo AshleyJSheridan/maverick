@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="tel"
 		{{class}}
 		{{id}}
 		name="{{name}}"
@@ -10,6 +10,5 @@
 		{{minlength}}
 		{{maxlength}}
 		{{size}}
-		{{spellcheck}}
 	/>
 {{error}}

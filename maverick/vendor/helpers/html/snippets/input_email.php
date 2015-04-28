@@ -2,11 +2,13 @@
 		type="email"
 		{{class}}
 		{{id}}
-		{{size}}
 		name="{{name}}"
 		{{value}}
 		{{placeholder}}
 		{{required}}
 		{{regex}}
+		{{minlength}}
+		{{maxlength}}
+		{{size}}
 	/>
 {{error}}

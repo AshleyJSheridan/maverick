@@ -1,9 +1,10 @@
 <input
-		type="file"
+		type="color"
 		{{class}}
 		{{id}}
 		name="{{name}}"
+		{{value}}
 		{{required}}
-		{{accept}}
+		{{regex}}
 	/>
 {{error}}

@@ -1,9 +1,12 @@
 <input
-		type="file"
+		type="date"
 		{{class}}
 		{{id}}
 		name="{{name}}"
+		{{value}}
+		{{placeholder}}
 		{{required}}
-		{{accept}}
+		{{min}}
+		{{max}}
 	/>
 {{error}}

@@ -13,6 +13,7 @@ class form
 	private $enctype = 'application/x-www-form-urlencoded';
 	private $labels = 'wrap';
 	private $novalidate = false;
+	private $autocomplete = false;
 	private $snippets;
 	
 	/**
@@ -69,6 +70,7 @@ class form
 					$this->labels = $value;
 				break;
 			case 'novalidate':
+			case 'autocomplete':
 				if(is_bool($value))
 					$this->$param = $value;
 				break;
@@ -125,12 +127,27 @@ class form
 		switch($element->type)
 		{
 			case 'text':
-			case 'number':
 			case 'email':
 			case 'hidden':
 			case 'file':
-				$value = isset($_REQUEST[$element->name])?$_REQUEST[$element->name]:(isset($element->value)?$element->value:'');
+			case 'url':
+			case 'tel':
+			case 'number':
+			case 'range':
+			case 'color':
+			case 'date':
+			case 'time':
+			case 'password':
+				$value = isset($_REQUEST[$element->name])?$_REQUEST[$element->name]:(strlen($element->value)?$element->value:'');
 				
+				foreach($element->validation as $validation)
+				{
+					if(preg_match('/^([a-z]+)=(.+)$/', $validation, $matches))
+					{
+						${$matches[1]} = $matches[2];
+					}
+				}
+
 				$html .= \helpers\html\html::load_snippet($snippet, array(
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
@@ -139,6 +156,28 @@ class form
 					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
 					'required' => in_array('required', $element->validation)?'required="required"':'',
 					'error' => \validator::get_first_error($element->name, $error_tags),
+					'min' => isset($min)?"min=\"$min\"":'',
+					'max' => isset($max)?"max=\"$max\"":'',
+					'minlength' => isset($minlength)?"minlength=\"$minlength\"":'',
+					'maxlength' => isset($maxlength)?"maxlength=\"$maxlength\"":'',
+					'size' => isset($size)?"size=\"$size\"":'',
+					'step' => isset($step)?"step=\"$step\"":'',
+					'accept' => isset($accept)?"accept=\"$accept\"":'',
+					'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
+				) );
+				break;
+			case 'textarea':
+				$value = isset($_REQUEST[$element->name])?$_REQUEST[$element->name]:(strlen($element->value)?$element->value:'');
+				
+				$html .= \helpers\html\html::load_snippet($snippet, array(
+					'class' => ($element->class)?"class=\"{$element->class}\"":'',
+					'id' => ($element->id)?"id=\"{$element->id}\"":'',
+					'name' => $element->name,
+					'value' => strlen($value)?$value:'',
+					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
+					'required' => in_array('required', $element->validation)?'required="required"':'',
+					'error' => \validator::get_first_error($element->name, $error_tags),
+					'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
 				) );
 				break;
 			case 'submit':
@@ -151,6 +190,7 @@ class form
 				$labels = null;	// don't wrap the submit in a label
 				break;
 			case 'select':
+			case 'datalist':
 				$html .= \helpers\html\html::load_snippet($snippet, array(
 					'class' => ($element->class)?"class=\"{$element->class}\"":'',
 					'id' => ($element->id)?"id=\"{$element->id}\"":'',
@@ -239,6 +279,7 @@ class form_element
 	private $value;
 	private $values;
 	private $placeholder;
+	private $spellcheck = false;
 	private $validation = array();
 	
 	/**
@@ -250,7 +291,7 @@ class form_element
 	{
 		$this->name = $name;
 		
-		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation') as $part)
+		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation', 'spellcheck') as $part)
 		{
 			if(isset($element_obj->$part))
 				$this->$part = $element_obj->$part;
