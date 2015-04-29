@@ -183,7 +183,7 @@ class maverick
 			if($this->check_class_method_exists($this->controller['controller_name'], $this->controller['method'], $this->controller['controller']))
 				$this->controller['controller']->{$this->controller['method']}($this->controller['args']);
 			else
-				error::show("controller '{$this->controller['controller_name']}' or method '{$this->controller['method']}' not found");
+				\error::show("controller '{$this->controller['controller_name']}' or method '{$this->controller['method']}' not found");
 		}
 		else
 		{
@@ -197,7 +197,7 @@ class maverick
 				$this->controller['controller']->{$this->controller['method']}();
 			}
 			else
-				error::show("404", 404);
+				\error::show("404", 404);
 		}
 	}
 	
