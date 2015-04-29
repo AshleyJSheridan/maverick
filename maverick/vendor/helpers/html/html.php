@@ -75,4 +75,12 @@ class html
 		
 		return $contents;
 	}
+	
+	public static function generate_id($string)
+	{
+		$id = preg_replace('/[^\p{L}]/', '_', $string);
+		$id = strtolower(str_replace('__', '_', $id) );
+		
+		return $id;
+	}
 }

@@ -61,13 +61,27 @@ class main_controller extends base_controller
 	
 	function home()
 	{
-		$image_1 = new \helpers\image(MAVERICK_HTDOCS . 'img/BlueMarbleWest.jpg');
-		//$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/BlueMarbleWest2.jpg');
-		$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/Road.jpg');
-		//$image_2 = new \helpers\image(MAVERICK_HTDOCS . 'img/400/earth_oil.jpg');
+		$data = array(
+			'PHP' => 'Great',
+			'MySQL' => 'Great',
+			'MSSQL' => 'Good',
+			'HTML' => 'Great',
+			'CSS' => 'Great',
+			'SASS' => 'Good',
+			'JavaScript' => 'Great',
+			'JQuery' => 'Great',
+			'XML' => 'Great',
+			'XSLT' => 'Good',
+			'BASH' => 'Good',
+			'Arduino (C++)' => 'Fair',
+			'Python' => 'Basic',
+		);
+		//$headers = array('Great', 'Good', 'Fair', 'Basic');
+		$headers = '["Great","Good","Fair","Basic"]';
+		$skills = new \helpers\html\tables('skill', 'xref', $data, $headers);
 		
-		$similarity = \helpers\image::compare($image_1, $image_2);
-
+		var_dump($skills->render() );
+		
 		$view = view::make('includes/template')
 			->with('page', 'home')
 			->render(true, true);
