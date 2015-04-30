@@ -61,7 +61,7 @@ class main_controller extends base_controller
 	
 	function home()
 	{
-		$data = array(
+		/*$data = array(
 			'PHP' => 'Great',
 			'MySQL' => 'Great',
 			'MSSQL' => 'Good',
@@ -75,12 +75,17 @@ class main_controller extends base_controller
 			'BASH' => 'Good',
 			'Arduino (C++)' => 'Fair',
 			'Python' => 'Basic',
-		);
+		);*/
+		$data = '{"PHP":"Great","MySQL":"Great","MSSQL":"Good","HTML":"Great","CSS":"Great","SASS":"Good","JavaScript":"Great","JQuery":"Great","XML":"Great","XSLT":"Good","BASH":"Good","Arduino (C++)":"Fair","Python":"Basic"}';
 		//$headers = array('Great', 'Good', 'Fair', 'Basic');
 		$headers = '["Great","Good","Fair","Basic"]';
 		$skills = new \helpers\html\tables('skill', 'xref', $data, $headers);
 		$skills->xref_x = 'x';
 		$skills->caption = 'This table charts my main skills and level of skill in each, out of great, good, fair, and basic for languages';
+		
+		
+		
+		
 		
 		$view = view::make('includes/template')
 			->with('page', 'home')

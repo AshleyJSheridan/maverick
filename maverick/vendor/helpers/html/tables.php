@@ -49,9 +49,10 @@ class tables
 		// convert json to PHP arrays
 		if(!is_array($this->headers))
 			$this->headers = $this->extract_json($this->headers);
+var_dump($this->data, json_decode($this->data));
 		if(!is_array($this->data))
 			$this->data = $this->extract_json($this->data);
-		
+
 		// generate a table of the appropriate type with sub-render method
 		$table_html = $this->{"render_$this->type"}();
 		
@@ -136,7 +137,19 @@ DATA;
 	
 	private function extract_json($json)
 	{
-		return json_decode($json);
+		$array = json_decode($json);
+		
+		if(is_object($array))
+		{
+			$temp_array = array();
+			
+			foreach($array as $key => $value)
+				$temp_array[$key] = $value;
+			
+			$array = $temp_array;
+		}
+		
+		return $array;
 	}
 	
 }
