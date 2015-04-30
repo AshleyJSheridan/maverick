@@ -14,7 +14,7 @@ return array(
 		MAVERICK_BASEDIR . 'models',
 	),
 	
-	'route_preparser' => 'route_controller->lang_filter',
+	'route_preparser' => 'route_controller->maverick_cms',
 	
 	'view_parsing' => true,
 	

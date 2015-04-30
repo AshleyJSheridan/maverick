@@ -1,7 +1,7 @@
 <?php
 class route_controller extends base_controller
 {
-	function lang_filter()
+	function maverick_cms()
 	{
 		// any URL pre-parsing logic goes here
 		// for example, this method will look for language culture segments in the URL, and return the default language of the app
