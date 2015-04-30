@@ -79,11 +79,12 @@ class main_controller extends base_controller
 		//$headers = array('Great', 'Good', 'Fair', 'Basic');
 		$headers = '["Great","Good","Fair","Basic"]';
 		$skills = new \helpers\html\tables('skill', 'xref', $data, $headers);
-		
-		var_dump($skills->render() );
+		$skills->xref_x = 'x';
+		$skills->caption = 'This table charts my main skills and level of skill in each, out of great, good, fair, and basic for languages';
 		
 		$view = view::make('includes/template')
 			->with('page', 'home')
+			->with('skills', $skills->render() )
 			->render(true, true);
 	}
 
