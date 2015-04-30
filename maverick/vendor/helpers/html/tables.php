@@ -49,7 +49,6 @@ class tables
 		// convert json to PHP arrays
 		if(!is_array($this->headers))
 			$this->headers = $this->extract_json($this->headers);
-var_dump($this->data, json_decode($this->data));
 		if(!is_array($this->data))
 			$this->data = $this->extract_json($this->data);
 
@@ -71,10 +70,36 @@ var_dump($this->data, json_decode($this->data));
 		);
 		
 		$html = \helpers\html\html::load_snippet($snippet, $replacements);
-		
-		//var_dump($table_html);
-		
+
 		return $html;
+	}
+	
+	private function render_data()
+	{
+		// create if the headers exists
+		if(count($this->headers) == 2 && isset($this->headers[0][0]) && isset($this->headers[1][0]) )
+		{
+			// generate the column headers
+			$html = '<tr><th></th>';
+			foreach($this->headers[0] as $header)
+				$html .= "<th>$header</th>";
+			$html .= '</tr>';
+			
+			// generate the row headers and the data
+			for($i=0; $i<count($this->headers[1]); $i++)
+			{
+				// the header
+				$html .= "<tr><th>{$this->headers[1][$i]}</th>";
+				
+				// and now the data
+				foreach($this->data[$i] as $datum)
+					$html .= "<td>$datum</td>";
+				
+				$html .= '</tr>';
+			}
+			return $html;
+		}
+		return '';
 	}
 	
 	private function render_xref()

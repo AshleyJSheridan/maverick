@@ -84,12 +84,51 @@ class main_controller extends base_controller
 		$skills->caption = 'This table charts my main skills and level of skill in each, out of great, good, fair, and basic for languages';
 		
 		
-		
-		
+		/*$headers = array(
+			array('Str', 'Agi', 'Sta', 'Int', 'Spi'),
+			array('Human', 'Dwarf', 'Night Elf', 'Gnome', 'Draenei', 'Worgen', 'Pandaren', 'Orc', 'Undead', 'Tauren', 'Troll', 'Blood Elf', 'Goblin'),
+		);*/
+		$headers = '[
+			["Str","Agi","Sta","Int","Spi"],
+			["Human","Dwarf","Night Elf","Gnome","Draenei","Worgen","Pandaren","Orc","Undead","Tauren","Troll","Blood Elf","Goblin"]
+		]';
+		/*$data = array(
+			array(20, 20, 20, 20, 20),
+			array(25, 16, 21, 19, 19),
+			array(16, 24, 20, 20, 20),
+			array(15, 22, 20, 23, 20),
+			array(21, 17, 20, 20, 22),
+			array(23, 22, 20, 16, 19),
+			array(20, 18, 21, 19, 22),
+			array(23, 17, 21, 17, 22),
+			array(19, 18, 20, 18, 25),
+			array(25, 16, 21, 16, 22),
+			array(21, 22, 20, 16, 21),
+			array(17, 22, 20, 23, 18),
+			array(17, 22, 20, 23, 18),
+		);*/
+		$data = '[
+			[20,20,20,20,20],
+			[25,16,21,19,19],
+			[16,24,20,20,20],
+			[15,22,20,23,20],
+			[21,17,20,20,22],
+			[23,22,20,16,19],
+			[20,18,21,19,22],
+			[23,17,21,17,22],
+			[19,18,20,18,25],
+			[25,16,21,16,22],
+			[21,22,20,16,21],
+			[17,22,20,23,18],
+			[17,22,20,23,18]
+		]';
+		$stats = new \helpers\html\tables('stats', 'data', $data, $headers);
+		$stats->caption = 'Base stats for World of Warcraft races';
 		
 		$view = view::make('includes/template')
 			->with('page', 'home')
 			->with('skills', $skills->render() )
+			->with('stats', $stats->render() )
 			->render(true, true);
 	}
 
