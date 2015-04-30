@@ -154,8 +154,8 @@ class maverick
 				die($view);
 		}
 		
-		if(strlen($this->get_config('config.route_preparser') ) )
-			$this->route_preparser();
+		/*if(strlen($this->get_config('config.route_preparser') ) )
+			$this->route_preparser();*/
 		
 		$this->get_request_uri();
 		$this->db = new \stdClass();
@@ -225,9 +225,9 @@ class maverick
 	 * handle a route pre-parser method if it's been specified in the config
 	 * @return boolean
 	 */
-	private function route_preparser()
+	private function route_preparser($preparser)
 	{
-		$preparser = $this->get_config('config.route_preparser');
+		//$preparser = $this->get_config('config.route_preparser');
 
 		// just check that the controller->method string is in the right format
 		if(!preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $preparser) )
@@ -280,12 +280,15 @@ class maverick
 	{
 		$this->config = new \stdClass();
 		
-		//TODO: add functionality to allow sub-directories to override configs per environment
 		foreach(glob(MAVERICK_BASEDIR . 'config/*.php') as $config_file)
 		{
 			$config_name = str_replace('.php', '', basename($config_file) );
 			
 			$this->config->$config_name = include $config_file;
+			
+			// this seems bad to me, but it will allow multiple route preparsers to be added in any config file and run immediately
+			if($this->get_config("$config_name.route_preparser") != '' )
+				$this->route_preparser($this->get_config("$config_name.route_preparser"));
 		}
 	}
 	
