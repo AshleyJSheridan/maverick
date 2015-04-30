@@ -1,6 +1,5 @@
 <?php
 return array(
-	'required' => 'The %s field is required',
 	'accepted' => 'The %s field must be checked to continue',
 	'after' => 'The %s field must be a date after %s',
 	'alpha' => 'The %s field must contain only letters or spaces',
@@ -19,6 +18,10 @@ return array(
 	'numeric' => 'The %s field must be a valid number',
 	'phone' => 'The %s field must be a valid phone number',
 	'regex' => 'The %s field must match the pattern %s',
+	'required' => 'The %s field is required',
+	'required_if' => 'The %s field is required if %s is set',
+	'required_if_yes' => 'The %s field is required if %s is yes',
+	'required_if_value' => 'The %s field is required if %s is %s',
 	'size' => 'The %s field is not of the right size',
 	'url' => 'The %s field must be a valid URL',
 );

@@ -165,6 +165,48 @@ class validator
 	}
 	
 	/**
+	 * validates a field as required only if another field is set and not empty
+	 * @param string $field the field to make optionally required
+	 * @param array $value the field to check a value for
+	 * @return boolean
+	 */
+	private function rule_required_if($field, $value)
+	{
+		if(!empty($_REQUEST[$value[0]] ) )
+			return empty($_REQUEST[$field]);
+		else
+			return true;
+	}
+	
+	/**
+	 * validates a field as required only if another field is set to something that validates as true by rule_accepted()
+	 * @param string $field
+	 * @param array $value
+	 * @return boolean
+	 */
+	private function rule_required_if_yes($field, $value)
+	{
+		if($this->rule_accepted($value[0]))
+			return !empty($_REQUEST[$field]);
+		else
+			return true;
+	}
+	
+	/**
+	 * validates a field as required only if another field is set to the specified value
+	 * @param string $field
+	 * @param array $value
+	 * @return boolean
+	 */
+	private function rule_required_if_value($field, $value)
+	{
+		if(isset($_REQUEST[$value[0]]) && $_REQUEST[$value[0]] == $value[1] )
+			return !empty($_REQUEST[$field]);
+		else
+			return true;
+	}
+
+	/**
 	 * apply the accepted rule to a field
 	 * @param string $field the name of the field to which this rule applies
 	 * @return bool
