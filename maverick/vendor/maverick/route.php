@@ -126,6 +126,21 @@ class route
 			}
 		}
 		
+		// remove any unmatched arguments still left 
+		if(!empty($a['args']))
+		{
+			$a['args'] = (array)$a['args'];
+			
+			foreach($a['args'] as $key => &$arg)
+			{
+				$arg = preg_replace('/\$\d+/', '', $arg);
+			}
+		}
+		
+		// finally convert the return back to the requested format
+		if(is_string($args) && is_array($a['args']) )
+			$a['args'] = reset($a['args']);
+		
 		return $a;
 	}
 }
