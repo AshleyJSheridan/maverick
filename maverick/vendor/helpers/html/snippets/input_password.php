@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="password"
 		{{class}}
 		{{id}}
 		name="{{name}}"
