@@ -1,5 +1,5 @@
 /*
-SQLyog Community v11.27 (32 bit)
+SQLyog Community v11.28 (32 bit)
 MySQL - 5.5.35 : Database - maverick
 *********************************************************************
 */
@@ -111,14 +111,17 @@ DROP TABLE IF EXISTS `maverick_cms_users`;
 CREATE TABLE `maverick_cms_users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
   `email` varchar(250) NOT NULL,
   `forename` varchar(100) DEFAULT NULL,
   `surname` varchar(100) DEFAULT NULL,
   `admin` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_users` */
+
+insert  into `maverick_cms_users`(`id`,`username`,`password`,`email`,`forename`,`surname`,`admin`) values (1,'admin','e3274be5c857fb42ab72d786e281b4b8','ash@ashleysheridan.co.uk','Ashley','Sheridan','yes');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

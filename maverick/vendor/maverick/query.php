@@ -500,7 +500,7 @@ class query
 				if($i)
 					$join_string .= ' AND ';
 				
-				if(is_object($join['on'][$i]['field1']) && get_class($join['on'][$i]['field1']) == 'db_raw')
+				if(is_object($join['on'][$i]['field1']) && get_class($join['on'][$i]['field1']) == 'maverick\db_raw')
 				{
 					$join_string .= ' ? ';
 					$params[] = (string)$join['on'][$i]['field1'];
@@ -510,7 +510,7 @@ class query
 				
 				$join_string .= " {$join['on'][$i]['condition']} ";
 				
-				if(is_object($join['on'][$i]['field2']) && get_class($join['on'][$i]['field2']) == 'db_raw')
+				if(is_object($join['on'][$i]['field2']) && get_class($join['on'][$i]['field2']) == 'maverick\db_raw')
 				{
 					$join_string .= ' ? ';
 					$params[] = (string)$join['on'][$i]['field2'];
@@ -541,7 +541,7 @@ class query
 		{
 			$where_string .= (!$i)?' WHERE ':" {$wheres[$i]['type']} ";
 			
-			if(is_object($wheres[$i]['field']) && get_class($wheres[$i]['field']) == 'db_raw')
+			if(is_object($wheres[$i]['field']) && get_class($wheres[$i]['field']) == 'maverick\db_raw')
 			{
 				$where_string .= ' ? ';
 				$params[] = (string)$wheres[$i]['field'];
@@ -551,7 +551,7 @@ class query
 			
 			$where_string .= " {$wheres[$i]['condition']} ";
 			
-			if(is_object($wheres[$i]['value']) && get_class($wheres[$i]['value']) == 'db_raw')
+			if(is_object($wheres[$i]['value']) && get_class($wheres[$i]['value']) == 'maverick\db_raw')
 			{
 				$where_string .= ' ? ';
 				$params[] = (string)$wheres[$i]['value'];
@@ -603,7 +603,7 @@ class query
 		{
 			$group_by_string .= (!$i)?' GROUP BY ':',';
 			
-			if(is_object($group_bys[$i]['field']) && get_class($group_bys[$i]['field']) == 'db_raw')
+			if(is_object($group_bys[$i]['field']) && get_class($group_bys[$i]['field']) == 'maverick\db_raw')
 			{
 				$group_by_string .= ' ? ';
 				$params[] = (string)$group_bys[$i]['field'];
@@ -630,7 +630,7 @@ class query
 		{
 			$order_by_string .= (!$i)?' ORDER BY ':',';
 			
-			if(is_object($order_bys[$i]['field']) && get_class($order_bys[$i]['field']) == 'db_raw')
+			if(is_object($order_bys[$i]['field']) && get_class($order_bys[$i]['field']) == 'maverick\db_raw')
 			{
 				$order_by_string .= ' ? ';
 				$params[] = (string)$order_bys[$i]['field'];
