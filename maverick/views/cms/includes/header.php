@@ -16,10 +16,10 @@
 </head>
 	
 <body class="home">
-	<div id="main">
-		<header>
-			<nav>
-				
-			</nav>
-			<h1>MaVeriCk</h1>
-		</header>
+	<header>
+		<h1>MaVeriCk</h1>
+		<nav>
+			{{admin_nav}}
+		</nav>
+	</header>
+	<section class="main">

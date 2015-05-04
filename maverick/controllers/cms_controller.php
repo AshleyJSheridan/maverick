@@ -1,6 +1,8 @@
 <?php
 class cms_controller extends base_controller
 {
+	private $nav;
+	
 	function __construct()
 	{
 		if(!isset($_SESSION))
@@ -19,13 +21,16 @@ class cms_controller extends base_controller
 			exit;
 		}
 		
+		// set up the main nav
+		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
+		
 		switch($params[0])
 		{
 			case '':
 				$this->dash();
 				break;
-			case 'form':
-				$this->form();
+			case 'forms':
+				$this->forms();
 				break;
 			case 'login':
 				$this->login();
@@ -38,12 +43,46 @@ class cms_controller extends base_controller
 
 	private function dash()
 	{
-		echo 'dash';
+		$page = 'dash';
+		
+		$this->load_view($page);
 	}
 
-	private function form()
+	private function forms()
 	{
+		$page = 'form';
 		
+		if(!empty($_POST))
+		{
+			// process post data here
+		}
+		else
+		{
+			// get list of forms and show them
+			$forms = cms::get_forms();
+			$headers = '["Name","Language","Total Elements"]';
+			$data = array();
+			foreach($forms as $form)
+				$data[] = array($form['name'], $form['lang'], $form['total_elements']);
+			
+			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
+			
+			var_dump($form_table->render());
+		}
+		
+		$this->load_view($page, array('forms'=>'wtf') );
+	}
+	
+	
+	
+	private function load_view($view, $with_params = array() )
+	{
+		$view = view::make('cms/includes/template')->with('page', $view)->with('admin_nav', $this->nav);
+		
+		foreach($with_params as $param => $value)
+			$view->with($param, $value);
+				
+		$view->render();
 	}
 
 	private function login()
