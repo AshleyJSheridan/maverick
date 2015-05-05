@@ -77,6 +77,7 @@ class tables
 	private function render_data()
 	{
 		// create if the headers exists
+		// 2 header style table
 		if(count($this->headers) == 2 && isset($this->headers[0][0]) && isset($this->headers[1][0]) )
 		{
 			// generate the column headers
@@ -97,6 +98,27 @@ class tables
 				
 				$html .= '</tr>';
 			}
+			return $html;
+		}
+		
+		// 1 header style table
+		if(count($this->headers) > 0 && isset($this->headers[0]) &&  !is_array($this->headers[0]) )
+		{
+			// generate the column headers
+			$html = '<tr>';
+			foreach($this->headers as $header)
+				$html .= "<th>$header</th>";
+			$html .= '</tr>';
+			
+			// generate the data
+			for($i=0; $i<count($this->data); $i++)
+			{
+				foreach($this->data[$i] as $datum)
+					$html .= "<td>$datum</td>";
+				
+				$html .= '</tr>';
+			}
+			
 			return $html;
 		}
 		return '';
