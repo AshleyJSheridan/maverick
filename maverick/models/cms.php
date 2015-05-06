@@ -11,7 +11,7 @@ class cms
 			->get()
 			->fetch();
 
-		return(isset($data[0]) );
+		return(isset($data[0])?(int)$data[0]['id']:false );
 	}
 	
 	static function get_forms()
@@ -23,5 +23,21 @@ class cms
 			->fetch();
 
 		return $data;
+	}
+	
+	static function get_permissions($user_id)
+	{
+		$perms = db::table('maverick_cms_users AS u')
+			->leftJoin('maverick_cms_user_permissions AS up', array('up.user_id', '=', 'u.id') )
+			->leftJoin('maverick_cms_permissions AS p', array(
+					array('up.permission_id', '=', 'p.id'),
+				))
+			->where('u.id', '=', db::raw($user_id))
+			->get(array('u.admin', 'GROUP_CONCAT(p.id) AS perm_ids', 'GROUP_CONCAT(p.name) AS perm_names') )
+			->groupBy('u.id')
+			->fetch()
+			;
+		
+		return (isset($perms[0]))?$perms[0]:false;
 	}
 }

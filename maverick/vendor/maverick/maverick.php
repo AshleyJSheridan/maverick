@@ -16,7 +16,6 @@ class maverick
 	public $validator;
 	public $db;
 	public $view;
-	public $hooks = array();	// used for registering cms extensions
 
 	/**
 	 * magic getter for specific object values - returns null if the specified value is not in the array
@@ -220,17 +219,6 @@ class maverick
 	{
 		if($this->check_required_fields($details, array('args', 'protocol', 'method', 'controller_name') ) )
 			$this->error_routes[$code] = $details;
-	}
-	
-	/**
-	 * allows extra controller methods to be used within the CMS as extensions
-	 * @param string $hook the url pattern to match after the admin call
-	 * @param string $controller the name of the controller
-	 * @param string $method the name of the controller within the speficied method
-	 */
-	public function register_hook($hook, $controller, $method)
-	{
-		//TODO: implement this stub
 	}
 	
 	/**

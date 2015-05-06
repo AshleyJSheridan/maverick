@@ -2,17 +2,24 @@
 class cms_controller extends base_controller
 {
 	private $nav;
+	private $cms;
+	private $app;
 	
 	function __construct()
 	{
 		if(!isset($_SESSION))
 			session_start();
+		
+		$this->cms = \maverick_cms\cms::getInstance();
+		$this->app = \maverick\maverick::getInstance();
 	}
 
 	function main($params)
 	{
 		$params = $this->clean_params($params);
 		$app = \maverick\maverick::getInstance();
+		
+		unset($_SESSION['']);
 		
 		// check login status
 		if(!$this->check_login_status($params))
@@ -52,25 +59,32 @@ class cms_controller extends base_controller
 	{
 		$page = 'form';
 		
+		if(!$this->cms->check_permissions('form'))
+		{
+			header('Location: /' . $this->app->get_config('cms.path') . '/');
+			exit;
+		}
+		
+		
 		if(!empty($_POST))
 		{
 			// process post data here
+			
 		}
 		else
 		{
 			// get list of forms and show them
 			$forms = cms::get_forms();
-			$headers = '["Name","Language","Total Elements"]';
+			$headers = '["Name","Language","Total Elements","Actions"]';
 			$data = array();
 			foreach($forms as $form)
-				$data[] = array($form['name'], $form['lang'], $form['total_elements']);
+				$data[] = array($form['name'], $form['lang'], $form['total_elements'], 'delete|copy|etc');
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
-			
-			var_dump($form_table->render());
+
 		}
 		
-		$this->load_view($page, array('forms'=>'wtf') );
+		$this->load_view($page, array('forms'=>$form_table->render()) );
 	}
 	
 	
@@ -94,7 +108,8 @@ class cms_controller extends base_controller
 			
 			if($login)
 			{
-				$_SESSION['maverick_admin'] = true;
+				$_SESSION['maverick_login'] = true;
+				$_SESSION['maverick_id'] = $login;
 				
 				$app = \maverick\maverick::getInstance();
 				
@@ -117,7 +132,7 @@ class cms_controller extends base_controller
 	
 	private function check_login_status($params)
 	{
-		return !(!isset($_SESSION['maverick_admin']) && $params[0] != 'login');
+		return !(!isset($_SESSION['maverick_login']) && $params[0] != 'login');
 	}
 	
 	/**
