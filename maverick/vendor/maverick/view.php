@@ -204,6 +204,32 @@ class view
 	}
 	
 	/**
+	 * perform a redirect and add in a response code if it was set
+	 * @param string $url the URL to redirect to - although the specs say it has to be absolute, every browser accepts relative too
+	 * @param int $response_code if a positive integer, this is the HTTP response code that is sent too
+	 */
+	public static function redirect($url, $response_code = null)
+	{
+		// set the host and protocol in order to validate relative URLs
+		// note that any URL that does not begin with a protocol is considered relative, as per the spec
+		$host = isset($_SERVER['HTTP_HOST'])?$_SERVER['HTTP_HOST']:$_SERVER['SERVER_NAME'];
+		$protocol = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+			|| (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+			|| (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') )?'https://':'http://';
+
+		// if the URL is not considered valid, even after treating it as relative and converting it to absolute, then just bomb out
+		if(!filter_var($url, FILTER_VALIDATE_URL) && ! filter_var("{$protocol}$host/$url", FILTER_VALIDATE_URL) )
+			return false;
+		
+		if($response_code && intval($response_code))
+			header("Location: $url", true, $response_code);
+		else
+			header("Location: $url");
+			
+		exit;
+	}
+	
+	/**
 	 * get the contents of a variable in the data member array
 	 * @param string $var the variable to return contents for
 	 * @return mixed
