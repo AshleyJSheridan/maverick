@@ -24,8 +24,9 @@ class cms_controller extends base_controller
 		// check login status
 		if(!$this->check_login_status($params))
 		{
-			header('Location: /' . $app->get_config('cms.path') . '/login');
-			exit;
+//			header('Location: /' . $app->get_config('cms.path') . '/login');
+//			exit;
+			view::redirect('Location: /' . $app->get_config('cms.path') . '/login');
 		}
 		
 		// set up the main nav
@@ -61,8 +62,9 @@ class cms_controller extends base_controller
 		
 		if(!$this->cms->check_permissions('form'))
 		{
-			header('Location: /' . $this->app->get_config('cms.path') . '/');
-			exit;
+//			header('Location: /' . $this->app->get_config('cms.path') . '/');
+//			exit;
+			view::redirect('Location: /' . $app->get_config('cms.path') . '/');
 		}
 		
 		
@@ -113,8 +115,9 @@ class cms_controller extends base_controller
 				
 				$app = \maverick\maverick::getInstance();
 				
-				header('Location: /' . $app->get_config('cms.path'));
-				exit;
+//				header('Location: /' . $app->get_config('cms.path'));
+//				exit;
+				view::redirect('Location: /' . $app->get_config('cms.path') . '/');
 			}
 		}
 		
