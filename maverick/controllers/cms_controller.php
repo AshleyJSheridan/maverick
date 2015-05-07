@@ -23,11 +23,7 @@ class cms_controller extends base_controller
 		
 		// check login status
 		if(!$this->check_login_status($params))
-		{
-//			header('Location: /' . $app->get_config('cms.path') . '/login');
-//			exit;
 			view::redirect('Location: /' . $app->get_config('cms.path') . '/login');
-		}
 		
 		// set up the main nav
 		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
@@ -59,13 +55,10 @@ class cms_controller extends base_controller
 	private function forms()
 	{
 		$page = 'form';
+		$app = \maverick\maverick::getInstance();
 		
 		if(!$this->cms->check_permissions('form'))
-		{
-//			header('Location: /' . $this->app->get_config('cms.path') . '/');
-//			exit;
 			view::redirect('Location: /' . $app->get_config('cms.path') . '/');
-		}
 		
 		
 		if(!empty($_POST))
@@ -80,7 +73,7 @@ class cms_controller extends base_controller
 			$headers = '["Name","Language","Total Elements","Actions"]';
 			$data = array();
 			foreach($forms as $form)
-				$data[] = array($form['name'], $form['lang'], $form['total_elements'], 'delete|copy|etc');
+				$data[] = array($form['name'], $form['lang'], $form['total_elements'], $this->generate_actions('forms', $form['id'], array('delete', 'copy') ) );
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 
@@ -89,7 +82,22 @@ class cms_controller extends base_controller
 		$this->load_view($page, array('forms'=>$form_table->render()) );
 	}
 	
-	
+	private function generate_actions($section, $id, $actions = array() )
+	{
+		if(empty($actions) || !intval($id) || empty($section) )
+			return '';
+		
+		$app = \maverick\maverick::getInstance();
+		
+		$actions_html = '';
+		foreach($actions as $action)
+		{
+			$actions_html .= <<<ACTION
+			<a href="/{$app->get_config('cms.path')}/$section/$action/$id">$action</a>
+ACTION;
+		}
+		return $actions_html;
+	}
 	
 	private function load_view($view, $with_params = array() )
 	{
@@ -103,6 +111,8 @@ class cms_controller extends base_controller
 
 	private function login()
 	{
+		$app = \maverick\maverick::getInstance();
+		
 		if(isset($_POST['username']) && isset($_POST['password']))
 		{
 			// check the passed in login details
@@ -114,9 +124,7 @@ class cms_controller extends base_controller
 				$_SESSION['maverick_id'] = $login;
 				
 				$app = \maverick\maverick::getInstance();
-				
-//				header('Location: /' . $app->get_config('cms.path'));
-//				exit;
+
 				view::redirect('Location: /' . $app->get_config('cms.path') . '/');
 			}
 		}
