@@ -23,7 +23,7 @@ class cms_controller extends base_controller
 		
 		// check login status
 		if(!$this->check_login_status($params))
-			view::redirect('Location: /' . $app->get_config('cms.path') . '/login');
+			view::redirect('/' . $app->get_config('cms.path') . '/login');
 		
 		// set up the main nav
 		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
@@ -38,6 +38,9 @@ class cms_controller extends base_controller
 				break;
 			case 'login':
 				$this->login();
+				break;
+			case 'logout':
+				$this->logout();
 				break;
 			default:
 				// loop through the hooks listed in the main MaVeriCk class
@@ -58,7 +61,7 @@ class cms_controller extends base_controller
 		$app = \maverick\maverick::getInstance();
 		
 		if(!$this->cms->check_permissions('form'))
-			view::redirect('Location: /' . $app->get_config('cms.path') . '/');
+			view::redirect('/' . $app->get_config('cms.path') . '/');
 		
 		
 		if(!empty($_POST))
@@ -109,10 +112,20 @@ ACTION;
 		$view->render();
 	}
 
-	private function login()
+	private function logout()
 	{
 		$app = \maverick\maverick::getInstance();
 		
+		unset($_SESSION['maverick_login']);
+		unset($_SESSION['maverick_id']);
+		
+		view::redirect('/' . $app->get_config('cms.path') . '/login');
+	}
+	
+	private function login()
+	{
+		$app = \maverick\maverick::getInstance();
+
 		if(isset($_POST['username']) && isset($_POST['password']))
 		{
 			// check the passed in login details
@@ -120,13 +133,17 @@ ACTION;
 			
 			if($login)
 			{
+				\maverick_cms\log::record_login($_POST['username'], true);
+				
 				$_SESSION['maverick_login'] = true;
 				$_SESSION['maverick_id'] = $login;
 				
 				$app = \maverick\maverick::getInstance();
 
-				view::redirect('Location: /' . $app->get_config('cms.path') . '/');
+				view::redirect('/' . $app->get_config('cms.path') . '/');
 			}
+			else
+				\maverick_cms\log::record_login($_POST['username']);
 		}
 		
 		$elements = '{

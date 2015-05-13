@@ -8,6 +8,10 @@ $nav = array(
 	'/pages' => 'Pages',
 	'/users' => 'Users',
 );
+
+if(isset($_SESSION['maverick_login']) && $_SESSION['maverick_login'])
+	$nav['/logout'] = 'Logout';
+
 $params = data::get('params');
 $request = isset($params[0])?$params[0]:'';
 
