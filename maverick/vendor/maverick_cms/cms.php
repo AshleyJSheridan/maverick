@@ -1,6 +1,7 @@
 <?php
 namespace maverick_cms;
 
+
 class cms extends \maverick\maverick
 {
 	static $_instance;

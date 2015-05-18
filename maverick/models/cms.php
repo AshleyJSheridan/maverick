@@ -1,8 +1,17 @@
 <?php
 use \maverick\db as db;
 
+/**
+ * the main model for the CMS
+ */
 class cms
 {
+	/**
+	 * determines if a username and password is valid - this does not presume any particular type of user, just a valid user
+	 * @param string $username the username of the user to determine
+	 * @param string $password the password for the user
+	 * @return int|bool false if the user is not valid, or the id of the user otherwise
+	 */
 	static function check_login($username, $password)
 	{
 		$data = db::table('maverick_cms_users')
@@ -14,6 +23,10 @@ class cms
 		return(isset($data[0])?(int)$data[0]['id']:false );
 	}
 	
+	/**
+	 * gets a list of all the forms in the CMS as defined in the database
+	 * @return array
+	 */
 	static function get_forms()
 	{
 		$data = db::table('maverick_cms_forms AS f')
@@ -25,6 +38,79 @@ class cms
 		return $data;
 	}
 	
+	static function get_form($form_id)
+	{
+		$form_id = intval($form_id);
+
+		$form = db::table('maverick_cms_forms AS f')
+			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
+			->where('f.id', '=', db::raw($form_id))
+			->orderBy('fe.display_order')
+			->get(array(
+				'f.name AS form_name',
+				'f.active AS form_active',
+				'f.lang',
+				'f.deleted AS form_deleted',
+				'fe.id AS element_id',
+				'fe.element_name',
+				'fe.type',
+				'fe.display',
+				'fe.label',
+				'fe.placeholder',
+				'fe.value',
+				'fe.display_order',
+				'fe.class',
+				'fe.html_id',
+			))
+			->fetch();
+		
+		$elements = array();
+		foreach($form as $element)
+			$elements[] = $element['element_id'];
+		
+		// get the extra bits for any fields, such as select values and extra validation parameters
+		$extra = db::table('maverick_cms_form_elements_extra AS fee')
+			->whereIn('fee.element_id', $elements)
+			->get()
+			->fetch();
+		
+		foreach($form as &$element)
+		{
+			$element['extra'] = array();
+
+			// this ensures that we're not looping through anything uneccessarily
+			if(!count($extra))
+				break;
+			else
+			{
+				for($i=0; $i<count($extra); $i++)
+				{
+					// if the id matches then this extra bit belongs to the element
+					if($extra[$i]['element_id'] == $element['element_id'])
+					{
+						$type = $extra[$i]['special_type'];
+						if(!isset($element['extra'][$type]))
+							$element['extra'][$type] = array();
+						
+						$element['extra'][$type][] = $extra[$i]['value'];
+						
+						// this bit removes the elements from the $extra array so that we're not looping through them later
+						// it will pay off dramatically for forms that contain large select lists!
+						array_splice($extra, $i, 1);
+						$i--;
+					}
+				}
+			}
+		}
+
+		return $form;
+	}
+	
+	/**
+	 * gets the permissions for the specified user id and an identifier of whether or not this user is an admin
+	 * @param int $user_id the id of the user to get permissions for
+	 * @return array
+	 */
 	static function get_permissions($user_id)
 	{
 		$perms = db::table('maverick_cms_users AS u')

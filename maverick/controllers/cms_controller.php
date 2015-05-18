@@ -34,7 +34,7 @@ class cms_controller extends base_controller
 				$this->dash();
 				break;
 			case 'forms':
-				$this->forms();
+				$this->forms($params);
 				break;
 			case 'login':
 				$this->login();
@@ -55,7 +55,7 @@ class cms_controller extends base_controller
 		$this->load_view($page);
 	}
 
-	private function forms()
+	private function forms($params)
 	{
 		$page = 'form';
 		$app = \maverick\maverick::getInstance();
@@ -64,25 +64,45 @@ class cms_controller extends base_controller
 			view::redirect('/' . $app->get_config('cms.path') . '/');
 		
 		
-		if(!empty($_POST))
-		{
-			// process post data here
-			
-		}
-		else
+		// show the list of forms as this is the main forms page requested
+		if(!isset($params[1]))
 		{
 			// get list of forms and show them
 			$forms = cms::get_forms();
 			$headers = '["Name","Language","Total Elements","Actions"]';
 			$data = array();
 			foreach($forms as $form)
-				$data[] = array($form['name'], $form['lang'], $form['total_elements'], $this->generate_actions('forms', $form['id'], array('delete', 'copy') ) );
+				$data[] = array($form['name'], $form['lang'], $form['total_elements'], $this->generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 
+			$this->load_view($page, array('forms'=>$form_table->render()) );
 		}
-		
-		$this->load_view($page, array('forms'=>$form_table->render()) );
+		else
+		{
+			switch($params[1])
+			{
+				case 'edit':
+					if(isset($params[2]) && intval($params[2]))
+					{
+						$form = cms::get_form($params[2]);
+						
+						
+					}
+					else
+						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
+					break;
+				case 'new':
+					echo 'new';
+					break;
+				case 'delete':
+					echo 'delete';
+					break;
+				case 'duplicate':
+					echo 'duplicate';
+					break;
+			}
+		}
 	}
 	
 	private function generate_actions($section, $id, $actions = array() )
@@ -171,8 +191,18 @@ ACTION;
 	private function clean_params($params)
 	{
 		foreach($params as $key => &$param)
+		{
 			$param = trim($param, '/');
-		
+			
+			if($param == '')
+				unset($params[$key]);
+			
+			if(strpos($param, '/'))
+			{
+				array_splice($params, $key, 1, explode('/', $param) );
+			}
+		}
+
 		return $params;
 	}
 }

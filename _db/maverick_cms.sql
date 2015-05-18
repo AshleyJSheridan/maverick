@@ -26,15 +26,15 @@ CREATE TABLE `maverick_cms_form_elements` (
   `placeholder` varchar(100) NOT NULL,
   `value` varchar(100) NOT NULL,
   `display_order` tinyint(3) unsigned NOT NULL,
-  `required` enum('yes','no') NOT NULL DEFAULT 'no',
-  `error_name` varchar(50) NOT NULL,
-  `size` smallint(6) unsigned NOT NULL,
   `class` varchar(50) NOT NULL,
   `html_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements` */
+
+insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (1,2,'name','text','yes','Name','John Smith','',1,'','');
+insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (2,2,'email','email','yes','Email','name@email.com','',2,'','');
 
 /*Table structure for table `maverick_cms_form_elements_extra` */
 
@@ -46,9 +46,15 @@ CREATE TABLE `maverick_cms_form_elements_extra` (
   `special_type` varchar(50) NOT NULL,
   `value` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements_extra` */
+
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (1,1,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (2,1,'between','2:100');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (3,2,'between','5:255');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (4,1,'required','true');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (5,2,'required','true');
 
 /*Table structure for table `maverick_cms_forms` */
 
@@ -58,14 +64,15 @@ CREATE TABLE `maverick_cms_forms` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `active` enum('yes','no') NOT NULL DEFAULT 'yes',
-  `lang` varchar(5) DEFAULT NULL,
+  `lang` varchar(5) NOT NULL DEFAULT 'en-gb',
+  `deleted` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_forms` */
 
-insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`) values (1,'competition','yes','en-gb');
-insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`) values (2,'contact','yes','en-gb');
+insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`,`deleted`) values (1,'competition','yes','en-gb','no');
+insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`,`deleted`) values (2,'contact','yes','en-gb','no');
 
 /*Table structure for table `maverick_cms_logins` */
 
