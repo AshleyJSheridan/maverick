@@ -76,7 +76,7 @@ class cms
 		
 		foreach($form as &$element)
 		{
-			$element['extra'] = array();
+			//$element['extra'] = array();
 
 			// this ensures that we're not looping through anything uneccessarily
 			if(!count($extra))
@@ -89,10 +89,10 @@ class cms
 					if($extra[$i]['element_id'] == $element['element_id'])
 					{
 						$type = $extra[$i]['special_type'];
-						if(!isset($element['extra'][$type]))
-							$element['extra'][$type] = array();
+						if(!isset($element[$type]))
+							$element[$type] = array();
 						
-						$element['extra'][$type][] = $extra[$i]['value'];
+						$element[$type][] = $extra[$i]['value'];
 						
 						// this bit removes the elements from the $extra array so that we're not looping through them later
 						// it will pay off dramatically for forms that contain large select lists!
@@ -101,6 +101,9 @@ class cms
 					}
 				}
 			}
+			
+			// create the CMS HTML for each element
+			$element['html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
 		}
 
 		return $form;

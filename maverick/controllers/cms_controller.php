@@ -28,6 +28,10 @@ class cms_controller extends base_controller
 		// set up the main nav
 		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
 		
+		// this fixes an empty param set
+		if(!count($params))
+			$params[0] = '';
+		
 		switch($params[0])
 		{
 			case '':
@@ -60,10 +64,8 @@ class cms_controller extends base_controller
 		$page = 'form';
 		$app = \maverick\maverick::getInstance();
 		
-		if(!$this->cms->check_permissions('form'))
-			view::redirect('/' . $app->get_config('cms.path') . '/');
-		
-		
+		$this->cms->check_permissions('form', '/' . $app->get_config('cms.path') . '/');
+
 		// show the list of forms as this is the main forms page requested
 		if(!isset($params[1]))
 		{
@@ -83,11 +85,15 @@ class cms_controller extends base_controller
 			switch($params[1])
 			{
 				case 'edit':
+					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$form = cms::get_form($params[2]);
+						if(empty($form))
+							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
-						
+						var_dump($form);
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
