@@ -104,6 +104,7 @@ class cms
 			
 			// create the CMS HTML for each element
 			$element['html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
+			$element['html2'] = \view::make('cms/includes/snippets/form_element')->with('data', $element)->render(false);
 		}
 
 		return $form;
