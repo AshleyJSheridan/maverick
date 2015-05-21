@@ -103,13 +103,14 @@ class cms
 			}
 			
 			// create the CMS HTML for each element
+			$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
 			$element['html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
-			$element['html2'] = \view::make('cms/includes/snippets/form_element')->with('data', $element)->render(false);
+
 		}
 
 		return $form;
 	}
-	
+
 	/**
 	 * gets the permissions for the specified user id and an identifier of whether or not this user is an admin
 	 * @param int $user_id the id of the user to get permissions for

@@ -11,7 +11,6 @@
 	data-display_order="{{display_order}}"
 	data-class="{{class}}"
 	data-html_id="{{html_id}}"
-	
 	>
-	
+	{{element_html}}
 </div>
