@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="tel"
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"

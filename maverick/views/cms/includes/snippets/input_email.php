@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="email"
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"

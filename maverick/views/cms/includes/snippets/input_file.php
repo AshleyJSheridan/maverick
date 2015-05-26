@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="file"
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"

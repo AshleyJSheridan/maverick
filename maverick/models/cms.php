@@ -103,12 +103,22 @@ class cms
 			}
 			
 			// create the CMS HTML for each element
-			$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
-			$element['html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
-
+			$element['html'] = cms::get_form_element($element);
 		}
 
 		return $form;
+	}
+	
+	/**
+	 * build a form element snippet for use in the CMS
+	 * because the element is not passed by reference, the 'element_html' array element is scoped to this method only
+	 * @param array $element the element details which are passed to \helpers\html\html::load_snippet
+	 * @return string
+	 */
+	static function get_form_element($element)
+	{
+		$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
+		return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
 	}
 
 	/**

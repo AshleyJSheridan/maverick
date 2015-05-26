@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="color"
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"

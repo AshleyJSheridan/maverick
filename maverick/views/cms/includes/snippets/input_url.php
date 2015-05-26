@@ -1,5 +1,5 @@
 <input
-		type="text"
+		type="url"
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"

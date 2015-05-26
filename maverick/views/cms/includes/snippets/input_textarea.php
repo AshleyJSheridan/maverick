@@ -1,6 +1,6 @@
-<input
-		type="text"
+<textarea
 		{{value}}
 		{{placeholder}}
 		disabled="disabled"
-	/>
+	>
+</textarea>
