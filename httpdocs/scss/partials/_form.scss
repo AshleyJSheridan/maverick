@@ -1,0 +1,63 @@
+/* 
+    Created on : 22-Jun-2015, 20:55:34
+    Author     : ashley
+*/
+input
+{
+	border: 1px solid $grey;
+	
+	-moz-transition: all 0.5s ease 0s;
+	-o-transition: all 0.5s ease 0s;
+	-webkit-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
+	
+	&[type=submit],&[type=button]
+	{
+		background-repeat: no-repeat;
+
+		&:hover
+		{
+			-webkit-box-shadow: 0px 0px 5px 1px $highlight;
+			-moz-box-shadow: 0px 0px 5px 1px $highlight;
+			box-shadow: 0px 0px 5px 1px $highlight;
+		}
+	}
+	&:focus
+	{
+		-webkit-box-shadow: 0px 0px 5px 1px $highlight;
+		-moz-box-shadow: 0px 0px 5px 1px $highlight;
+		box-shadow: 0px 0px 5px 1px $highlight;
+	}
+}
+
+form[name=login]
+{
+	width: 600px;
+	margin: $spacing auto;
+	
+	label
+	{
+		width: 80%;
+		display: block;
+		margin: 0 auto;
+		clear: both;
+		
+		input
+		{
+			width: 50%;
+			float: right;
+			padding: $spacing/2;
+			margin-bottom: $spacing;
+		}
+	}
+	input[type=submit]
+	{
+		background-image: url(/img/maverick/icons/dialog-ok-apply.png);
+		background-size: auto 30px;
+		background-position: $spacing center;
+		padding: $spacing;
+		margin: $spacing auto;
+		display: block;
+		width: 400px;
+	}
+}

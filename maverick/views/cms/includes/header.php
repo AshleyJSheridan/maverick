@@ -11,13 +11,13 @@
 
 	<link href="http://fonts.googleapis.com/css?family=Lato&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
 	
-	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/cms.css">
 	
 </head>
 	
-<body class="home">
+<body class="">
 	<header>
-		<h1>MaVeriCk</h1>
+		<h1>MaVeriCk CMS</h1>
 		<nav>
 			{{admin_nav}}
 		</nav>

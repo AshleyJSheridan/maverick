@@ -1,8 +1,7 @@
+	</section>
+	<footer>
 
-		<footer>
-			
-		</footer>
-	</div>
+	</footer>
 	
 </body>
 </html>

@@ -9,15 +9,14 @@
 	<title>MaVeriCk</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+	<link href="http://fonts.googleapis.com/css?family=Lato&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
+	
 	<link rel="stylesheet" href="/css/cms.css">
 	
 </head>
 	
-<body>
-	<div id="main">
-		<header>
-			<nav>
-				
-			</nav>
-			<h1>MaVeriCk</h1>
-		</header>
+<body class="basic">
+	<header>
+		<h1>MaVeriCk CMS</h1>
+	</header>
+	<section class="main">

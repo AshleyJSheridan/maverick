@@ -77,6 +77,7 @@ class cms_controller extends base_controller
 				$data[] = array($form['name'], $form['lang'], $form['total_elements'], $this->generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
+			$form_table->class = 'item_table';
 
 			$this->load_view($page, array('forms'=>$form_table->render()) );
 		}
@@ -122,7 +123,7 @@ class cms_controller extends base_controller
 		foreach($actions as $action)
 		{
 			$actions_html .= <<<ACTION
-			<a href="/{$app->get_config('cms.path')}/$section/$action/$id">$action</a>
+			<a href="/{$app->get_config('cms.path')}/$section/$action/$id" title="$action">$action</a>
 ACTION;
 		}
 		return $actions_html;

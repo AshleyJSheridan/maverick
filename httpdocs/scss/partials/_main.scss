@@ -1,0 +1,95 @@
+/* 
+    Created on : 22-Jun-2015, 21:00:30
+    Author     : ashley
+*/
+*
+{
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+}
+html
+{
+	height: 100%;
+}
+body
+{
+	margin: 0;
+	font-family: $body-font;
+	background-color: $light;
+	color: $dark;
+	font-size: $font-size;
+	height: 100%;
+}
+
+header
+{
+	background-repeat: no-repeat;
+	background-image: url(/img/maverick/logo_small_w300.png);
+	background-size: 150px auto;
+	padding-top: 150 + $spacing;
+	background-color: $dark;
+	color: $light;
+	width: 150px;
+	height: 100%;
+	float: left;
+	
+	.basic &
+	{
+		background-image: url(/img/maverick/logo_large_w600.png);
+		background-size: 600px auto;
+		background-position: center top;
+		background-color: $light;
+		height: 330px;
+		width: 100%;
+		padding-top: 0;
+		float: none;
+	}
+	nav
+	{
+		display: block;
+		//margin-top: $spacing*4;
+		
+		a
+		{
+			color: $light;
+			text-decoration: none;
+			text-transform: uppercase;
+			//margin-right: $spacing;
+			padding: 50+$spacing $spacing/2 $spacing/2;
+			display: block;
+			background-repeat: no-repeat;
+			background-position: center $spacing;
+			//width: 70px;
+			text-align: center;
+			
+			-moz-transition: all 0.5s ease 0s;
+			-o-transition: all 0.5s ease 0s;
+			-webkit-transition: all 0.5s ease 0s;
+			transition: all 0.5s ease 0s;
+			
+			&:hover, &.active
+			{
+				background-color: $highlight;
+			}
+			
+			&.home {background-image: url(/img/maverick/icons/home.png);}
+			&.forms {background-image: url(/img/maverick/icons/forms.png);}
+			&.media {background-image: url(/img/maverick/icons/media.png);}
+			&.pages {background-image: url(/img/maverick/icons/pages.png);}
+			&.users {background-image: url(/img/maverick/icons/users.png);}
+			&.logout {background-image: url(/img/maverick/icons/logout.png);}
+		}
+	}
+	h1
+	{
+		margin: 0;
+		text-indent: -999em;
+		height: 0;
+	}
+}
+
+section.main
+{
+	padding: $spacing $spacing $spacing 150+$spacing;
+}
+

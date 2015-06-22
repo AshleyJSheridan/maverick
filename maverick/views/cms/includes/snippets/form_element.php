@@ -12,5 +12,6 @@
 	data-class="{{class}}"
 	data-html_id="{{html_id}}"
 	>
-	{{element_html}}
+	<div class="label">{{type}} : {{label}}</div>
+	<div class="element">{{element_html}}</div>
 </div>
