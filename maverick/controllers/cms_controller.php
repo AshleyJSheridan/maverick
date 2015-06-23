@@ -79,7 +79,7 @@ class cms_controller extends base_controller
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$form_table->class = 'item_table';
 
-			$this->load_view($page, array('forms'=>$form_table->render()) );
+			$this->load_view($page, array('forms'=>$form_table->render() ) );
 		}
 		else
 		{
@@ -88,16 +88,18 @@ class cms_controller extends base_controller
 				case 'edit':
 					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
 					
+					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$form = cms::get_form($params[2]);
 						if(empty($form))
 							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
-						var_dump($form);
+						$this->load_view('form_edit', array('form'=>$form ) );
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
+					
 					break;
 				case 'new':
 					echo 'new';

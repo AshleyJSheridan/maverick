@@ -37,6 +37,12 @@ form[name=login] label { width: 80%; display: block; margin: 0 auto; clear: both
 form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bottom: 10px; }
 form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
 
+.form_elements.edit { width: 600px; }
+.form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; margin-bottom: 20px; padding: 10px; }
+.form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; }
+.form_elements.edit .form_element .element { background-color: #eeeeee; border-radius: 1em; padding: 10px; position: relative; }
+.form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 #333333; }
+
 /*  Created on : 23-Jun-2015, 00:12:12 Author     : ashley
 */
 table.item_table { border-collapse: collapse; border: 1px solid #cccccc; }

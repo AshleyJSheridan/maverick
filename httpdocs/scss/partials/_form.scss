@@ -61,3 +61,41 @@ form[name=login]
 		width: 400px;
 	}
 }
+.form_elements.edit
+{
+	width: 600px;
+	
+	.form_element
+	{
+		display: block;
+		width: 100%;
+		background-color: $light-grey;
+		border-radius: 1em;
+		margin-bottom: $spacing*2;
+		padding: $spacing;
+		
+		.label
+		{
+			margin-bottom: $spacing;
+			height: 20px;
+			background-repeat: no-repeat;
+		}
+		.element
+		{
+			background-color: $light;
+			border-radius: 1em;
+			padding: $spacing;
+			position: relative;
+			
+			&:after
+			{
+				content: "preview";
+				position: absolute;
+				bottom: $spacing/2;
+				right: $spacing/2;
+				color: $light-grey;
+				text-shadow: 1px 1px 0 $dark;
+			}
+		}
+	}
+}

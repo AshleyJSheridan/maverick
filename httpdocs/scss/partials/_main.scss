@@ -47,19 +47,16 @@ header
 	nav
 	{
 		display: block;
-		//margin-top: $spacing*4;
 		
 		a
 		{
 			color: $light;
 			text-decoration: none;
 			text-transform: uppercase;
-			//margin-right: $spacing;
 			padding: 50+$spacing $spacing/2 $spacing/2;
 			display: block;
 			background-repeat: no-repeat;
 			background-position: center $spacing;
-			//width: 70px;
 			text-align: center;
 			
 			-moz-transition: all 0.5s ease 0s;
