@@ -164,6 +164,16 @@ class cms_controller extends base_controller
 	 */
 	private function load_view($view, $with_params = array() )
 	{
+		// load scripts that need to be included on all pages
+		$global_scripts = array(
+			'https://code.jquery.com/jquery-2.1.4.min.js',
+		);
+		if(!isset($with_params['scripts']))
+			$with_params['scripts'] = array();
+		
+		$with_params['scripts'] = array_merge($with_params['scripts'], $global_scripts);
+
+		
 		$view = view::make('cms/includes/template')->with('page', $view)->with('admin_nav', $this->nav);
 		
 		foreach($with_params as $param => $value)

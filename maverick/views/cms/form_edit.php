@@ -10,7 +10,7 @@ $form = data::get('form');
 	{
 		foreach($form as $element)
 		{
-			var_dump($element);
+			//var_dump($element);
 			echo $element['html'];
 		}
 	}

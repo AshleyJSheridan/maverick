@@ -12,7 +12,14 @@
 	<link href="http://fonts.googleapis.com/css?family=Lato&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css"/>
 	
 	<link rel="stylesheet" href="/css/cms.css">
-	
+
+	<?php
+	$scripts = data::get('scripts');
+	foreach($scripts as $script)
+	{
+		echo "<script src=\"$script\"></script>";
+	}
+	?>
 </head>
 	
 <body class="">
