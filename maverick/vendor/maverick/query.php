@@ -398,7 +398,7 @@ class query
 				case 'select':
 				{
 					$results = array();
-					while ($row = $stmt->fetch())
+					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
 						$results[] = $row;
 					
 					break;

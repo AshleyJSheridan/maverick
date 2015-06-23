@@ -6,7 +6,13 @@ $form = data::get('form');
 
 <div class="form_elements edit">
 	<?php
-	foreach($form as $element)
-		echo $element['html'];
+	if(isset($form[0]['html']))
+	{
+		foreach($form as $element)
+		{
+			var_dump($element);
+			echo $element['html'];
+		}
+	}
 	?>
 </div>

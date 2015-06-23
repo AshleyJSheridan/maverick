@@ -76,8 +76,6 @@ class cms
 		
 		foreach($form as &$element)
 		{
-			//$element['extra'] = array();
-
 			// this ensures that we're not looping through anything uneccessarily
 			if(!count($extra))
 				break;

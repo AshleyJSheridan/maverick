@@ -11,6 +11,10 @@
 	data-display_order="{{display_order}}"
 	data-class="{{class}}"
 	data-html_id="{{html_id}}"
+	data-regex="{{regex}}"
+	data-between="{{between}}"
+	data-min="{{min}}"
+	data-max="{{max}}"
 	>
 	<div class="label {{type}}_field">{{label}} ({{type}})</div>
 	<div class="element">{{element_html}}</div>
