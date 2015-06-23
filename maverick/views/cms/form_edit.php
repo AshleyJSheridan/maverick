@@ -4,6 +4,8 @@ $form = data::get('form');
 
 <h2>Editing Form - "<?= $form[0]['form_name']; ?>"</h2>
 
+{{save_button}}
+
 <div class="form_elements edit">
 	<?php
 	if(isset($form[0]['html']))
@@ -16,3 +18,5 @@ $form = data::get('form');
 	}
 	?>
 </div>
+
+{{save_button}}

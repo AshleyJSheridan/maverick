@@ -85,6 +85,50 @@ header
 	}
 }
 
+// action buttons
+a.action, button.action
+{
+	background-repeat: no-repeat;
+	background-size: auto 20px;
+	background-position: center center;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	text-indent: -999em;
+	position: relative;
+	padding: $spacing;
+	cursor: pointer;
+
+	-moz-transition: all 0.5s ease 0s;
+	-o-transition: all 0.5s ease 0s;
+	-webkit-transition: all 0.5s ease 0s;
+	transition: all 0.5s ease 0s;
+	
+	&.full
+	{
+		width: inherit;
+		text-indent: inherit;
+		padding-left: 30px;
+		background-position: 5px center;
+		border: 1px solid $grey;
+		border-radius: 0.5em;
+		margin-bottom: $spacing;
+		background-color: $light-grey;
+		color: $dark;
+		text-decoration: none;
+	}
+	&:hover
+	{
+		background-color: $highlight;
+		color: $light;
+	}
+	
+	&.edit {background-image: url(/img/maverick/icons/edit.png);}
+	&.delete {background-image: url(/img/maverick/icons/delete.png);}
+	&.duplicate {background-image: url(/img/maverick/icons/duplicate.png);}
+	&.save {background-image: url(/img/maverick/icons/save.png);}
+}
+
 section.main
 {
 	padding: $spacing $spacing $spacing 150+$spacing;

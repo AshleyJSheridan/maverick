@@ -105,11 +105,13 @@ class cms_controller extends base_controller
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
+						$save_button = $this->generate_actions($params[1], $params[2], array('save'), 'full', 'button');
+						
 						$form = cms::get_form($params[2]);
 						if(empty($form))
 							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
-						$this->load_view('form_edit', array('form'=>$form ) );
+						$this->load_view('form_edit', array('form'=>$form, 'save_button'=>$save_button ) );
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
@@ -133,14 +135,18 @@ class cms_controller extends base_controller
 	 * @param string $section the section, as all links will contain this in their URL
 	 * @param int $id the ID of the object being worked on
 	 * @param array $actions a basic single dimensional array of single-word actions, that go into the URL and the text of the link
+	 * @param string $extra_classes a string of extra classes that should be added to each button
+	 * @param string $type the type of element to use, either a button or a link
 	 * @return string
 	 */
-	private function generate_actions($section, $id, $actions = array() )
+	private function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
 	{
 		if(empty($actions) || !intval($id) || empty($section) )
 			return '';
 		
 		$app = \maverick\maverick::getInstance();
+		
+		$type = in_array($type, array('link', 'button') )?$type:'link';
 		
 		$actions_html = '';
 		foreach($actions as $action)
@@ -150,8 +156,9 @@ class cms_controller extends base_controller
 				'action' => $action,
 				'id' => $id,
 				'section' => $section,
+				'class' => "$action $extra_classes",
 			);
-			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/action_button.php', $replacements );
+			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/action_$type.php", $replacements );
 		}
 		return $actions_html;
 	}

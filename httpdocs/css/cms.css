@@ -23,6 +23,14 @@ header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
+a.action, button.action { background-repeat: no-repeat; background-size: auto 20px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action.full, button.action.full { width: inherit; text-indent: inherit; padding-left: 30px; background-position: 5px center; border: 1px solid #cccccc; border-radius: 0.5em; margin-bottom: 10px; background-color: #dddddd; color: #333333; text-decoration: none; }
+a.action:hover, button.action:hover { background-color: #0d80b9; color: #eeeeee; }
+a.action.edit, button.action.edit { background-image: url(/img/maverick/icons/edit.png); }
+a.action.delete, button.action.delete { background-image: url(/img/maverick/icons/delete.png); }
+a.action.duplicate, button.action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
+a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
+
 section.main { padding: 10px 10px 10px 160px; }
 
 /*  Created on : 22-Jun-2015, 20:55:34 Author     : ashley
@@ -48,8 +56,3 @@ form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/
 table.item_table { border-collapse: collapse; border: 1px solid #cccccc; }
 table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 10px; }
 table.item_table th { background-color: #333333; color: #eeeeee; }
-table.item_table a { background-repeat: no-repeat; background-size: auto 20px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
-table.item_table a[href*=edit] { background-image: url(/img/maverick/icons/edit.png); }
-table.item_table a[href*=delete] { background-image: url(/img/maverick/icons/delete.png); }
-table.item_table a[href*=duplicate] { background-image: url(/img/maverick/icons/duplicate.png); }
-table.item_table a:hover { background-color: #0d80b9; }

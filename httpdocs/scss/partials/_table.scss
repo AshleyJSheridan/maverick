@@ -18,31 +18,4 @@ table.item_table
 		background-color: $dark;
 		color: $light;
 	}
-	
-	a
-	{
-		background-repeat: no-repeat;
-		background-size: auto 20px;
-		background-position: center center;
-		display: inline-block;
-		width: 20px;
-		height: 20px;
-		text-indent: -999em;
-		position: relative;
-		padding: $spacing;
-		
-		-moz-transition: all 0.5s ease 0s;
-		-o-transition: all 0.5s ease 0s;
-		-webkit-transition: all 0.5s ease 0s;
-		transition: all 0.5s ease 0s;
-		
-		&[href*=edit] {background-image: url(/img/maverick/icons/edit.png);}
-		&[href*=delete] {background-image: url(/img/maverick/icons/delete.png);}
-		&[href*=duplicate] {background-image: url(/img/maverick/icons/duplicate.png);}
-		
-		&:hover
-		{
-			background-color: $highlight;
-		}
-	}
 }
