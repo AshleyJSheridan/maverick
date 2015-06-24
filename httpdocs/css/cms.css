@@ -32,29 +32,44 @@ a.action.delete, button.action.delete { background-image: url(/img/maverick/icon
 a.action.duplicate, button.action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
 a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
 
-section.main { padding: 10px 10px 10px 160px; }
+.clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+
+section.main { padding: 10px; float: left; }
+.basic section.main { float: none; }
 
 /*  Created on : 22-Jun-2015, 20:55:34 Author     : ashley
 */
+label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
+label input, label textarea, label select { width: 70%; float: right; }
+
 input { border: 1px solid #cccccc; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
 input[type=submit], input[type=button] { background-repeat: no-repeat; }
 input[type=submit]:hover, input[type=button]:hover { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
 input:focus { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
 
-.tabbed { position: relative; }
+.tabbed { position: relative; margin-top: 20px; }
+.tabbed .tab-nav { margin: 0 0 0 10px; padding: 0; }
+.tabbed .tab-nav li { list-style-type: none; display: inline-block; padding: 3px; width: 100px; text-align: center; background-color: #cccccc; cursor: pointer; -moz-border-radius-topleft: 1em; -moz-border-radius-topright: 1em; -webkit-border-top-left-radius: 1em; -webkit-border-top-right-radius: 1em; border-top-left-radius: 1em; border-top-right-radius: 1em; }
+.tabbed .tab-nav li.active { background-color: #eeeeee; }
+.tabbed .tab-nav li:not(.active):hover { background-color: #0d80b9; color: #eeeeee; }
+.tabbed .tab { display: none; }
+.tabbed .tab .tab-content { background-color: #eeeeee; padding: 10px; -moz-border-radius-bottomleft: 1em; -moz-border-radius-bottomright: 1em; -webkit-border-bottom-left-radius: 1em; -webkit-border-bottom-right-radius: 1em; border-bottom-left-radius: 1em; border-bottom-right-radius: 1em; }
+.tabbed .tab.active { display: block; }
 
 form[name=login] { width: 600px; margin: 10px auto; }
-form[name=login] label { width: 80%; display: block; margin: 0 auto; clear: both; }
+form[name=login] label { margin: 0 auto; }
 form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bottom: 10px; }
 form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
 
 .form_elements.edit { width: 600px; }
-.form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; margin-bottom: 20px; padding: 10px; }
-.form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; }
+.form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
+.form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; }
 .form_elements.edit .form_element .label:after { content: "▾"; position: absolute; right: 10px; top: 0; }
 .form_elements.edit .form_element .label:hover { background-color: #cccccc; }
 .form_elements.edit .form_element .element { background-color: #eeeeee; border-radius: 1em; padding: 10px; position: relative; }
-.form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 #333333; }
+.form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 grey; }
+.form_elements.edit .details { display: none; }
+.form_elements.edit .details.active { display: block; }
 
 /*  Created on : 23-Jun-2015, 00:12:12 Author     : ashley
 */

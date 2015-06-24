@@ -10,8 +10,19 @@
 	
 	MAV.Elements = {
 		init : function(){
+			
+			// toggle the element details section
 			$('.form_elements .form_element .label').on('click', function(e){
-				console.log(this)
+				$('.details', $(this).parent() ).toggleClass('active');
+			});
+			
+			// tab navigation
+			$('.form_elements .form_element .tab-nav li').on('click', function(e){
+				$('li, .tab', $(this).parent().parent() ).removeClass('active');
+				
+				$(this).addClass('active');
+				$('.' + $(this).data('tab'), $(this).parent().parent() ).addClass('active');
+				//$('.' + $(this).data('tab'), this ).addClass('active');
 			});
 		}
 	};

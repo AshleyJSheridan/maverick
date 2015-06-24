@@ -129,8 +129,24 @@ a.action, button.action
 	&.save {background-image: url(/img/maverick/icons/save.png);}
 }
 
+.clearfix:after
+{
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
 section.main
 {
-	padding: $spacing $spacing $spacing 150+$spacing;
+	padding: $spacing;
+	float: left;
+	
+	.basic &
+	{
+		float: none;
+	}
 }
 

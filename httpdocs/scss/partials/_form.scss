@@ -2,6 +2,19 @@
     Created on : 22-Jun-2015, 20:55:34
     Author     : ashley
 */
+label
+{
+	display: block;
+	clear: both;
+	width: 80%;
+	margin-bottom: $spacing;
+	
+	input, textarea, select
+	{
+		width: 70%;
+		float: right;
+	}
+}
 input
 {
 	border: 1px solid $grey;
@@ -32,8 +45,62 @@ input
 .tabbed
 {
 	position: relative;
+	margin-top: $spacing*2;
 	
-	
+	.tab-nav
+	{
+		margin: 0 0 0 $spacing;
+		padding: 0;
+		
+		li
+		{
+			list-style-type: none;
+			display: inline-block;
+			padding: 3px;
+			width: 100px;
+			text-align: center;
+			background-color: $grey;
+			cursor: pointer;
+			
+			-moz-border-radius-topleft: 1em;
+			-moz-border-radius-topright: 1em;
+			-webkit-border-top-left-radius: 1em;
+			-webkit-border-top-right-radius: 1em;
+			border-top-left-radius: 1em;
+			border-top-right-radius: 1em;
+			
+			&.active
+			{
+				background-color: $light;
+			}
+			&:not(.active):hover
+			{
+				background-color: $highlight;
+				color: $light;
+			}
+		}
+	}
+	.tab
+	{
+		display: none;
+		
+		.tab-content
+		{
+			background-color: $light;
+			padding: $spacing;
+			
+			-moz-border-radius-bottomleft: 1em;
+			-moz-border-radius-bottomright: 1em;
+			-webkit-border-bottom-left-radius: 1em;
+			-webkit-border-bottom-right-radius: 1em;
+			border-bottom-left-radius: 1em;
+			border-bottom-right-radius: 1em;
+		}
+		&.active
+		{
+			display: block;
+		}
+	}
 }
 
 form[name=login]
@@ -43,10 +110,7 @@ form[name=login]
 	
 	label
 	{
-		width: 80%;
-		display: block;
 		margin: 0 auto;
-		clear: both;
 		
 		input
 		{
@@ -77,8 +141,8 @@ form[name=login]
 		width: 100%;
 		background-color: $light-grey;
 		border-radius: 1em;
-		margin-bottom: $spacing*2;
 		padding: $spacing;
+		margin: $spacing 0;
 		
 		.label
 		{
@@ -86,6 +150,7 @@ form[name=login]
 			height: 20px;
 			background-repeat: no-repeat;
 			position: relative;
+			cursor: pointer;
 			
 			&:after
 			{
@@ -113,8 +178,17 @@ form[name=login]
 				bottom: $spacing/2;
 				right: $spacing/2;
 				color: $light-grey;
-				text-shadow: 1px 1px 0 $dark;
+				text-shadow: 1px 1px 0 grey;
 			}
+		}
+	}
+	.details
+	{
+		display: none;
+		
+		&.active
+		{
+			display: block;
 		}
 	}
 }
