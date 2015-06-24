@@ -1,6 +1,6 @@
 <input
 		type="url"
-		{{value}}
-		{{placeholder}}
+		value="{{value}}"
+		placeholder="{{placeholder}}"
 		disabled="disabled"
 	/>

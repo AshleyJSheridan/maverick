@@ -116,6 +116,25 @@ class cms
 	static function get_form_element($element)
 	{
 		$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
+		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
+		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
+			array(
+				'name'=>'required',
+				'value'=>'required',
+				'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
+			)
+		);
+		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
+			array(
+				'name'=>'required',
+				'value'=>'required',
+				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
+			)
+		);
+		if(isset($element['between'][0]) && !empty($element['between'][0]))
+			list($element['min'], $element['max']) = explode(':', $element['between'][0]);
+		
+		//var_dump($element);
 		return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
 	}
 

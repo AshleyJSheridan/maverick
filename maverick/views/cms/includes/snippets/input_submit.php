@@ -1,5 +1,5 @@
 <select
 		type="submit"
-		{{value}}
+		value="{{value}}"
 		disabled="disabled"
 	/>

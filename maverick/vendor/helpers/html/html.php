@@ -7,7 +7,7 @@ namespace helpers\html;
 class html
 {
 	static $_instance;
-	private $cached_snippets = array();
+	protected $cached_snippets = array();
 	
 	private function __construct() {}
 	
@@ -37,7 +37,7 @@ class html
 	 * @param array $replacements an array of find/replace values to replace {{placeholders}} within the snippet with
 	 * @return boolean
 	 */
-	public static function load_snippet($filename, $replacements)
+	public static function load_snippet($filename, $replacements, $replace_all=true)
 	{
 		$h = html::getInstance();
 
@@ -69,10 +69,11 @@ class html
 			}
 		}
 		$contents = str_replace($find, $replace, $contents);
-		
+
 		// now get rid of any placeholders left that weren't used
-		$contents = preg_replace('/\{\{[^\}]+\}\}/', '', $contents);
-		
+		if($replace_all)
+			$contents = preg_replace('/\{\{[^\}]+\}\}/', '', $contents);
+
 		return $contents;
 	}
 	

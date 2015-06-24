@@ -1,6 +1,5 @@
 <input
 		type="text"
-		{{value}}
-		{{placeholder}}
+		value="{{value}}"
 		disabled="disabled"
 	/>

@@ -15,10 +15,8 @@
 
 	<?php
 	$scripts = data::get('scripts');
-	foreach($scripts as $script)
-	{
-		echo "<script src=\"$script\"></script>";
-	}
+	foreach($scripts as $script => $priority)
+		echo "<script data-priority=\"$priority\" src=\"$script\"></script>";
 	?>
 </head>
 	

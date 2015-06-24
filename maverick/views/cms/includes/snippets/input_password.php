@@ -1,6 +1,6 @@
 <input
 		type="password"
-		{{value}}
-		{{placeholder}}
+		value="{{value}}"
+		placeholder="{{placeholder}}"
 		disabled="disabled"
 	/>

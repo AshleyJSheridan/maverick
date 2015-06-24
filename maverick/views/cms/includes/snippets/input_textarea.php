@@ -1,6 +1,5 @@
 <textarea
-		{{value}}
-		{{placeholder}}
+		placeholder="{{placeholder}}"
 		disabled="disabled"
-	>
+	>{{value}}
 </textarea>

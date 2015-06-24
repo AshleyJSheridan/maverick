@@ -111,7 +111,7 @@ class cms_controller extends base_controller
 						if(empty($form))
 							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
-						$this->load_view('form_edit', array('form'=>$form, 'save_button'=>$save_button ) );
+						$this->load_view('form_edit', array('form'=>$form, 'save_button'=>$save_button, 'scripts'=>array('/js/cms/forms.js'=>10) ) );
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
@@ -171,14 +171,15 @@ class cms_controller extends base_controller
 	 */
 	private function load_view($view, $with_params = array() )
 	{
-		// load scripts that need to be included on all pages
+		// load scripts that need to be included on all pages and then sort them by their priority
 		$global_scripts = array(
-			'https://code.jquery.com/jquery-2.1.4.min.js',
+			'https://code.jquery.com/jquery-2.1.4.min.js' => 0,
 		);
 		if(!isset($with_params['scripts']))
 			$with_params['scripts'] = array();
 		
 		$with_params['scripts'] = array_merge($with_params['scripts'], $global_scripts);
+		$with_params['scripts'] = $this->sort_external_assets($with_params['scripts']);	// sort the assets by priority
 
 		
 		$view = view::make('cms/includes/template')->with('page', $view)->with('admin_nav', $this->nav);
@@ -187,6 +188,19 @@ class cms_controller extends base_controller
 			$view->with($param, $value);
 				
 		$view->render();
+	}
+	
+	/**
+	 * sorts external assets (e.g. scripts, css) to ensure that they can be output in a sane order on the front-end
+	 * returns a sorted list of assets
+	 * @param array $assets an associative array of assets to sort, the key being the asset path, and the value being the priority value - lower values = more important
+	 * @return array
+	 */
+	private function sort_external_assets($assets)
+	{
+		asort($assets);
+		
+		return $assets;
 	}
 
 	/**

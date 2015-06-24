@@ -1,5 +1,5 @@
 <input
-		type="tel"
+		type="time"
 		value="{{value}}"
 		placeholder="{{placeholder}}"
 		disabled="disabled"

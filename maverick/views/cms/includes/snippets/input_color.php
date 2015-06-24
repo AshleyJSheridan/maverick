@@ -1,6 +1,6 @@
 <input
 		type="color"
-		{{value}}
-		{{placeholder}}
+		value="{{value}}"
+		placeholder="{{placeholder}}"
 		disabled="disabled"
 	/>

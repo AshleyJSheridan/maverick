@@ -1,6 +1,6 @@
 <input
 		type="email"
-		{{value}}
-		{{placeholder}}
+		value="{{value}}"
+		placeholder="{{placeholder}}"
 		disabled="disabled"
 	/>

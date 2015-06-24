@@ -6,7 +6,7 @@ $form = data::get('form');
 
 {{save_button}}
 
-<div class="form_elements edit">
+<form class="form_elements edit" method="post" enctype="multipart/form-data">
 	<?php
 	if(isset($form[0]['html']))
 	{
@@ -17,6 +17,6 @@ $form = data::get('form');
 		}
 	}
 	?>
-</div>
+</form>
 
 {{save_button}}
