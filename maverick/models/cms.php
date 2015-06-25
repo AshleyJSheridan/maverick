@@ -159,11 +159,11 @@ class cms
 		foreach($actions as $action)
 		{
 			$replacements = array(
-				'href' => "/{$app->get_config('cms.path')}/$section/$action/$id",
+				'href' => str_replace(' ', '_', "/{$app->get_config('cms.path')}/$section/$action/$id"),
 				'action' => $action,
 				'id' => $id,
 				'section' => $section,
-				'class' => "$action $extra_classes",
+				'class' => str_replace(' ', '_', $action) . " $extra_classes",
 			);
 			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/action_$type.php", $replacements );
 		}

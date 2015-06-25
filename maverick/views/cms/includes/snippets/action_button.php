@@ -1,1 +1,1 @@
-<button href="{{href}}" title="{{action}}" class="action {{class}}">{{action}}</button>
+<button title="{{action}}" class="action {{class}}">{{action}}</button>

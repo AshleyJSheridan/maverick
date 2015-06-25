@@ -109,10 +109,10 @@ a.action, button.action
 		width: inherit;
 		text-indent: inherit;
 		padding-left: 30px;
+		margin-right: $spacing;
 		background-position: 5px center;
 		border: 1px solid $grey;
 		border-radius: 0.5em;
-		margin-bottom: $spacing;
 		background-color: $light-grey;
 		color: $dark;
 		text-decoration: none;
@@ -127,6 +127,7 @@ a.action, button.action
 	&.delete {background-image: url(/img/maverick/icons/delete.png);}
 	&.duplicate {background-image: url(/img/maverick/icons/duplicate.png);}
 	&.save {background-image: url(/img/maverick/icons/save.png);}
+	&.add_element {background-image: url(/img/maverick/icons/add_element.png);}
 }
 
 .clearfix:after

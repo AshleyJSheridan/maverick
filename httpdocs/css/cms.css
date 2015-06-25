@@ -25,12 +25,13 @@ header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
 a.action, button.action { background-repeat: no-repeat; background-size: auto 20px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
-a.action.full, button.action.full { width: inherit; text-indent: inherit; padding-left: 30px; background-position: 5px center; border: 1px solid #cccccc; border-radius: 0.5em; margin-bottom: 10px; background-color: #dddddd; color: #333333; text-decoration: none; }
+a.action.full, button.action.full { width: inherit; text-indent: inherit; padding-left: 30px; margin-right: 10px; background-position: 5px center; border: 1px solid #cccccc; border-radius: 0.5em; background-color: #dddddd; color: #333333; text-decoration: none; }
 a.action:hover, button.action:hover { background-color: #0d80b9; color: #eeeeee; }
 a.action.edit, button.action.edit { background-image: url(/img/maverick/icons/edit.png); }
 a.action.delete, button.action.delete { background-image: url(/img/maverick/icons/delete.png); }
 a.action.duplicate, button.action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
 a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
+a.action.add_element, button.action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
 
 .clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
 

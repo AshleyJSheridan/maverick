@@ -130,7 +130,7 @@ class cms_controller extends base_controller
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$save_button = cms::generate_actions($params[1], $params[2], array('save'), 'full', 'button');
+						$save_button = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
 						
 						$form = cms::get_form($params[2]);
 						if(empty($form))
