@@ -133,9 +133,60 @@ class cms
 		);
 		if(isset($element['between'][0]) && !empty($element['between'][0]))
 			list($element['min'], $element['max']) = explode(':', $element['between'][0]);
-		
-		//var_dump($element);
+
 		return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
+	}
+	
+	/**
+	 * deals with the creation of action buttons (links) used throughout the CMS to do something
+	 * @param string $section the section, as all links will contain this in their URL
+	 * @param int $id the ID of the object being worked on
+	 * @param array $actions a basic single dimensional array of single-word actions, that go into the URL and the text of the link
+	 * @param string $extra_classes a string of extra classes that should be added to each button
+	 * @param string $type the type of element to use, either a button or a link
+	 * @return string
+	 */
+	static function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
+	{
+		if(empty($actions) || !intval($id) || empty($section) )
+			return '';
+		
+		$app = \maverick\maverick::getInstance();
+		
+		$type = in_array($type, array('link', 'button') )?$type:'link';
+		
+		$actions_html = '';
+		foreach($actions as $action)
+		{
+			$replacements = array(
+				'href' => "/{$app->get_config('cms.path')}/$section/$action/$id",
+				'action' => $action,
+				'id' => $id,
+				'section' => $section,
+				'class' => "$action $extra_classes",
+			);
+			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/action_$type.php", $replacements );
+		}
+		return $actions_html;
+	}
+	
+	/**
+	 * builds a form element preview for the admin area directly from AJAX data
+	 */
+	static function get_form_element_preview()
+	{
+		$available_elements = \helpers\html\cms::get_available_elements('form', array(), false);
+		
+		$element_type = (empty($_REQUEST['element_type']) || !in_array($_REQUEST['element_type'], $available_elements))?die():$_REQUEST['element_type'];
+		$element_value = (!empty($_REQUEST['element_value']))?filter_var($_REQUEST['element_value'], FILTER_SANITIZE_FULL_SPECIAL_CHARS):'';
+		$placeholder = (!empty($_REQUEST['placeholder']))?filter_var($_REQUEST['placeholder'], FILTER_SANITIZE_FULL_SPECIAL_CHARS):'';
+		
+		$view = view::make("cms/includes/snippets/input_$element_type")
+			->with('type', $element_type)
+			->with('value', $element_value)
+			->with('placeholder', $placeholder)
+			->headers(array('content-type'=>'text/plain') )
+			->render(true, true);
 	}
 
 	/**

@@ -8,9 +8,10 @@ class cms extends \helpers\html\html
 	 * @todo maybe add a way for this to become more flexible and allow for arbitrary element sets to be matched and returned
 	 * @param string $type the type of element to return a list of
 	 * @param array $extra this can be used to include any extra bits that can be used in an individual case
+	 * @param bool $wrapped whether or not the returned array wraps each element in <option> tags taken from the select_option snippet
 	 * @returns array
 	 */
-	static function get_available_elements($type, $extra)
+	static function get_available_elements($type, $extra, $wrapped=true)
 	{
 		$h = html::getInstance();
 		
@@ -40,13 +41,16 @@ class cms extends \helpers\html\html
 		}
 		
 		// perform the replacements - this isn't done earlier because we don't want to cache replaced versions, as snippets will often change because of these replacements
-		foreach($elements as $element)
+		if($wrapped)
 		{
-			$element = array('value' => $element);
-			
-			$element['selected'] = ($type == 'form' && !empty($extra['default']) && $extra['default'] == $element['value'] )?'selected="selected"':'';
-				
-			$elements[] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/select_option.php', $element);
+			foreach($elements as $element)
+			{
+				$element = array('value' => $element);
+
+				$element['selected'] = ($type == 'form' && !empty($extra['default']) && $extra['default'] == $element['value'] )?'selected="selected"':'';
+
+				$elements[] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/select_option.php', $element);
+			}
 		}
 
 		return $elements;

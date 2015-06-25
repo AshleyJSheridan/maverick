@@ -52,6 +52,9 @@ class cms_controller extends base_controller
 			case 'logout':
 				$this->logout();
 				break;
+			case 'ajax':
+				$this->ajax($params);
+				break;
 			default:
 				// loop through the hooks listed in the main MaVeriCk class
 				break;
@@ -68,6 +71,28 @@ class cms_controller extends base_controller
 		$this->load_view($page);
 	}
 
+	private function ajax($params)
+	{
+		$app = \maverick\maverick::getInstance();
+		
+		if(!isset($params[1]) )
+			exit;
+		else
+		{
+			switch($params[1])
+			{
+				case 'get_form_element':
+					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					
+					$element_html = cms::get_form_element_preview();
+					break;
+				default:
+					// handle ajax extensions here
+					break;
+			}
+		}
+	}
+	
 	/**
 	 * method that deals with all forms created in the CMS
 	 * @param array $params the URL parameters
@@ -87,7 +112,7 @@ class cms_controller extends base_controller
 			$headers = '["Name","Language","Total Elements","Actions"]';
 			$data = array();
 			foreach($forms as $form)
-				$data[] = array($form['name'], $form['lang'], $form['total_elements'], $this->generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
+				$data[] = array($form['name'], $form['lang'], $form['total_elements'], cms::generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$form_table->class = 'item_table';
@@ -105,7 +130,7 @@ class cms_controller extends base_controller
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$save_button = $this->generate_actions($params[1], $params[2], array('save'), 'full', 'button');
+						$save_button = cms::generate_actions($params[1], $params[2], array('save'), 'full', 'button');
 						
 						$form = cms::get_form($params[2]);
 						if(empty($form))
@@ -128,39 +153,6 @@ class cms_controller extends base_controller
 					break;
 			}
 		}
-	}
-	
-	/**
-	 * deals with the creation of action buttons (links) used throughout the CMS to do something
-	 * @param string $section the section, as all links will contain this in their URL
-	 * @param int $id the ID of the object being worked on
-	 * @param array $actions a basic single dimensional array of single-word actions, that go into the URL and the text of the link
-	 * @param string $extra_classes a string of extra classes that should be added to each button
-	 * @param string $type the type of element to use, either a button or a link
-	 * @return string
-	 */
-	private function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
-	{
-		if(empty($actions) || !intval($id) || empty($section) )
-			return '';
-		
-		$app = \maverick\maverick::getInstance();
-		
-		$type = in_array($type, array('link', 'button') )?$type:'link';
-		
-		$actions_html = '';
-		foreach($actions as $action)
-		{
-			$replacements = array(
-				'href' => "/{$app->get_config('cms.path')}/$section/$action/$id",
-				'action' => $action,
-				'id' => $id,
-				'section' => $section,
-				'class' => "$action $extra_classes",
-			);
-			$actions_html .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/action_$type.php", $replacements );
-		}
-		return $actions_html;
 	}
 	
 	/**

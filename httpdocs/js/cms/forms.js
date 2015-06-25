@@ -24,6 +24,21 @@
 				$('.' + $(this).data('tab'), $(this).parent().parent() ).addClass('active');
 				//$('.' + $(this).data('tab'), this ).addClass('active');
 			});
+			
+			$('.form_elements .form_element .details select[name=type\\[\\]]').on('change', function(e){
+				element_type = this.value;
+				element_value = $('input[name=value\\[\\]]', $(this).closest('.details') ).val();
+				placeholder = $('input[name=placeholder\\[\\]]', $(this).closest('.details') ).val();
+				var obj = this;
+				
+				$.ajax({
+					url: 'http://maverick.local/maverick_admin/ajax/get_form_element',
+					data: {'element_type': element_type, 'element_value': element_value, 'placeholder': placeholder},
+					method: 'POST'
+				}).success(function(data){
+					$('.element', $(obj).closest('.form_element') ).html(data);
+				});
+			});
 		}
 	};
 })(window.MAV = window.MAV || {}, jQuery);

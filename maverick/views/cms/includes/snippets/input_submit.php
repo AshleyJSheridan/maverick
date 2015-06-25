@@ -1,5 +1,6 @@
-<select
+<input
 		type="submit"
-		value="{{value}}"
+		value="Submit - {{value}}"
+		placeholder="{{placeholder}}"
 		disabled="disabled"
 	/>
