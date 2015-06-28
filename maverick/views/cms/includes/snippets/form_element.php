@@ -2,10 +2,15 @@
 	class="form_element"
 	data-element_id="{{element_id}}"
 	>
-	<div class="label {{type}}_field">{{label}} ({{type}})</div>
+	
+	<div class="actions">
+		<button class="delete action">delete</button>
+	</div>
+	
+	<div class="label {{type}}_field">{{element_name}} ({{type}})</div>
 	<div class="element">{{element_html}}</div>
 	
-	<input type="hidden" name="id" value="{{element_id}}"/>
+	<input type="hidden" name="id[]" value="{{element_id}}"/>
 	
 	<div class="details tabbed">
 		<ul class="tab-nav">
@@ -26,7 +31,7 @@
 			<div class="tab-content">
 				<label>Display Order: <input type="text" name="display_order[]" value="{{display_order}}"/></label>
 				<label>Class: <input type="text" name="class[]" value="{{class}}"/></label>
-				<label>ID: <input type="text" name="id[]" value="{{html_id}}"/></label>
+				<label>ID: <input type="text" name="html_id[]" value="{{html_id}}"/></label>
 				<label>Placeholder: <input type="text" name="placeholder[]" value="{{placeholder}}"/></label>
 				<label>Display?: {{display_checkbox}}</label>
 			</div>

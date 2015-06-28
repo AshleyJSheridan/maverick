@@ -98,6 +98,9 @@ a.action, button.action
 	position: relative;
 	padding: $spacing;
 	cursor: pointer;
+	border: 1px solid $grey;
+	border-radius: 0.5em;
+	margin-right: $spacing;
 
 	-moz-transition: all 0.5s ease 0s;
 	-o-transition: all 0.5s ease 0s;
@@ -109,10 +112,7 @@ a.action, button.action
 		width: inherit;
 		text-indent: inherit;
 		padding-left: 30px;
-		margin-right: $spacing;
 		background-position: 5px center;
-		border: 1px solid $grey;
-		border-radius: 0.5em;
 		background-color: $light-grey;
 		color: $dark;
 		text-decoration: none;

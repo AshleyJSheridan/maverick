@@ -86,6 +86,13 @@ class cms_controller extends base_controller
 					
 					$element_html = cms::get_form_element_preview();
 					break;
+				case 'get_form_element_block':
+					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					
+					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
+					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
+					$element_html = cms::get_form_element($element, true);
+					break;
 				default:
 					// handle ajax extensions here
 					break;
@@ -131,6 +138,9 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$save_button = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
+						
+						if(count($_REQUEST))
+							cms::save_form ();
 						
 						$form = cms::get_form($params[2]);
 						if(empty($form))

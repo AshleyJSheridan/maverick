@@ -144,6 +144,17 @@ form[name=login]
 		padding: $spacing;
 		margin: $spacing 0;
 		
+		.action
+		{
+			float: right;
+			padding: $spacing/2;
+			margin-bottom: $spacing;
+			
+			&:last-child
+			{
+				margin-right: 0;
+			}
+		}
 		.label
 		{
 			margin-bottom: $spacing;
@@ -151,6 +162,8 @@ form[name=login]
 			background-repeat: no-repeat;
 			position: relative;
 			cursor: pointer;
+			width: 90%;
+			padding: $spacing/2;
 			
 			&:after
 			{
@@ -167,9 +180,10 @@ form[name=login]
 		.element
 		{
 			background-color: $light;
-			border-radius: 1em;
+			border-radius: 0.5em;
 			padding: $spacing;
 			position: relative;
+			clear: right;
 			
 			&:after
 			{

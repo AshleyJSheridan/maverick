@@ -111,13 +111,14 @@ class cms
 	 * build a form element snippet for use in the CMS
 	 * because the element is not passed by reference, the 'element_html' array element is scoped to this method only
 	 * @param array $element the element details which are passed to \helpers\html\html::load_snippet
+	 * @param bool $render whether or not to render the HTML for this
 	 * @return string
 	 */
-	static function get_form_element($element)
+	static function get_form_element($element, $render=false)
 	{
 		$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
 		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
-		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
+		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php',
 			array(
 				'name'=>'required',
 				'value'=>'required',
@@ -126,7 +127,7 @@ class cms
 		);
 		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
 			array(
-				'name'=>'required',
+				'name'=>'display',
 				'value'=>'required',
 				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
 			)
@@ -134,7 +135,19 @@ class cms
 		if(isset($element['between'][0]) && !empty($element['between'][0]))
 			list($element['min'], $element['max']) = explode(':', $element['between'][0]);
 
-		return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
+		if($render)
+		{
+			$view = view::make("cms/includes/snippets/form_element")
+				->with('type', $element['type'])
+				->with('element_name', $element['element_name'])
+				->with('elements', $element['elements'])
+				->with('element_html', $element['element_html'])
+				->with('display_order', $element['display_order'])
+				->headers(array('content-type'=>'text/plain') )
+				->render(true, true);
+		}
+		else
+			return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
 	}
 	
 	/**
@@ -187,6 +200,14 @@ class cms
 			->with('placeholder', $placeholder)
 			->headers(array('content-type'=>'text/plain') )
 			->render(true, true);
+	}
+	
+	/**
+	 * process the form data and save the elements
+	 */
+	static function save_form()
+	{
+		var_dump($_REQUEST);
 	}
 
 	/**
