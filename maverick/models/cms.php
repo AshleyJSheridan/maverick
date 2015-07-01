@@ -38,6 +38,33 @@ class cms
 		return $data;
 	}
 	
+	static function get_languages($all=false, $short=false)
+	{
+		$languages = db::table('maverick_cms_languages');
+		
+		if(!$all)
+			$languages->where('in_use', '=', db::raw('yes') );
+		
+		if($short)
+			$languages->get(array('culture_name', 'display_name') );
+		else
+			$languages->get();
+		
+		$languages = $languages->fetch();
+		
+		$lang_list = array();
+		
+		foreach($languages as $lang)
+		{
+			if($short)
+				$lang_list[$lang['culture_name']] = $lang['display_name'];
+			else
+				$lang_list[$lang['culture_name']] = $lang;
+		}
+		
+		return $lang_list;
+	}
+	
 	static function get_form($form_id)
 	{
 		$form_id = intval($form_id);
@@ -45,6 +72,7 @@ class cms
 		$form = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
 			->where('f.id', '=', db::raw($form_id))
+			->where('f.deleted', '=', db::raw('no'))
 			->orderBy('fe.display_order')
 			->get(array(
 				'f.name AS form_name',

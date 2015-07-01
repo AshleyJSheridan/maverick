@@ -60,5 +60,34 @@ class cms extends \maverick\maverick
 			return $allowed;
 	}
 	
-	
+	/**
+	 * a static method to build a list of select list options using a template and return that list as an html string
+	 * @param array $options a list of values for the select list
+	 * @param string $element_name the name of the select list element - used to determine if this should be marked as selected in the rendered html or not (e.g. for a form posted with errors)
+	 * @param bool $key_value whether or not this is using a simple array where the option value and text are the same, or associative key=>value pair
+	 * @param string a string indicating the directory where override snippets exist for the <option> tag
+	 * @return string
+	 */
+	public static function build_select_options($options, $element_name, $key_value=false, $snippets_dir=null)
+	{
+		$html = '';
+		
+		foreach($options as $key => $option)
+		{
+			$selected = ((isset($_REQUEST[$element_name]) && $_REQUEST[$element_name] == $option) || (strtolower($element_name) == strtolower($key) ) )?'selected="selected"':'';
+			
+			if($snippets_dir && file_exists("$snippets_dir/input_option.php"))
+				$snippet = "$snippets_dir/input_option.php";
+			else
+				$snippet = __DIR__ . "/snippets/input_option.php";
+			
+			$html .= \helpers\html\html::load_snippet($snippet, array(
+				'value' => ($key_value)?$key:$option,
+				'display_value' => $option,
+				'selected' => $selected,
+			) );
+		}
+
+		return $html;
+	}
 }

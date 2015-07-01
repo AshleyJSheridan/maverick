@@ -137,7 +137,7 @@ class cms_controller extends base_controller
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$save_button = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
+						$form_buttons = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
 						
 						if(count($_REQUEST))
 							cms::save_form ();
@@ -146,7 +146,26 @@ class cms_controller extends base_controller
 						if(empty($form))
 							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
-						$this->load_view('form_edit', array('form'=>$form, 'save_button'=>$save_button, 'scripts'=>array('/js/cms/forms.js'=>10) ) );
+						$form_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'Form Name',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
+									'value'=>"value=\"{$form[0]['form_name']}\"",
+									'placeholder'=>"placeholder=\"form name\"",
+									'name'=>'form_name'
+								))
+							)
+						);
+						$form_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
+							'label'=>'Form Language',
+							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
+									'values'=> $this->cms->build_select_options(cms::get_languages(false, true), $form[0]['lang'], true, MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'),
+									'name'=>'lang'
+								))
+							)
+						);
+						
+
+						$this->load_view('form_edit', array('form'=>$form, 'form_buttons'=>$form_buttons, 'form_details'=>$form_details, 'scripts'=>array('/js/cms/forms.js'=>10) ) );
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
