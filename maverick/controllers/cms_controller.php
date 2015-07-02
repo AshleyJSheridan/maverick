@@ -139,6 +139,30 @@ class cms_controller extends base_controller
 			// an action was specified, so instead of showing all the forms, deal with the request here
 			switch($params[1])
 			{
+				case 'deleted_forms':
+				{
+					$this->cms->check_permissions('form_undelete', '/' . $app->get_config('cms.path') . '/forms');
+					
+					$forms = cms::get_forms(true);
+					
+					$headers = '["Name","Language","Total Elements","Actions"]';
+					$data = array();
+					foreach($forms as $form)
+						$data[] = array($form['name'], $form['lang'], $form['total_elements'], cms::generate_actions('forms', $form['id'], array('delete full','undelete') ) );
+
+					$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
+					$form_table->class = 'item_table';
+
+					$view_params = array(
+						'forms'=>$form_table->render(),
+						'scripts'=>array(
+							'/js/cms/forms.js'=>10, 
+						)
+					);
+					$this->load_view($page, $view_params );
+					
+					break;
+				}
 				case 'edit':
 					// check permissions and redirect to the forms list if the current user doesn't have the right permissions
 					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
@@ -183,7 +207,12 @@ class cms_controller extends base_controller
 						$form_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
 							'label'=>'Form Language',
 							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
-									'values'=> $this->cms->build_select_options(cms::get_languages(false, true), $form[0]['lang'], true, MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'),
+									'values'=> $this->cms->build_select_options(
+										cms::get_languages(false, true),
+										$form[0]['lang'],
+										true,
+										MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'
+									),
 									'name'=>'lang'
 								))
 							)
@@ -226,7 +255,18 @@ class cms_controller extends base_controller
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
+					break;
+				case 'undelete':
+					$this->cms->check_permissions('form_undelete', '/' . $app->get_config('cms.path') . '/forms');
 					
+					// check a form ID was passed for restoration
+					if(isset($params[2]) && intval($params[2]))
+					{
+						$deleted = cms::undelete_form($params[2]);
+						
+						if($deleted->fetch() )
+							view::redirect('/' . $app->get_config('cms.path') . '/forms');
+					}
 					break;
 				case 'duplicate':
 					echo 'duplicate';

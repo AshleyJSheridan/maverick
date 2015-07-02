@@ -34,6 +34,8 @@ a.action.save, button.action.save { background-image: url(/img/maverick/icons/sa
 a.action.add_element, button.action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
 a.action.new_form, button.action.new_form { background-image: url(/img/maverick/icons/form_new.png); }
 a.action.deleted_forms, button.action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
+a.action.delete_full, button.action.delete_full { background-image: url(/img/maverick/icons/delete.png); }
+a.action.undelete, button.action.undelete { background-image: url(/img/maverick/icons/restore.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; }
 

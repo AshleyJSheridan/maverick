@@ -25,18 +25,23 @@ class cms
 	
 	/**
 	 * gets a list of all the forms in the CMS as defined in the database
+	 * @param bool $deleted whether to return a list of forms that are marked as deleted or not
 	 * @return array
 	 */
-	static function get_forms()
+	static function get_forms($deleted=false)
 	{
 		$data = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('f.id', '=', 'fe.form_id') )
-			->where('f.deleted', '=', db::raw('no') )
-			->groupBy('f.id')
-			->get(array('f.id', 'f.name', 'f.lang', 'COUNT(fe.id) AS total_elements') )
-			->fetch();
+			->groupBy('f.id');
+		
+		if($deleted)
+			$data->where('f.deleted', '=', db::raw('yes') );
+		else
+			$data->where('f.deleted', '=', db::raw('no') );
+		
+		$data->get(array('f.id', 'f.name', 'f.lang', 'COUNT(fe.id) AS total_elements') );
 
-		return $data;
+		return $data->fetch();
 	}
 	
 	/**
@@ -98,6 +103,19 @@ class cms
 			->update(array('deleted'=>db::raw('yes')) );
 		
 		return $deleted;
+	}
+
+	/**
+	 * restore a form that was marked as deleted in the database, but don't actually delete it
+	 * @param int $form_id the ID of the form to soft delete
+	 */
+	static function undelete_form($form_id)
+	{
+		$undeleted = db::table('maverick_cms_forms')
+			->where('id', '=', db::raw($form_id))
+			->update(array('deleted'=>db::raw('no')) );
+		
+		return $undeleted;
 	}
 
 	/**
