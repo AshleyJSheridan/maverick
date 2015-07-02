@@ -91,6 +91,21 @@ class cms_controller extends base_controller
 					
 					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
 					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
+					/*$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php',
+						array(
+							'name'=>'required',
+							'value'=>'required',
+							'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
+						)
+					);
+					$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
+						array(
+							'name'=>'display',
+							'value'=>'required',
+							'checked'=>($element['display'] == 'yes')?'checked="checked"':''
+						)
+					);*/
+
 					$element_html = cms::get_form_element($element, true);
 					break;
 				default:
@@ -152,7 +167,7 @@ class cms_controller extends base_controller
 							validator::make($rules);
 
 							if(validator::run())
-								cms::save_form ();
+								cms::save_form($params[2]);
 							else
 								$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
 						}

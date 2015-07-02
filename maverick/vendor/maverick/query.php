@@ -121,7 +121,7 @@ class query
 	public static function whereIn($field, $values)
 	{
 		$q = query::getInstance();
-		
+
 		if(!is_array($values))
 			return $q;
 		
@@ -375,7 +375,7 @@ class query
 			case 'delete':
 			{
 				$params = $where_params;
-				
+
 				$stmt = $maverick->db->pdo->prepare("DELETE FROM {$q->from} $where_string");
 				
 				break;
@@ -401,6 +401,11 @@ class query
 					while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
 						$results[] = $row;
 					
+					break;
+				}
+				case 'insert':
+				{
+					$results = $maverick->db->pdo->lastInsertId();
 					break;
 				}
 				default:

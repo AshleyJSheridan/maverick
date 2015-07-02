@@ -185,6 +185,8 @@ class cms
 				->with('elements', $element['elements'])
 				->with('element_html', $element['element_html'])
 				->with('display_order', $element['display_order'])
+				->with('display_checkbox', $element['display_checkbox'])
+				->with('required_checkbox', $element['required_checkbox'])
 				->headers(array('content-type'=>'text/plain') )
 				->render(true, true);
 		}
@@ -232,7 +234,7 @@ class cms
 	{
 		$available_elements = \helpers\html\cms::get_available_elements('form', array(), false);
 		
-		$element_type = (empty($_REQUEST['element_type']) || !in_array($_REQUEST['element_type'], $available_elements))?die():$_REQUEST['element_type'];
+		$element_type = (empty($_REQUEST['element_type']) || !in_array($_REQUEST['element_type'], $available_elements))?die('invalid element'):$_REQUEST['element_type'];
 		$element_value = (!empty($_REQUEST['element_value']))?filter_var($_REQUEST['element_value'], FILTER_SANITIZE_FULL_SPECIAL_CHARS):'';
 		$placeholder = (!empty($_REQUEST['placeholder']))?filter_var($_REQUEST['placeholder'], FILTER_SANITIZE_FULL_SPECIAL_CHARS):'';
 		
@@ -247,10 +249,96 @@ class cms
 	/**
 	 * process the form data and save the elements
 	 */
-	static function save_form()
+	static function save_form($form_id)
 	{
+		// update the main form details
+		$form = db::table('maverick_cms_forms')
+			->where('id', '=', db::raw($form_id))
+			->update(array(
+				'name' => db::raw($_REQUEST['form_name']),
+				'lang' => db::raw($_REQUEST['lang']),
+			));
 		
-		var_dump($_REQUEST);
+		// build up form element details for the inserts
+		$elements = $extra = array();
+		foreach($_REQUEST as $element => $values)
+		{
+			// skip anything that isn't an array, as it doesn't belong to an element
+			if(!is_array($values))
+				continue;
+			
+			// loop through the supplied element data
+			for($i=0; $i<count($values); $i++)
+			{
+				// only create this element if it doesn't exist - seems a little clunky but it works
+				if(!isset($elements[$i]) || !isset($extra[$i]) )
+					$elements[$i] = $extra[$i] = array();
+				
+				// add in the data values to the corresponding array by filtering out those that will become part of the _extra table
+				if(in_array($element, array('required', 'regex', 'min', 'max') ) )
+				{
+					// check to see if there was actually a value sent for this elements extra details
+					if(strlen($values[$i]))
+						$extra[$i][$element] = $values[$i];
+				}
+				else
+					$elements[$i][$element] = $values[$i];
+			}
+		}
+		
+		// last cleanup to convert combinations of min and max into a single between
+		for($i=0; $i<count($extra); $i++)
+		{
+			if(isset($extra[$i]['min']) && isset($extra[$i]['max']) )
+			{
+				$extra[$i]['between'] = "{$extra[$i]['min']}:{$extra[$i]['max']}";
+				unset($extra[$i]['min']);
+				unset($extra[$i]['max']);
+			}
+		}
+		
+		// delete the old element row - have to do it the old way because MaVeriCk doesn't support multiple-table deletes yet
+		// TODO : add multiple-table deletes to the query class
+		$delete_elements = db::table('maverick_cms_form_elements')
+			->where('form_id', '=', $form_id)
+			->get(array('id'))
+			->fetch();
+		$delete_element_ids = array();
+		foreach($delete_elements as $element_id)
+			$delete_element_ids[] = $element_id['id'];
+		
+		$delete = db::table('maverick_cms_form_elements_extra')
+			->whereIn('element_id', $delete_element_ids)
+			->delete();
+		$delete = db::table('maverick_cms_form_elements')
+			->where('form_id', '=', $form_id)
+			->delete();
+		
+		// insert the form element rows and the element extras
+		foreach($elements as $key => $element)
+		{
+			$element_id = db::table('maverick_cms_form_elements')
+				->insert(array(
+					'form_id' => $form_id,
+					'element_name' => $element['name'],
+					'type' => $element['type'],
+					'display' => $element['display'],
+					'label' => $element['label'],
+					'placeholder' => $element['placeholder'],
+					'value' => $element['value'],
+					'display_order' => $element['display_order'],
+					'class' => $element['class'],
+					'html_id' => $element['html_id'],
+				))->fetch();
+			
+			$extra_details = array();
+			foreach($extra[$key] as $special_type => $value)
+				$extra_details[] = array('element_id'=>$element_id, 'special_type'=>$special_type, 'value'=>$value);
+
+			$extra_insert = db::table('maverick_cms_form_elements_extra')
+				->insert($extra_details);
+		}
+		
 	}
 
 	/**

@@ -29,11 +29,11 @@ CREATE TABLE `maverick_cms_form_elements` (
   `class` varchar(50) NOT NULL,
   `html_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements` */
 
-insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (1,2,'name','text','yes','Name','John Smith','',1,'',''),(2,2,'email','email','yes','Email','name@email.com','',2,'','');
+insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (1,2,'name','text','yes','Name','John Smith','',1,'',''),(2,2,'email','email','yes','Email','name@email.com','',2,'',''),(10,1,'test','text','yes','Test','test','',1,'',''),(11,1,'test2','text','yes','Test2','test2','',2,'','');
 
 /*Table structure for table `maverick_cms_form_elements_extra` */
 
@@ -45,11 +45,11 @@ CREATE TABLE `maverick_cms_form_elements_extra` (
   `special_type` varchar(50) NOT NULL,
   `value` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements_extra` */
 
-insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (1,1,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(2,1,'between','2:100'),(3,2,'between','5:255'),(4,1,'required','true'),(5,2,'required','true');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (1,1,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(2,1,'between','2:100'),(3,2,'between','5:255'),(4,1,'required','true'),(5,2,'required','true'),(6,10,'required','true'),(7,10,'between','1:10');
 
 /*Table structure for table `maverick_cms_forms` */
 
