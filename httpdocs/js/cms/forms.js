@@ -108,6 +108,15 @@
 					if(result)
 						location.href = e.target.href;
 				});
+				
+				// delete form (complete)
+				$('.item_table').on('click', '.action.delete_full', function(e){
+					e.preventDefault();
+
+					result = window.confirm('Are you sure you want to delete this form? This action cannot be undone!');
+					if(result)
+						location.href = e.target.href;
+				});
 			}
 		}
 	};

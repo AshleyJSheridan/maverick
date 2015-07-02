@@ -250,7 +250,7 @@ class cms_controller extends base_controller
 					// check a form ID was passed for deletion
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$deleted = cms::soft_delete_form($params[2]);
+						$deleted = cms::delete_form($params[2]);
 						
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
@@ -263,6 +263,19 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$deleted = cms::undelete_form($params[2]);
+						
+						if($deleted->fetch() )
+							view::redirect('/' . $app->get_config('cms.path') . '/forms');
+					}
+					break;
+				case 'delete_full':
+					$this->cms->check_permissions('form_delete_full', '/' . $app->get_config('cms.path') . '/forms/deleted_forms');
+					
+
+					// check a form ID was passed for full deletion
+					if(isset($params[2]) && intval($params[2]))
+					{
+						$deleted = cms::delete_form($params[2], true);
 						
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');

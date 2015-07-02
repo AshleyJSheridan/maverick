@@ -95,12 +95,40 @@ class cms
 	/**
 	 * mark a form as deleted in the database, but don't actually delete it
 	 * @param int $form_id the ID of the form to soft delete
+	 * @param bool $hard_delete whether this is just a soft delete (false) or a full delete (true)
 	 */
-	static function soft_delete_form($form_id)
+	static function delete_form($form_id, $hard_delete=false)
 	{
-		$deleted = db::table('maverick_cms_forms')
-			->where('id', '=', db::raw($form_id))
-			->update(array('deleted'=>db::raw('yes')) );
+		if($hard_delete)
+		{
+			$delete_elements = db::table('maverick_cms_form_elements')
+				->where('form_id', '=', $form_id)
+				->get(array('id'))
+				->fetch();
+			$delete_element_ids = array();
+			foreach($delete_elements as $element_id)
+				$delete_element_ids[] = $element_id['id'];
+
+			// only attempt to delete form elements if they exist
+			if(count($delete_element_ids))
+			{
+				$deleted = db::table('maverick_cms_form_elements_extra')
+					->whereIn('element_id', $delete_element_ids)
+					->delete();
+				$deleted = db::table('maverick_cms_form_elements')
+					->where('form_id', '=', db::raw($form_id))
+					->delete();
+			}
+			$deleted = db::table('maverick_cms_forms')
+				->where('id', '=', db::raw($form_id))
+				->delete();
+		}
+		else
+		{
+			$deleted = db::table('maverick_cms_forms')
+				->where('id', '=', db::raw($form_id))
+				->update(array('deleted'=>db::raw('yes')) );
+		}
 		
 		return $deleted;
 	}
@@ -364,7 +392,7 @@ class cms
 			->whereIn('element_id', $delete_element_ids)
 			->delete();
 		$delete = db::table('maverick_cms_form_elements')
-			->where('form_id', '=', $form_id)
+			->where('form_id', '=', db::raw($form_id) )
 			->delete();
 		
 		// insert the form element rows and the element extras
