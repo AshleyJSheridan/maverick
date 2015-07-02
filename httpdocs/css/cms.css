@@ -33,6 +33,8 @@ a.action.duplicate, button.action.duplicate { background-image: url(/img/maveric
 a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
 a.action.add_element, button.action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
 
+.error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; }
+
 .clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
 
 section.main { padding: 10px; float: left; }
@@ -63,7 +65,13 @@ form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bo
 form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
 
 .form_elements.edit { width: 600px; }
-.form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
+.form_elements.edit .form_details, .form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
+.form_elements.edit .form_element { /*display: block;
+width: 100%;
+background-color: $light-grey;
+border-radius: 1em;
+padding: $spacing;
+margin: $spacing 0;*/ }
 .form_elements.edit .form_element .action { float: right; padding: 5px; margin-bottom: 10px; }
 .form_elements.edit .form_element .action:last-child { margin-right: 0; }
 .form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; width: 90%; padding: 5px; }

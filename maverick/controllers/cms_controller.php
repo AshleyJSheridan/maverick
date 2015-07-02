@@ -135,14 +135,27 @@ class cms_controller extends base_controller
 					// check permissions and redirect to the forms list if the current user doesn't have the right permissions
 					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
 					
+					$errors = false;
+					
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$form_buttons = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
 						
-						// process the posted data and save the form
+						// process the posted data and save the form if the required fields are present
 						if(count($_REQUEST))
-							cms::save_form ();
+						{
+							$rules = array(
+								'form_name' => 'required',
+								'lang' => 'required',
+							);
+							validator::make($rules);
+
+							if(validator::run())
+								cms::save_form ();
+							else
+								$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
+						}
 						
 						// get the form from the specified ID, returning the user to the main forms list if no form could be found with that ID
 						$form = cms::get_form($params[2]);
@@ -168,8 +181,11 @@ class cms_controller extends base_controller
 							)
 						);
 						
+						$view_params = array('form'=>$form, 'form_buttons'=>$form_buttons, 'form_details'=>$form_details, 'scripts'=>array('/js/cms/forms.js'=>10) );
+						if($errors)
+							$view_params['errors'] = $errors;
 
-						$this->load_view('form_edit', array('form'=>$form, 'form_buttons'=>$form_buttons, 'form_details'=>$form_details, 'scripts'=>array('/js/cms/forms.js'=>10) ) );
+						$this->load_view('form_edit', $view_params );
 					}
 					else
 						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');

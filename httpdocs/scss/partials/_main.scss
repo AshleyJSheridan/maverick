@@ -130,6 +130,19 @@ a.action, button.action
 	&.add_element {background-image: url(/img/maverick/icons/add_element.png);}
 }
 
+// errors
+.error
+{
+	display: block;
+	background: $error-back;
+	color: $dark;
+	border: 1px solid $error-color;
+	border-radius: 0.5em;
+	padding: $spacing/2 $spacing;
+	margin-bottom: $spacing;
+	width: 100%;
+}
+
 .clearfix:after
 {
 	visibility: hidden;

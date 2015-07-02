@@ -97,4 +97,24 @@ class cms extends \maverick\maverick
 
 		return $html;
 	}
+	
+	/**
+	 * takes an array of error messages and converts it into a single string for direct use with the templates
+	 * @todo consider porting this back into the validator class as it could be quite useful there
+	 * @param null|string $field if not null, this will retrive all the errors for the specified field
+	 * @param array $wrapper this should be a 2-dimensional array containing a before and after wrapper for an error - although either or both of the elements can be a blank string
+	 * @return string
+	 */
+	public function get_all_errors_as_string($field=null, $wrapper=array() )
+	{
+		$errors_html = '';
+		$errors = \validator::get_all_errors(null, array('<span class="error">', '</span>'));
+		
+		foreach($errors as $error)
+		{
+			$errors_html .= implode('', $error);
+		}
+		
+		return $errors_html;
+	}
 }

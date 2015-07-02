@@ -135,7 +135,7 @@ form[name=login]
 {
 	width: 600px;
 	
-	.form_element
+	.form_details, .form_element
 	{
 		display: block;
 		width: 100%;
@@ -143,6 +143,20 @@ form[name=login]
 		border-radius: 1em;
 		padding: $spacing;
 		margin: $spacing 0;
+	}
+	.form_details
+	{
+		
+		
+	}
+	.form_element
+	{
+		/*display: block;
+		width: 100%;
+		background-color: $light-grey;
+		border-radius: 1em;
+		padding: $spacing;
+		margin: $spacing 0;*/
 		
 		.action
 		{
