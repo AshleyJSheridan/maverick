@@ -255,6 +255,8 @@ class cms_controller extends base_controller
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
+					else
+						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'undelete':
 					$this->cms->check_permissions('form_undelete', '/' . $app->get_config('cms.path') . '/forms');
@@ -267,6 +269,8 @@ class cms_controller extends base_controller
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
+					else
+						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'delete_full':
 					$this->cms->check_permissions('form_delete_full', '/' . $app->get_config('cms.path') . '/forms/deleted_forms');
@@ -280,9 +284,19 @@ class cms_controller extends base_controller
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
+					else
+						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'duplicate':
-					echo 'duplicate';
+					$this->cms->check_permissions('form_copy', '/' . $app->get_config('cms.path') . '/forms');
+					
+					// check a form ID was passed for the form to copy
+					if(isset($params[2]) && intval($params[2]))
+					{
+						cms::duplicate_form($params[2]);
+						
+						view::redirect('/' . $app->get_config('cms.path') . '/forms');
+					}
 					break;
 			}
 		}

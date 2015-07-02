@@ -318,6 +318,84 @@ class cms
 	}
 	
 	/**
+	 * duplicates a form and all of its elements under a new name
+	 * @param int $form_id the ID of the form to duplicate
+	 */
+	static function duplicate_form($form_id)
+	{
+		// get the form row
+		$form = db::table('maverick_cms_forms')
+			->where('id', '=', db::raw($form_id))
+			->get()
+			->fetch();
+		
+		// if the form does not exist, then do nothing
+		if(empty($form))
+			return false;
+		
+		$form = $form[0];	// the fetch() normally returns an indexed array, as it's typical for a select to return multiple rows instead of one
+		
+		// get the element rows
+		$elements = db::table('maverick_cms_form_elements')
+			->where('form_id', '=', db::raw($form['id']))
+			->get()
+			->fetch();
+		$element_ids = array();
+		foreach($elements as $element)
+			$element_ids[] = $element['id'];
+		
+		// get the element extra bits rows if elements exist
+		if(count($elements))
+		{
+			$extras = db::table('maverick_cms_form_elements_extra')
+				->whereIn('element_id', $element_ids)
+				->get()
+				->fetch();
+		}
+		
+		
+		// now do the inserts
+		// form row
+		unset($form['id']);	// discard this as we won't need it on the insert
+		$form['name'] .= ' (copy)';
+		$new_form_id = db::table('maverick_cms_forms')
+			->insert($form)
+			->fetch();
+		
+		if(count($elements))
+		{
+			// form elements rows
+			$element_ids = array();
+			foreach($elements as &$element)
+			{
+				$temp_id = $element['id'];	// hold the old element id temporarily - we will need this to adjust the extra bits
+
+				unset($element['id']);	// discard this as we won't need it on the insert
+				$element['form_id'] = $new_form_id;
+
+				$new_element = db::table('maverick_cms_form_elements')
+					->insert($element)
+					->fetch();
+				
+				$element_ids[$temp_id] = $new_element;	// this maps the new copied element id to what the id was of it's original
+			}
+			
+			// form elements extra bits
+			if(count($extras))
+			{
+				foreach($extras as &$extra)
+				{
+					unset($extra['id']);
+					
+					$extra['element_id'] = $element_ids[$extra['element_id']];
+				}
+				$new_extras = db::table('maverick_cms_form_elements_extra')
+					->insert($extras);
+			}
+		}
+	}
+	
+	/**
 	 * process the form data and save the elements
 	 */
 	static function save_form($form_id)
