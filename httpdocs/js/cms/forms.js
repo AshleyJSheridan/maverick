@@ -38,6 +38,10 @@
 					method: 'POST'
 				}).success(function(data){
 					$('.element', $(obj).closest('.form_element') ).html(data);
+					
+					// update the type in the brackets that makes the visual label in the CMS and the x_field class in the .label itself
+					$('.label', $(obj).closest('.form_element') ).attr('class', 'label ' + element_type + '_field');
+					$('.label span', $(obj).closest('.form_element') ).html(element_type)
 				});
 			});
 			
@@ -45,23 +49,65 @@
 			$('.form_elements').on('click', '.form_element .action.delete', function(e){
 				e.preventDefault();
 				
-				if(window.confirm('Are you sure you want to delete this element?'))
+				result = window.confirm('Are you sure you want to delete this element?');
+				if(result)
 					$(this).closest('.form_element').remove();
 			});
 			
 			// get new element block
 			$('.action.add_element').on('click', function(e){
+				e.preventDefault();
+				
 				$.ajax({
 					url: '/maverick_admin/ajax/get_form_element_block',
 					data: {'element_type': 'text', 'display_order': $('.form_elements .form_element').length + 1},
 					method: 'POST'
 				}).success(function(data){
-					$('.form_elements').append(data);
+					//$('.form_elements').append(data);
+					$('.form_elements .form_element').last().after(data);
 				});
 			});
 			
+			// add drag and drop to each film elements
+			$('.form_elements .elements').sortable({
+				container: 'parent',
+				items: '.form_element',
+				opacity: 0.8,
+				cancel: 'input',
+				stop: function(e, {}){
+					// update the element order based on the position it was dragged to
+					$('.form_elements .form_element input[name=display_order\\[\\]]').each(function(i){
+						$(this).val((i+1));
+					});
+					
+					// ensure that the explicit id values for the display and required checkboxes are also updated
+					$('.form_elements .form_element input[name^=display\\[]').each(function(i){
+						$(this).attr('name', 'display[' + i + ']');
+					})
+					$('.form_elements .form_element input[name^=required\\[]').each(function(i){
+						$(this).attr('name', 'display[' + i + ']');
+					})
+				}
+			});
+			//$('.form_elements .form_element').disableSelection();
+			
+			/*$('form.editor .elements').sortable({
+				handle: 'legend',
+				placeholder: 'fieldset',
+				containment: 'parent',
+				items: 'fieldset',
+				cancel: 'input',
+				stop: function(e, {}){
+					// update the field order based on the position it was dragged to
+					$('form.editor input[name=display_order\\[\\]]').each(function(i){
+						$(this).val((i+1))
+					})
+				}
+			});*/
+			
+			
 			// submit the form
-			$('.action.save').on('click', function(e){
+			$('body').on('click', '.action.save', function(e){
 				$('form.form_elements.edit').submit();
 			});
 		}

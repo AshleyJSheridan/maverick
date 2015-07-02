@@ -118,10 +118,7 @@ class cms
 		
 		foreach($form as &$element)
 		{
-			// this ensures that we're not looping through anything uneccessarily
-			if(!count($extra))
-				break;
-			else
+			if(count($extra))
 			{
 				for($i=0; $i<count($extra); $i++)
 				{
@@ -160,17 +157,16 @@ class cms
 	{
 		$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
 		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
-		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php',
+		$forced_index = intval($element['display_order']) - 1;
+		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/input_checkbox_manual_array.php',
 			array(
-				'name'=>'required',
-				'value'=>'required',
+				'name'=>"required[$forced_index]",
 				'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
 			)
 		);
-		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
+		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/input_checkbox_manual_array.php', 
 			array(
-				'name'=>'display',
-				'value'=>'required',
+				'name'=>"display[$forced_index]",
 				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
 			)
 		);
@@ -258,7 +254,7 @@ class cms
 				'name' => db::raw($_REQUEST['form_name']),
 				'lang' => db::raw($_REQUEST['lang']),
 			));
-		
+
 		// build up form element details for the inserts
 		$elements = $extra = array();
 		foreach($_REQUEST as $element => $values)
@@ -277,15 +273,25 @@ class cms
 				// add in the data values to the corresponding array by filtering out those that will become part of the _extra table
 				if(in_array($element, array('required', 'regex', 'min', 'max') ) )
 				{
+					// fix for checkboxes not sending values if they're not checked
+					if($element == 'required')
+						$values[$i] = 'true';
+					
 					// check to see if there was actually a value sent for this elements extra details
 					if(strlen($values[$i]))
-						$extra[$i][$element] = $values[$i];
+						$extra[$i][$element] = $values[$i];	
 				}
 				else
+				{
+					// fix for checkboxes not sending values if they're not checked
+					if($element == 'display')
+						$values[$i] = (isset($values[$i]))?'yes':'no';
+					
 					$elements[$i][$element] = $values[$i];
+				}
 			}
 		}
-		
+
 		// last cleanup to convert combinations of min and max into a single between
 		for($i=0; $i<count($extra); $i++)
 		{
@@ -322,7 +328,7 @@ class cms
 					'form_id' => $form_id,
 					'element_name' => $element['name'],
 					'type' => $element['type'],
-					'display' => $element['display'],
+					'display' => isset($element['display'])?$element['display']:'no',
 					'label' => $element['label'],
 					'placeholder' => $element['placeholder'],
 					'value' => $element['value'],
@@ -334,9 +340,11 @@ class cms
 			$extra_details = array();
 			foreach($extra[$key] as $special_type => $value)
 				$extra_details[] = array('element_id'=>$element_id, 'special_type'=>$special_type, 'value'=>$value);
-
-			$extra_insert = db::table('maverick_cms_form_elements_extra')
-				->insert($extra_details);
+			
+			// only run the extra bits query if there's something to do
+			if(!empty($extra_details))
+				$extra_insert = db::table('maverick_cms_form_elements_extra')
+					->insert($extra_details);
 		}
 		
 	}

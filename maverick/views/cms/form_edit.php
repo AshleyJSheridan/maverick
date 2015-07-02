@@ -2,19 +2,22 @@
 
 {{errors}}
 
-{{form_buttons}}
-
-<form class="form_elements edit" method="post" enctype="multipart/form-data">	
-	<div class="form_details">{{form_details}}</div>
-	<?php
-	$form = data::get('form');
+<form class="form_elements edit" method="post" enctype="multipart/form-data" name="edit_form" novalidate>	
+	{{form_buttons}}
 	
-	if(isset($form[0]['html']))
-	{
-		foreach($form as $element)
-			echo $element['html'];
-	}
-	?>
-</form>
+	<div class="form_details">{{form_details}}</div>
+	
+	<div class="elements">
+		<?php
+		$form = data::get('form');
 
-{{form_buttons}}
+		if(isset($form[0]['html']))
+		{
+			foreach($form as $element)
+				echo $element['html'];
+		}
+		?>
+	</div>
+	
+	{{form_buttons}}
+</form>

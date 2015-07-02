@@ -7,7 +7,7 @@
 		<button class="delete action">delete</button>
 	</div>
 	
-	<div class="label {{type}}_field">{{element_name}} ({{type}})</div>
+	<div class="label {{type}}_field">{{element_name}} (<span>{{type}}</span>)</div>
 	<div class="element">{{element_html}}</div>
 	
 	<input type="hidden" name="id[]" value="{{element_id}}"/>

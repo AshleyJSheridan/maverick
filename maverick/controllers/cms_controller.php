@@ -91,20 +91,6 @@ class cms_controller extends base_controller
 					
 					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
 					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
-					/*$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php',
-						array(
-							'name'=>'required',
-							'value'=>'required',
-							'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
-						)
-					);
-					$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_checkbox.php', 
-						array(
-							'name'=>'display',
-							'value'=>'required',
-							'checked'=>($element['display'] == 'yes')?'checked="checked"':''
-						)
-					);*/
 
 					$element_html = cms::get_form_element($element, true);
 					break;
@@ -196,7 +182,15 @@ class cms_controller extends base_controller
 							)
 						);
 						
-						$view_params = array('form'=>$form, 'form_buttons'=>$form_buttons, 'form_details'=>$form_details, 'scripts'=>array('/js/cms/forms.js'=>10) );
+						$view_params = array(
+							'form'=>$form,
+							'form_buttons'=>$form_buttons,
+							'form_details'=>$form_details,
+							'scripts'=>array(
+								'/js/cms/forms.js'=>10, 
+								'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,
+							)
+						);
 						if($errors)
 							$view_params['errors'] = $errors;
 
