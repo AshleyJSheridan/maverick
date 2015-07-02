@@ -32,6 +32,8 @@ a.action.delete, button.action.delete { background-image: url(/img/maverick/icon
 a.action.duplicate, button.action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
 a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
 a.action.add_element, button.action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
+a.action.new_form, button.action.new_form { background-image: url(/img/maverick/icons/form_new.png); }
+a.action.deleted_forms, button.action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; }
 
@@ -84,6 +86,6 @@ margin: $spacing 0;*/ }
 
 /*  Created on : 23-Jun-2015, 00:12:12 Author     : ashley
 */
-table.item_table { border-collapse: collapse; border: 1px solid #cccccc; }
+table.item_table { border-collapse: collapse; border: 1px solid #cccccc; margin: 10px 0; }
 table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 10px; }
 table.item_table th { background-color: #333333; color: #eeeeee; }

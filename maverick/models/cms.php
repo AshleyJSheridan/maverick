@@ -31,6 +31,7 @@ class cms
 	{
 		$data = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('f.id', '=', 'fe.form_id') )
+			->where('f.deleted', '=', db::raw('no') )
 			->groupBy('f.id')
 			->get(array('f.id', 'f.name', 'f.lang', 'COUNT(fe.id) AS total_elements') )
 			->fetch();
@@ -72,6 +73,33 @@ class cms
 		return $lang_list;
 	}
 	
+	/**
+	 * create a new empty form and return the ID for it
+	 * @return int
+	 */
+	static function new_form()
+	{
+		$new_form_id = db::table('maverick_cms_forms')
+			->insert(array(
+				'name'=>'new form ' . date("y-m-d H:i"),
+			))->fetch();
+		
+		return $new_form_id;
+	}
+
+	/**
+	 * mark a form as deleted in the database, but don't actually delete it
+	 * @param int $form_id the ID of the form to soft delete
+	 */
+	static function soft_delete_form($form_id)
+	{
+		$deleted = db::table('maverick_cms_forms')
+			->where('id', '=', db::raw($form_id))
+			->update(array('deleted'=>db::raw('yes')) );
+		
+		return $deleted;
+	}
+
 	/**
 	 * get a fom and all of its form elements with their respective element details
 	 * if no elements are attached to a form, then the returned array contains a single element with mostly missing details
@@ -140,7 +168,8 @@ class cms
 			}
 			
 			// create the CMS HTML for each element
-			$element['html'] = cms::get_form_element($element);
+			if($element['element_id'])
+				$element['html'] = cms::get_form_element($element);
 		}
 
 		return $form;
@@ -201,7 +230,7 @@ class cms
 	 */
 	static function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
 	{
-		if(empty($actions) || !intval($id) || empty($section) )
+		if(empty($actions) || empty($section) )
 			return '';
 		
 		$app = \maverick\maverick::getInstance();

@@ -124,8 +124,15 @@ class cms_controller extends base_controller
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$form_table->class = 'item_table';
-
-			$this->load_view($page, array('forms'=>$form_table->render() ) );
+			
+			$view_params = array(
+				'forms'=>$form_table->render(),
+				'form_buttons'=> cms::generate_actions('forms', '', array('new form','deleted forms'), 'full', 'a'),
+				'scripts'=>array(
+					'/js/cms/forms.js'=>10, 
+				)
+			);
+			$this->load_view($page, $view_params );
 		}
 		else
 		{
@@ -161,7 +168,7 @@ class cms_controller extends base_controller
 						// get the form from the specified ID, returning the user to the main forms list if no form could be found with that ID
 						$form = cms::get_form($params[2]);
 						if(empty($form))
-							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
+							view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
 						
 						// build up the extra fields for the form-specific details, like form name, etc
 						$form_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
@@ -197,14 +204,29 @@ class cms_controller extends base_controller
 						$this->load_view('form_edit', $view_params );
 					}
 					else
-						view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
+						view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
 					
 					break;
-				case 'new':
-					echo 'new';
+				case 'new_form':
+					$this->cms->check_permissions('form_new', '/' . $app->get_config('cms.path') . '/forms');
+					// create a new blank form, get the ID for it and redirect to the edit screen with it
+					$new_form_id = cms::new_form();
+					
+					view::redirect('/' . $app->get_config('cms.path') . "/forms/edit/$new_form_id");
+					
 					break;
 				case 'delete':
-					echo 'delete';
+					$this->cms->check_permissions('form_delete', '/' . $app->get_config('cms.path') . '/forms');
+					
+					// check a form ID was passed for deletion
+					if(isset($params[2]) && intval($params[2]))
+					{
+						$deleted = cms::soft_delete_form($params[2]);
+						
+						if($deleted->fetch() )
+							view::redirect('/' . $app->get_config('cms.path') . '/forms');
+					}
+					
 					break;
 				case 'duplicate':
 					echo 'duplicate';
