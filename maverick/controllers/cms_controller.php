@@ -132,6 +132,7 @@ class cms_controller extends base_controller
 			switch($params[1])
 			{
 				case 'edit':
+					// check permissions and redirect to the forms list if the current user doesn't have the right permissions
 					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
 					
 					// redirect to create a new form section if no form ID is in the URL, or a form does not actually exist with that ID
@@ -139,13 +140,16 @@ class cms_controller extends base_controller
 					{
 						$form_buttons = cms::generate_actions($params[1], $params[2], array('save', 'add element'), 'full', 'button');
 						
+						// process the posted data and save the form
 						if(count($_REQUEST))
 							cms::save_form ();
 						
+						// get the form from the specified ID, returning the user to the main forms list if no form could be found with that ID
 						$form = cms::get_form($params[2]);
 						if(empty($form))
 							view::redirect('/' . $app->get_config('cms.path') . '/forms/new');
 						
+						// build up the extra fields for the form-specific details, like form name, etc
 						$form_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
 							'label'=>'Form Name',
 							'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(

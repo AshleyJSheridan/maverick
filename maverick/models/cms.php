@@ -38,6 +38,13 @@ class cms
 		return $data;
 	}
 	
+	/**
+	 * get a list of the languages listed in the database
+	 * this list is a full list of ISO-639x language cultures
+	 * @param bool $all determines if only languages currently being used within the CMS are to be returned
+	 * @param bool $short if set to true, this returns a simple culture=>fullname array, otherwise returns a full array from the database
+	 * @return array
+	 */
 	static function get_languages($all=false, $short=false)
 	{
 		$languages = db::table('maverick_cms_languages');
@@ -65,6 +72,13 @@ class cms
 		return $lang_list;
 	}
 	
+	/**
+	 * get a fom and all of its form elements with their respective element details
+	 * if no elements are attached to a form, then the returned array contains a single element with mostly missing details
+	 * if no form is found, a completely empty array is returned
+	 * @param int $form_id the ID of the form to retrieve
+	 * @return array
+	 */
 	static function get_form($form_id)
 	{
 		$form_id = intval($form_id);

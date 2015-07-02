@@ -21,6 +21,13 @@ class cms extends \maverick\maverick
 		return self::$_instance;
 	}
 	
+	/**
+	 * check the permissions listed for the currently logged in user
+	 * if the check fails, and a redirect URL is supplied, a redirect is actioned
+	 * @param array $perms a list of permissions to check against - a check must pass ALL of these to succeed
+	 * @param string|bool $redirect if non-false, this should be the URL to redirect to if there the permission check failed
+	 * @return boolean
+	 */
 	public function check_permissions($perms, $redirect = false)
 	{
 		$allowed = false;
