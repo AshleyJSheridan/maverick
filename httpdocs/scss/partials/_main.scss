@@ -89,7 +89,7 @@ header
 a.action, button.action
 {
 	background-repeat: no-repeat;
-	background-size: auto 20px;
+	background-size: auto 26px;
 	background-position: center center;
 	display: inline-block;
 	width: 20px;
@@ -109,13 +109,14 @@ a.action, button.action
 	
 	&.full
 	{
-		width: 100px;
+		width: 140px;
 		text-indent: inherit;
 		padding-left: 30px;
 		background-position: 5px center;
 		background-color: $light-grey;
 		color: $dark;
 		text-decoration: none;
+		text-align: center;
 	}
 	&:hover
 	{
@@ -132,6 +133,8 @@ a.action, button.action
 	&.deleted_forms {background-image: url(/img/maverick/icons/trash.png);}
 	&.delete_full {background-image: url(/img/maverick/icons/delete.png);}
 	&.undelete {background-image: url(/img/maverick/icons/restore.png);}
+	&.new_user {background-image: url(/img/maverick/icons/new_user.png);}
+	&.update_permissions {background-image: url(/img/maverick/icons/user_permissions.png);}
 }
 
 // errors

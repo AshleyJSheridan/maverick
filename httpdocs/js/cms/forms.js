@@ -25,7 +25,6 @@
 
 					$(this).addClass('active');
 					$('.' + $(this).data('tab'), $(this).parent().parent() ).addClass('active');
-					//$('.' + $(this).data('tab'), this ).addClass('active');
 				});
 
 				// fetching the preview of an element

@@ -501,6 +501,88 @@ class cms
 		}
 		
 	}
+	
+	/**
+	 * gets a list of all the users in the CMS as defined in the database
+	 * @return array
+	 */
+	static function get_users()
+	{
+		$data = db::table('maverick_cms_users')
+			->get(array('id', 'username', 'forename', 'surname', 'admin'))
+			->fetch();
+		
+		return $data;
+	}
+	
+	/**
+	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
+	 * this then adds in any to the database that do not already exist
+	 * @todo consider allowing extra directories to be specified to be checked for calls to the get_permission() function
+	 */
+	static function get_permissions_from_code()
+	{
+		$directories = array(MAVERICK_BASEDIR . 'controllers', MAVERICK_BASEDIR . 'models');	// only models and controllers are checked, as they are the only ones in the CMS that should be redirecting
+
+		$perms = array();
+		
+		// although typically there is only one views directory, it is still an array and there may be a valid need to utilise Laravels default nature of allowing multiple view directories
+		foreach($directories as $dir)
+		{
+			//$all_files = File::allFiles($dir);
+			$all_files = new \helpers\file($dir);
+			$tree = $all_files->flat_tree();
+
+			// remove any files that don't actually end in .php
+			foreach($tree as $file)
+			{
+				//$filename = str_replace($dir, '', $file->getPathname());
+				$filename = basename($file);
+				
+				if(preg_match('/\.php$/', $filename) )
+				{
+					$contents = file_get_contents($file);
+					
+					// this gets any calls that match the check_permission syntaxes
+					$chunks = preg_match_all('/check_permissions\((((\'[^\']+\')|(\s*array\(([^\)]+))))/', $contents, $matches);
+
+					// simple syntax - only for a single permission
+					if(!empty($matches[3]))
+					{
+						foreach($matches[3] as $match)
+						{
+							if(strlen($match))
+								$perms[] = trim($match, "'");
+						}
+					}
+					// complex syntax for multiple permissions within an array
+					if(!empty($matches[5]))
+					{
+						foreach($matches[5] as $match)
+						{
+							if(strlen($match))
+							{
+								$perm_bits = explode(',', $match);
+								foreach($perm_bits as $perm)
+									$perms[] = trim($perm, "' ");
+							}
+						}
+					}
+				}
+			}
+		}
+		// ensure they're unique
+		$perms = array_unique($perms);
+		
+		// now insert the entries
+		foreach($perms as $perm)
+		{
+			$insert = db::table('maverick_cms_permissions')
+				->insert(array(
+					'name' => $perm,
+				))->fetch();
+		}
+	}
 
 	/**
 	 * gets the permissions for the specified user id and an identifier of whether or not this user is an admin

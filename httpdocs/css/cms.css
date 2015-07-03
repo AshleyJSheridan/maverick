@@ -24,8 +24,8 @@ header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
-a.action, button.action { background-repeat: no-repeat; background-size: auto 20px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
-a.action.full, button.action.full { width: 100px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; }
+a.action, button.action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action.full, button.action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
 a.action:hover, button.action:hover { background-color: #0d80b9; color: #eeeeee; }
 a.action.edit, button.action.edit { background-image: url(/img/maverick/icons/edit.png); }
 a.action.delete, button.action.delete { background-image: url(/img/maverick/icons/delete.png); }
@@ -36,6 +36,8 @@ a.action.new_form, button.action.new_form { background-image: url(/img/maverick/
 a.action.deleted_forms, button.action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
 a.action.delete_full, button.action.delete_full { background-image: url(/img/maverick/icons/delete.png); }
 a.action.undelete, button.action.undelete { background-image: url(/img/maverick/icons/restore.png); }
+a.action.new_user, button.action.new_user { background-image: url(/img/maverick/icons/new_user.png); }
+a.action.update_permissions, button.action.update_permissions { background-image: url(/img/maverick/icons/user_permissions.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; }
 

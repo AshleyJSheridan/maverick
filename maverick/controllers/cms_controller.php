@@ -40,20 +40,15 @@ class cms_controller extends base_controller
 		
 		switch($params[0])
 		{
-			case '':
-				$this->dash();
-				break;
 			case 'forms':
-				$this->forms($params);
+			case 'users':
+			case 'ajax':
+				$this->{$params[0]}($params);
 				break;
 			case 'login':
-				$this->login();
-				break;
 			case 'logout':
-				$this->logout();
-				break;
-			case 'ajax':
-				$this->ajax($params);
+			case 'dash':
+				$this->{$params[0]}();
 				break;
 			default:
 				// loop through the hooks listed in the main MaVeriCk class
@@ -71,6 +66,11 @@ class cms_controller extends base_controller
 		$this->load_view($page);
 	}
 
+	/**
+	 * method to handle ajax requests coming through to the admin area
+	 * @param array $params the URL parameters
+	 * @todo the ajax URLs are currently hard-coded into the javascript - need a way to pass the value in the PHP config to the js
+	 */
 	private function ajax($params)
 	{
 		$app = \maverick\maverick::getInstance();
@@ -82,12 +82,12 @@ class cms_controller extends base_controller
 			switch($params[1])
 			{
 				case 'get_form_element':
-					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_edit'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					$element_html = cms::get_form_element_preview();
 					break;
 				case 'get_form_element_block':
-					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_edit'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
 					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
@@ -96,6 +96,53 @@ class cms_controller extends base_controller
 					break;
 				default:
 					// handle ajax extensions here
+					break;
+			}
+		}
+	}
+	
+	/**
+	 * method that handles the users and permissions within the CMS
+	 * @param array $params the URL parameters
+	 */
+	private function users($params)
+	{
+		$page = 'users';
+		$app = \maverick\maverick::getInstance();
+		
+		$this->cms->check_permissions('user', '/' . $app->get_config('cms.path') . '/');
+		
+		// show the list of users in the CMS
+		if(!isset($params[1]))
+		{
+			// get list of users and show them
+			$users = cms::get_users();
+			$headers = '["ID","Userame","Forename","Surname","Admin?","Actions"]';
+			$data = array();
+			foreach($users as $user)
+				$data[] = array($user['id'], $user['username'], $user['forename'], $user['surname'], $user['admin'], cms::generate_actions('users', $user['id'], array('edit', 'delete', 'duplicate') ) );
+			
+			$user_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
+			$user_table->class = 'item_table';
+			
+			$view_params = array(
+				'users'=>$user_table->render(),
+				'user_buttons'=> cms::generate_actions('users', '', array('new user','update permissions'), 'full', 'a'),
+				'scripts'=>array(
+					'/js/cms/users.js'=>10, 
+				)
+			);
+			$this->load_view($page, $view_params );
+		}
+		else
+		{
+			// an action was specified, so instead of showing all the users, deal with the request here
+			switch($params[1])
+			{
+				case 'update_permissions':
+					cms::get_permissions_from_code();
+					
+					view::redirect('/' . $app->get_config('cms.path') . "/users");
 					break;
 			}
 		}
@@ -141,7 +188,7 @@ class cms_controller extends base_controller
 			{
 				case 'deleted_forms':
 				{
-					$this->cms->check_permissions('form_undelete', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_undelete'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					$forms = cms::get_forms(true);
 					
@@ -165,7 +212,7 @@ class cms_controller extends base_controller
 				}
 				case 'edit':
 					// check permissions and redirect to the forms list if the current user doesn't have the right permissions
-					$this->cms->check_permissions('form_edit', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_edit'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					$errors = false;
 					
@@ -237,7 +284,7 @@ class cms_controller extends base_controller
 					
 					break;
 				case 'new_form':
-					$this->cms->check_permissions('form_new', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_new'), '/' . $app->get_config('cms.path') . '/forms');
 					// create a new blank form, get the ID for it and redirect to the edit screen with it
 					$new_form_id = cms::new_form();
 					
@@ -245,7 +292,7 @@ class cms_controller extends base_controller
 					
 					break;
 				case 'delete':
-					$this->cms->check_permissions('form_delete', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_delete'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					// check a form ID was passed for deletion
 					if(isset($params[2]) && intval($params[2]))
@@ -259,7 +306,7 @@ class cms_controller extends base_controller
 						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'undelete':
-					$this->cms->check_permissions('form_undelete', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_undelete'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					// check a form ID was passed for restoration
 					if(isset($params[2]) && intval($params[2]))
@@ -273,7 +320,7 @@ class cms_controller extends base_controller
 						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'delete_full':
-					$this->cms->check_permissions('form_delete_full', '/' . $app->get_config('cms.path') . '/forms/deleted_forms');
+					$this->cms->check_permissions(array('form', 'form_delete_full'), '/' . $app->get_config('cms.path') . '/forms/deleted_forms');
 					
 
 					// check a form ID was passed for full deletion
@@ -288,7 +335,7 @@ class cms_controller extends base_controller
 						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					break;
 				case 'duplicate':
-					$this->cms->check_permissions('form_copy', '/' . $app->get_config('cms.path') . '/forms');
+					$this->cms->check_permissions(array('form', 'form_copy'), '/' . $app->get_config('cms.path') . '/forms');
 					
 					// check a form ID was passed for the form to copy
 					if(isset($params[2]) && intval($params[2]))
