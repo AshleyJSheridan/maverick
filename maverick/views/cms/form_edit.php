@@ -2,7 +2,7 @@
 
 {{errors}}
 
-<form class="form_elements edit" method="post" enctype="multipart/form-data" name="edit_form" novalidate>	
+<form class="form_elements edit" method="post" enctype="multipart/form-data" name="edit_form" novalidate>
 	{{form_buttons}}
 	
 	<div class="form_details">{{form_details}}</div>

@@ -38,6 +38,9 @@ a.action.delete_full, button.action.delete_full { background-image: url(/img/mav
 a.action.undelete, button.action.undelete { background-image: url(/img/maverick/icons/restore.png); }
 a.action.new_user, button.action.new_user { background-image: url(/img/maverick/icons/new_user.png); }
 a.action.update_permissions, button.action.update_permissions { background-image: url(/img/maverick/icons/user_permissions.png); }
+a.action.list_permissions, button.action.list_permissions { background-image: url(/img/maverick/icons/permissions.png); }
+a.action.add_permission, button.action.add_permission { background-image: url(/img/maverick/icons/add.png); }
+a.action.save_permissions, button.action.save_permissions { background-image: url(/img/maverick/icons/save.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; }
 
@@ -55,6 +58,7 @@ input { border: 1px solid #cccccc; -moz-transition: all 0.5s ease 0s; -o-transit
 input[type=submit], input[type=button] { background-repeat: no-repeat; }
 input[type=submit]:hover, input[type=button]:hover { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
 input:focus { -webkit-box-shadow: 0px 0px 5px 1px #0d80b9; -moz-box-shadow: 0px 0px 5px 1px #0d80b9; box-shadow: 0px 0px 5px 1px #0d80b9; }
+input[readonly] { background-color: #eeeeee; color: #999999; }
 
 .tabbed { position: relative; margin-top: 20px; }
 .tabbed .tab-nav { margin: 0 0 0 10px; padding: 0; }
@@ -92,4 +96,6 @@ margin: $spacing 0;*/ }
 */
 table.item_table { border-collapse: collapse; border: 1px solid #cccccc; margin: 10px 0; }
 table.item_table th, table.item_table td { border: 1px solid #cccccc; padding: 10px; }
+table.item_table th input, table.item_table td input { width: 350px; }
+table.item_table th input.short, table.item_table td input.short { width: 50px; }
 table.item_table th { background-color: #333333; color: #eeeeee; }

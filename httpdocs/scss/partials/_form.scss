@@ -24,6 +24,7 @@ input
 	-webkit-transition: all 0.5s ease 0s;
 	transition: all 0.5s ease 0s;
 	
+	
 	&[type=submit],&[type=button]
 	{
 		background-repeat: no-repeat;
@@ -40,6 +41,12 @@ input
 		-webkit-box-shadow: 0px 0px 5px 1px $highlight;
 		-moz-box-shadow: 0px 0px 5px 1px $highlight;
 		box-shadow: 0px 0px 5px 1px $highlight;
+	}
+	&[readonly]
+	{
+		background-color: $light;
+		color: $dark-grey;
+		
 	}
 }
 .tabbed
@@ -144,11 +151,7 @@ form[name=login]
 		padding: $spacing;
 		margin: $spacing 0;
 	}
-	.form_details
-	{
-		
-		
-	}
+
 	.form_element
 	{
 		/*display: block;

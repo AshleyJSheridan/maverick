@@ -127,7 +127,7 @@ class cms_controller extends base_controller
 			
 			$view_params = array(
 				'users'=>$user_table->render(),
-				'user_buttons'=> cms::generate_actions('users', '', array('new user','update permissions'), 'full', 'a'),
+				'user_buttons'=> cms::generate_actions('users', '', array('new user','update permissions', 'list permissions'), 'full', 'a'),
 				'scripts'=>array(
 					'/js/cms/users.js'=>10, 
 				)
@@ -143,6 +143,46 @@ class cms_controller extends base_controller
 					cms::get_permissions_from_code();
 					
 					view::redirect('/' . $app->get_config('cms.path') . "/users");
+					break;
+				case 'list_permissions':
+					$page = 'perms';
+					
+					// process the posted data and update the permissions if the required fields are present and valid
+					if(count($_REQUEST))
+					{
+						$rules = array(
+							'name' => array('required','alpha_dash'),
+							'description' => 'alpha_dash',
+							'id' => 'numeric',
+						);
+						validator::make($rules);
+
+						if(validator::run())
+						{
+							cms::update_permissions();
+							view::redirect('/' . $app->get_config('cms.path') . "/users/list_permissions");	// this ensures the form won't be re-submitted if the user hits refresh
+						}
+						else
+							$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
+					}
+					
+					$perms = cms::get_all_permissions();
+					$headers = '["ID","Name","Description"]';
+					$data = array();
+					foreach($perms as $perm)
+						$data[] = array("<input type=\"text\" value=\"{$perm['id']}\" name=\"id[]\" readonly class=\"short\"/>", "<input type=\"text\" value=\"{$perm['name']}\" name=\"name[]\"/>", "<input type=\"text\" value=\"{$perm['description']}\" name=\"description[]\"/>");
+					
+					$perm_table = new \helpers\html\tables('users', 'layout', $data, $headers);
+					$perm_table->class = 'item_table';
+					
+					$view_params = array(
+						'perms'=>$perm_table->render(),
+						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a'),
+						'scripts'=>array(
+							'/js/cms/users.js'=>10, 
+						)
+					);
+					$this->load_view($page, $view_params );
 					break;
 			}
 		}

@@ -135,6 +135,9 @@ a.action, button.action
 	&.undelete {background-image: url(/img/maverick/icons/restore.png);}
 	&.new_user {background-image: url(/img/maverick/icons/new_user.png);}
 	&.update_permissions {background-image: url(/img/maverick/icons/user_permissions.png);}
+	&.list_permissions {background-image: url(/img/maverick/icons/permissions.png);}
+	&.add_permission {background-image: url(/img/maverick/icons/add.png);}
+	&.save_permissions {background-image: url(/img/maverick/icons/save.png);}
 }
 
 // errors

@@ -583,6 +583,67 @@ class cms
 				))->fetch();
 		}
 	}
+	
+	/**
+	 * fetch a list of all the permissions in the CMS
+	 * @param bool 
+	 */
+	static function get_all_permissions($group=false)
+	{
+		$perms = db::table('maverick_cms_permissions')
+			->orderBy('name')
+			->get()
+			->fetch();
+		
+		if($group)
+		{
+			// now group them by the first part - any part of a permission before the _ counts as that first part
+			$permissions = array();
+			foreach($perms as $perm)
+			{
+				$perm_group = substr($perm['name'], 0, (strpos($perm['name'], '_') )?strpos($perm['name'], '_'):strlen($perm['name']) );
+
+				if(!isset($permissions[$perm_group]))
+					$permissions[$perm_group] = array();
+
+				$permissions[$perm_group][] = $perm;
+			}
+			return $permissions;
+		}
+		else
+			return $perms;
+	}
+	
+	/**
+	 * update the list of permissions from the user submitted data
+	 */
+	static function update_permissions()
+	{
+		foreach($_REQUEST['id'] as $key => $id)
+		{
+			if(!empty($id))
+			{
+				// update existing rules
+				$perm = db::table('maverick_cms_permissions')
+					->where('id', '=', $id)
+					->update(array(
+						'name'=>$_REQUEST['name'][$key],
+						'description'=>$_REQUEST['description'][$key],
+					))
+					->fetch();
+			}
+			else
+			{
+				// add new rules
+				$perm = db::table('maverick_cms_permissions')
+					->insert(array(
+						'name'=>$_REQUEST['name'][$key],
+						'description'=>$_REQUEST['description'][$key],
+					))
+					->fetch();
+			}
+		}
+	}
 
 	/**
 	 * gets the permissions for the specified user id and an identifier of whether or not this user is an admin

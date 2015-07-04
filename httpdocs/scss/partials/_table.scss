@@ -13,6 +13,16 @@ table.item_table
 	{
 		border: 1px solid $grey;
 		padding: $spacing;
+		
+		input
+		{
+			width: 350px;
+			
+			&.short
+			{
+				width: 50px;
+			}
+		}
 	}
 	th
 	{
