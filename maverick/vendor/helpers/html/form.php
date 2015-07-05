@@ -15,6 +15,8 @@ class form
 	private $novalidate = false;
 	private $autocomplete = false;
 	private $snippets;
+	private $class;
+	private $id;
 	
 	/**
 	 * basic constructor for the form html object
@@ -54,6 +56,8 @@ class form
 		switch($param)
 		{
 			case 'name':
+			case 'class':
+			case 'id':
 				if(strlen($value))
 					$this->$param = $value;
 				break;
@@ -89,7 +93,7 @@ class form
 	{
 		// build the main form tag
 		$html = '<form';
-		foreach(array('name', 'method', 'action', 'enctype') as $form_attr)
+		foreach(array('name', 'method', 'action', 'enctype', 'class', 'id') as $form_attr)
 		{
 			if(!is_null($this->$form_attr) )
 				$html .= " $form_attr=\"{$this->$form_attr}\"";

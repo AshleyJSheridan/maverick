@@ -24,24 +24,24 @@ header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
-a.action, button.action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
-a.action.full, button.action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
-a.action:hover, button.action:hover { background-color: #0d80b9; color: #eeeeee; }
-a.action.edit, button.action.edit { background-image: url(/img/maverick/icons/edit.png); }
-a.action.delete, button.action.delete { background-image: url(/img/maverick/icons/delete.png); }
-a.action.duplicate, button.action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
-a.action.save, button.action.save { background-image: url(/img/maverick/icons/save.png); }
-a.action.add_element, button.action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
-a.action.new_form, button.action.new_form { background-image: url(/img/maverick/icons/form_new.png); }
-a.action.deleted_forms, button.action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
-a.action.delete_full, button.action.delete_full { background-image: url(/img/maverick/icons/delete.png); }
-a.action.undelete, button.action.undelete { background-image: url(/img/maverick/icons/restore.png); }
-a.action.new_user, button.action.new_user { background-image: url(/img/maverick/icons/new_user.png); }
-a.action.update_permissions, button.action.update_permissions { background-image: url(/img/maverick/icons/user_permissions.png); }
-a.action.list_permissions, button.action.list_permissions { background-image: url(/img/maverick/icons/permissions.png); }
-a.action.add_permission, button.action.add_permission { background-image: url(/img/maverick/icons/add.png); }
-a.action.save_permissions, button.action.save_permissions { background-image: url(/img/maverick/icons/save.png); }
-a.action.delete_permission, button.action.delete_permission { background-image: url(/img/maverick/icons/delete.png); }
+a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action.full, button.action.full, input[type=submit].action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
+a.action:hover, button.action:hover, input[type=submit].action:hover { background-color: #0d80b9; color: #eeeeee; }
+a.action.edit, button.action.edit, input[type=submit].action.edit { background-image: url(/img/maverick/icons/edit.png); }
+a.action.delete, button.action.delete, input[type=submit].action.delete { background-image: url(/img/maverick/icons/delete.png); }
+a.action.duplicate, button.action.duplicate, input[type=submit].action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
+a.action.save, button.action.save, input[type=submit].action.save { background-image: url(/img/maverick/icons/save.png); }
+a.action.add_element, button.action.add_element, input[type=submit].action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
+a.action.new_form, button.action.new_form, input[type=submit].action.new_form { background-image: url(/img/maverick/icons/form_new.png); }
+a.action.deleted_forms, button.action.deleted_forms, input[type=submit].action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
+a.action.delete_full, button.action.delete_full, input[type=submit].action.delete_full { background-image: url(/img/maverick/icons/delete.png); }
+a.action.undelete, button.action.undelete, input[type=submit].action.undelete { background-image: url(/img/maverick/icons/restore.png); }
+a.action.new_user, button.action.new_user, input[type=submit].action.new_user { background-image: url(/img/maverick/icons/new_user.png); }
+a.action.update_permissions, button.action.update_permissions, input[type=submit].action.update_permissions { background-image: url(/img/maverick/icons/user_permissions.png); }
+a.action.list_permissions, button.action.list_permissions, input[type=submit].action.list_permissions { background-image: url(/img/maverick/icons/permissions.png); }
+a.action.add_permission, button.action.add_permission, input[type=submit].action.add_permission { background-image: url(/img/maverick/icons/add.png); }
+a.action.save_permissions, button.action.save_permissions, input[type=submit].action.save_permissions { background-image: url(/img/maverick/icons/save.png); }
+a.action.delete_permission, button.action.delete_permission, input[type=submit].action.delete_permission { background-image: url(/img/maverick/icons/delete.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
 
@@ -75,14 +75,9 @@ form[name=login] label { margin: 0 auto; }
 form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bottom: 10px; }
 form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
 
-.form_elements.edit { width: 600px; }
+.user.edit, .form_elements.edit { width: 600px; }
+
 .form_elements.edit .form_details, .form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
-.form_elements.edit .form_element { /*display: block;
-width: 100%;
-background-color: $light-grey;
-border-radius: 1em;
-padding: $spacing;
-margin: $spacing 0;*/ }
 .form_elements.edit .form_element .action { float: right; padding: 5px; margin-bottom: 10px; }
 .form_elements.edit .form_element .action:last-child { margin-right: 0; }
 .form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; width: 90%; padding: 5px; }
@@ -92,6 +87,8 @@ margin: $spacing 0;*/ }
 .form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 grey; }
 .form_elements.edit .details { display: none; }
 .form_elements.edit .details.active { display: block; }
+
+.user.edit input { width: 60%; }
 
 /*  Created on : 23-Jun-2015, 00:12:12 Author     : ashley
 */

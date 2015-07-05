@@ -516,6 +516,24 @@ class cms
 	}
 	
 	/**
+	 * add a new user from $_POST data
+	 */
+	static function add_new_user()
+	{
+		$new_user = db::table('maverick_cms_users')
+			->insert(array(
+				'username' => $_REQUEST['username'],
+				'forename' => $_REQUEST['forename'],
+				'surname' => $_REQUEST['surname'],
+				'email' => $_REQUEST['email'],
+				'password' => $_REQUEST['password'],
+			))
+			->fetch();
+		
+		return $new_user;
+	}
+	
+	/**
 	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
 	 * this then adds in any to the database that do not already exist
 	 * @todo consider allowing extra directories to be specified to be checked for calls to the get_permission() function

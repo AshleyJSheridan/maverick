@@ -205,6 +205,60 @@ class cms_controller extends base_controller
 					
 					$this->load_view($page, $view_params );
 					break;
+				case 'new_user':
+					$page = 'user_new';
+					$errors = false;
+					
+					if(count($_REQUEST))
+					{
+						$rules = array(
+							'username' => array('required', 'alpha_dash'),
+							'forename' => array('required', 'alpha_apos'),
+							'surname' => array('required', 'alpha_apos'),
+							'email' => array('required', 'email'),
+							'password' => array('required'),
+							'password_confirm' => array('confirmed:password'),
+						);
+
+						validator::make($rules);
+
+						if(validator::run())
+						{
+							$new_user = cms::add_new_user();
+							
+							if($new_user)
+								view::redirect('/' . $app->get_config('cms.path') . "/users");
+							else
+								$errors = "There was a problem saving the user to the database.";
+						}
+					}
+					
+					$elements = '{
+						"username":{"type":"text","label":"Username","placeholder":"jsmith","validation":["required","alpha_dash"]},
+						"forename":{"type":"text","label":"Forename","placeholder":"John","validation":["required","alpha_apos"]},
+						"surname":{"type":"text","label":"Surname","placeholder":"Smith","validation":["required","alpha_apos"]},
+						"email":{"type":"email","label":"Email Address","placeholder":"jsmith@email.com","validation":["required","email"]},
+						"password":{"type":"password","label":"Password","validation":["required"]},
+						"password_confirm":{"type":"password","label":"Password Confirmation","validation":["required"]},
+						"submit":{"type":"submit","value":"Save Details","class":"action save full"}
+					}';
+					$new_user_form = new \helpers\html\form('new_user', $elements);
+					$new_user_form->class = 'user edit';
+					
+					
+					$view_params = array(
+						//'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a'),
+						'scripts'=>array(
+							'/js/cms/users.js'=>10, 
+						),
+						'new_user_form' => $new_user_form->render(),
+					);
+					
+					if($errors)
+						$view_params['errors'] = $errors;
+					
+					$this->load_view($page, $view_params );
+					break;
 			}
 		}
 	}

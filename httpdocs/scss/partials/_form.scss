@@ -138,10 +138,14 @@ form[name=login]
 		width: 400px;
 	}
 }
+.user.edit,
 .form_elements.edit
 {
 	width: 600px;
-	
+}
+
+.form_elements.edit
+{
 	.form_details, .form_element
 	{
 		display: block;
@@ -154,13 +158,6 @@ form[name=login]
 
 	.form_element
 	{
-		/*display: block;
-		width: 100%;
-		background-color: $light-grey;
-		border-radius: 1em;
-		padding: $spacing;
-		margin: $spacing 0;*/
-		
 		.action
 		{
 			float: right;
@@ -221,5 +218,12 @@ form[name=login]
 		{
 			display: block;
 		}
+	}
+}
+.user.edit
+{
+	input
+	{
+		width: 60%;
 	}
 }
