@@ -534,6 +534,20 @@ class cms
 	}
 	
 	/**
+	 * permanently delete a user from the CMS
+	 * @param int $user_id the ID of the user to delete
+	 */
+	static function delete_user($user_id)
+	{
+		$deleted = db::table('maverick_cms_users')
+			->where('id', '=', db::raw($user_id) )
+			->delete()
+			->fetch();
+		
+		return $deleted;
+	}
+	
+	/**
 	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
 	 * this then adds in any to the database that do not already exist
 	 * @todo consider allowing extra directories to be specified to be checked for calls to the get_permission() function
@@ -663,6 +677,11 @@ class cms
 		}
 	}
 	
+	/**
+	 * remove a permission that isn't being used by any user from the main permissions table
+	 * @param int $permission_id the id of the permission to remove
+	 * @return string|boolean return true on success, or an error message on failure
+	 */
 	static function remove_permission($permission_id)
 	{
 		$permission_id = intval($permission_id);

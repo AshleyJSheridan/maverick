@@ -120,7 +120,16 @@ class cms_controller extends base_controller
 			$headers = '["ID","Userame","Forename","Surname","Admin?","Actions"]';
 			$data = array();
 			foreach($users as $user)
-				$data[] = array($user['id'], $user['username'], $user['forename'], $user['surname'], $user['admin'], cms::generate_actions('users', $user['id'], array('edit', 'delete') ) );
+			{
+				$data[] = array(
+					$user['id'],
+					$user['username'],
+					$user['forename'],
+					$user['surname'],
+					$user['admin'],
+					cms::generate_actions('users', $user['id'], array('edit', 'delete user') )
+				);
+			}
 			
 			$user_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$user_table->class = 'item_table';
@@ -140,11 +149,15 @@ class cms_controller extends base_controller
 			switch($params[1])
 			{
 				case 'update_permissions':
+					$this->cms->check_permissions('user_update_permissions', '/' . $app->get_config('cms.path') . '/users');
+					
 					cms::get_permissions_from_code();
 					
 					view::redirect('/' . $app->get_config('cms.path') . "/users");
 					break;
 				case 'list_permissions':
+					$this->cms->check_permissions('user_list_permissions', '/' . $app->get_config('cms.path') . '/users');
+					
 					$page = 'perms';
 					$errors = false;
 					
@@ -206,6 +219,8 @@ class cms_controller extends base_controller
 					$this->load_view($page, $view_params );
 					break;
 				case 'new_user':
+					$this->cms->check_permissions('user_create', '/' . $app->get_config('cms.path') . '/users');
+					
 					$page = 'user_new';
 					$errors = false;
 					
@@ -258,6 +273,15 @@ class cms_controller extends base_controller
 						$view_params['errors'] = $errors;
 					
 					$this->load_view($page, $view_params );
+					break;
+				case 'delete_user':
+					$this->cms->check_permissions('user_delete', '/' . $app->get_config('cms.path') . '/users');
+					
+					if(isset($params[2]) && is_numeric($params[2]) )
+						cms::delete_user($params[2]);
+					
+					view::redirect('/' . $app->get_config('cms.path') . "/users");
+					
 					break;
 			}
 		}

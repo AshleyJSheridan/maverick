@@ -139,6 +139,7 @@ a.action, button.action, input[type=submit].action
 	&.add_permission {background-image: url(/img/maverick/icons/add.png);}
 	&.save_permissions {background-image: url(/img/maverick/icons/save.png);}
 	&.delete_permission {background-image: url(/img/maverick/icons/delete.png);}
+	&.delete_user {background-image: url(/img/maverick/icons/delete.png);}
 }
 
 // errors

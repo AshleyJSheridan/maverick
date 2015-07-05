@@ -49,7 +49,13 @@
 			
 			// users bits
 			{
-				
+				$('.item_table').on('click', '.action.delete_user', function(e){
+					e.preventDefault();
+					
+					result = window.confirm('Are you sure you want to delete this user? This action can\'t be undone and you will need to recreate the user to undo this action.');
+					if(result)
+						location.href = e.target.href;
+				});
 			}
 		}
 	};
