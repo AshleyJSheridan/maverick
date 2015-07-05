@@ -138,6 +138,7 @@ a.action, button.action
 	&.list_permissions {background-image: url(/img/maverick/icons/permissions.png);}
 	&.add_permission {background-image: url(/img/maverick/icons/add.png);}
 	&.save_permissions {background-image: url(/img/maverick/icons/save.png);}
+	&.delete_permission {background-image: url(/img/maverick/icons/delete.png);}
 }
 
 // errors
@@ -151,6 +152,10 @@ a.action, button.action
 	padding: $spacing/2 $spacing;
 	margin-bottom: $spacing;
 	width: 100%;
+	
+	-webkit-box-shadow: 0px 0px 5px 1px $error-color;
+	-moz-box-shadow: 0px 0px 5px 1px $error-color;
+	box-shadow: 0px 0px 5px 1px $error-color;
 }
 
 .clearfix:after

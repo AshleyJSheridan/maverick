@@ -22,6 +22,15 @@
 						location.href = e.target.href;
 				});
 				
+				// permissions deletion confirmation
+				$('body').on('click', '.action.delete_permission', function(e){
+					e.preventDefault();
+
+					result = window.confirm('Are you sure you want to permantently remove this permission? Note, it can only be removed if no users currently have this in their permission list.');
+					if(result)
+						location.href = e.target.href;
+				});
+				
 				// add new permission row to table
 				$('body').on('click', '.action.add_permission', function(e){
 					e.preventDefault();
