@@ -36,8 +36,8 @@ class cms_controller extends base_controller
 		
 		// this fixes an empty param set
 		if(!count($params))
-			$params[0] = '';
-		
+			$params[0] = 'dash';
+
 		switch($params[0])
 		{
 			case 'forms':
@@ -120,7 +120,7 @@ class cms_controller extends base_controller
 			$headers = '["ID","Userame","Forename","Surname","Admin?","Actions"]';
 			$data = array();
 			foreach($users as $user)
-				$data[] = array($user['id'], $user['username'], $user['forename'], $user['surname'], $user['admin'], cms::generate_actions('users', $user['id'], array('edit', 'delete', 'duplicate') ) );
+				$data[] = array($user['id'], $user['username'], $user['forename'], $user['surname'], $user['admin'], cms::generate_actions('users', $user['id'], array('edit', 'delete') ) );
 			
 			$user_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$user_table->class = 'item_table';
@@ -146,6 +146,7 @@ class cms_controller extends base_controller
 					break;
 				case 'list_permissions':
 					$page = 'perms';
+					$errors = false;
 					
 					// process the posted data and update the permissions if the required fields are present and valid
 					if(count($_REQUEST))
@@ -166,11 +167,27 @@ class cms_controller extends base_controller
 							$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
 					}
 					
+					// if any have been requested for deletion, process them
+					if(isset($params[2]) && $params[2] == 'delete_permission' && isset($params[3]) && is_numeric($params[3]) )
+					{
+						$deleted = cms::remove_permission($params[3]);
+						
+						if($deleted !== true)
+							$errors = "<span class=\"error\">$deleted</span>";
+					}
+					
 					$perms = cms::get_all_permissions();
-					$headers = '["ID","Name","Description"]';
+					$headers = '["ID","Name","Description","Actions"]';
 					$data = array();
 					foreach($perms as $perm)
-						$data[] = array("<input type=\"text\" value=\"{$perm['id']}\" name=\"id[]\" readonly class=\"short\"/>", "<input type=\"text\" value=\"{$perm['name']}\" name=\"name[]\"/>", "<input type=\"text\" value=\"{$perm['description']}\" name=\"description[]\"/>");
+					{
+						$data[] = array(
+							"<input type=\"text\" value=\"{$perm['id']}\" name=\"id[]\" readonly class=\"short\"/>",
+							"<input type=\"text\" value=\"{$perm['name']}\" name=\"name[]\"/>",
+							"<input type=\"text\" value=\"{$perm['description']}\" name=\"description[]\"/>",
+							cms::generate_actions('users/list_permissions', $perm['id'], array('delete permission') ),
+						);
+					}
 					
 					$perm_table = new \helpers\html\tables('users', 'layout', $data, $headers);
 					$perm_table->class = 'item_table';
@@ -180,8 +197,12 @@ class cms_controller extends base_controller
 						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a'),
 						'scripts'=>array(
 							'/js/cms/users.js'=>10, 
-						)
+						),
 					);
+					
+					if($errors)
+						$view_params['errors'] = $errors;
+					
 					$this->load_view($page, $view_params );
 					break;
 			}

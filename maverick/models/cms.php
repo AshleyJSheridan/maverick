@@ -644,6 +644,27 @@ class cms
 			}
 		}
 	}
+	
+	static function remove_permission($permission_id)
+	{
+		$permission_id = intval($permission_id);
+		
+		$in_use = db::table('maverick_cms_user_permissions')
+			->where('permission_id', '=', db::raw($permission_id))
+			->get('COUNT(*) AS total')
+			->fetch();
+		
+		if(!intval($in_use[0]['total']) )
+		{
+			db::table('maverick_cms_permissions')
+				->where('id', '=', $permission_id)
+				->delete();
+			
+			return true;
+		}
+		else
+			return 'Unable to delete: permission curently in active use';
+	}
 
 	/**
 	 * gets the permissions for the specified user id and an identifier of whether or not this user is an admin
