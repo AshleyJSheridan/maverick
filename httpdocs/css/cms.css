@@ -43,6 +43,7 @@ a.action.add_permission, button.action.add_permission, input[type=submit].action
 a.action.save_permissions, button.action.save_permissions, input[type=submit].action.save_permissions { background-image: url(/img/maverick/icons/save.png); }
 a.action.delete_permission, button.action.delete_permission, input[type=submit].action.delete_permission { background-image: url(/img/maverick/icons/delete.png); }
 a.action.delete_user, button.action.delete_user, input[type=submit].action.delete_user { background-image: url(/img/maverick/icons/delete.png); }
+a.action.save_user, button.action.save_user, input[type=submit].action.save_user { background-image: url(/img/maverick/icons/save.png); }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
 

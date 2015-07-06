@@ -1,1 +1,1 @@
-<label>{{element}} {{label}}</label>
+<label {{class}}>{{element}} {{label}}</label>

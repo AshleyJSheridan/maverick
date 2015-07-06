@@ -164,6 +164,8 @@ class cms_controller extends base_controller
 					// process the posted data and update the permissions if the required fields are present and valid
 					if(count($_REQUEST))
 					{
+						$this->cms->check_permissions('user_new_permission', '/' . $app->get_config('cms.path') . '/users');
+						
 						$rules = array(
 							'name' => array('required','alpha_dash'),
 							'description' => 'alpha_dash',
@@ -207,7 +209,7 @@ class cms_controller extends base_controller
 					
 					$view_params = array(
 						'perms'=>$perm_table->render(),
-						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a'),
+						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission', 'update permissions'), 'full', 'a'),
 						'scripts'=>array(
 							'/js/cms/users.js'=>10, 
 						),
@@ -262,7 +264,6 @@ class cms_controller extends base_controller
 					
 					
 					$view_params = array(
-						//'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a'),
 						'scripts'=>array(
 							'/js/cms/users.js'=>10, 
 						),
@@ -281,6 +282,73 @@ class cms_controller extends base_controller
 						cms::delete_user($params[2]);
 					
 					view::redirect('/' . $app->get_config('cms.path') . "/users");
+					
+					break;
+				case 'edit':
+					$this->cms->check_permissions('user_edit', '/' . $app->get_config('cms.path') . '/users');
+					
+					$page = 'user_edit';
+					$errors = false;
+
+					if(isset($params[2]) && is_numeric($params[2]) )
+					{
+						$user = cms::get_user_details($params[2]);
+						
+						// generate the form
+						$elements = '{
+							"username":{"type":"text","label":"Username","placeholder":"jsmith","validation":["required","alpha_dash"]},
+							"forename":{"type":"text","label":"Forename","placeholder":"John","validation":["required","alpha_apos"]},
+							"surname":{"type":"text","label":"Surname","placeholder":"Smith","validation":["required","alpha_apos"]},
+							"email":{"type":"email","label":"Email Address","placeholder":"jsmith@email.com","validation":["required","email"]},
+							"password":{"type":"password","label":"Password","validation":["required"]},
+							"password_confirm":{"type":"password","label":"Password Confirmation","validation":["required"]}
+						}';
+						
+						// convert to an object because it's easier to work with for this bit
+						$elements = json_decode($elements);
+						
+						// loop through and add in the permissions
+						$user_perms = explode(',', $user['permissions']);
+						foreach($user['all_permissions'] as $permission)
+						{
+							$elements->{$permission['name']} = (object) array(
+								'type'=>'checkbox',
+								'label'=>"<span title=\"{$permission['description']}\">{$permission['name']}</span>",
+								'values'=>array($permission['id']),
+								'class'=>'permissions',
+							);
+							if(in_array($permission['id'], $user_perms))
+								$elements->{$permission['name']}->checked = 'checked';
+						}
+						
+						// add in the submit button
+						$elements->submit = (object) array(
+							'type' => 'submit',
+							'value' => 'save user',
+							'class' => 'action full save_user'
+						);
+//var_dump($elements);
+						// convert back to json
+						$elements = json_encode($elements);
+
+						$new_user_form = new \helpers\html\form('new_user', $elements);
+						$new_user_form->class = 'user edit';
+						
+						$view_params = array(
+							'scripts'=>array(
+								'/js/cms/users.js'=>10, 
+							),
+							'user_edit_form' => $new_user_form->render(),
+						);
+
+						if($errors)
+							$view_params['errors'] = $errors;
+
+						$this->load_view($page, $view_params );
+					}
+					else
+						view::redirect('/' . $app->get_config('cms.path') . "/users");
+					
 					
 					break;
 			}

@@ -102,7 +102,6 @@ class form
 		
 		$html .= '>';
 		
-		
 		// build the form elements
 		foreach($this->elements as $element)
 			$html .= $this->render_element($element, (isset($element->labels)?$element->labels:$this->labels), $this->snippets );
@@ -216,15 +215,18 @@ class form
 						'checked' => (isset($_REQUEST[$element->name]) && ($_REQUEST[$element->name] == $value || (is_array($_REQUEST[$element->name]) && in_array($value, $_REQUEST[$element->name]) ) ) )?'checked="checked"':'',
 					) );
 					$fake_element = new \stdClass();
-					$fake_element->label = $value;
+					$fake_element->type = $element;
+					$fake_element->class = ($element->class)?"class=\"{$element->class}\"":'';
+					$fake_element->label = (count($element->values)>1)?$value:$element->label;
 					$fake_element->id = '';
 					$html .= $this->wrap_element($fake_element, $element_html, $labels, $snippets_dir);
 				}
 				$labels = "{$element->type}_group";
+				
 				break;
 		}
 
-		if(!is_null($labels) && $labels != 'none')
+		if(!is_null($labels) && $labels != 'none' && ($element->type != 'checkbox' || ($element->type == 'checkbox' && count($element->values) > 1 ) ) )
 			$html = $this->wrap_element($element, $html, $labels, $snippets_dir);
 		
 		return $html;
@@ -243,11 +245,12 @@ class form
 			$snippet = "$snippets_dir/label_$labels_type.php";
 		else
 			$snippet = __DIR__ . "/snippets/label_$labels_type.php";
-			
+		
 		$html = \helpers\html\html::load_snippet($snippet, array(
 			'label' => $element->label,
 			'element' => $element_html,
 			'id' => ($element->id)?$element->id:'',
+			'class' => $element->class,
 		) );
 		
 		return $html;
@@ -266,7 +269,6 @@ class form
 
 		foreach($elements as $element_name => $element)
 			$this->elements[$element_name] = new \helpers\html\form_element($element_name, $element);
-		
 	}
 }
 
@@ -282,6 +284,7 @@ class form_element
 	private $id;
 	private $value;
 	private $values;
+	private $checked;
 	private $placeholder;
 	private $spellcheck = false;
 	private $validation = array();

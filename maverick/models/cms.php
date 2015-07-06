@@ -548,6 +548,32 @@ class cms
 	}
 	
 	/**
+	 * get the details for a specific user, including permissions
+	 * @param int $user_id the ID of the user to get permissions for
+	 * @return array
+	 */
+	static function get_user_details($user_id)
+	{
+		$user = db::table('maverick_cms_users AS u')
+			->leftJoin('maverick_cms_user_permissions AS up', array('u.id', '=', 'up.user_id') )
+			->where('u.id', '=', db::raw($user_id) )
+			->groupBy('u.id')
+			->get(array('u.*', 'GROUP_CONCAT(up.permission_id) AS permissions') )
+			->fetch();
+		
+		if(count($user[0]))
+		{
+			$user = $user[0];
+
+			$user['all_permissions'] = cms::get_all_permissions();
+			
+			return $user;
+		}
+		else
+			return false;
+	}
+	
+	/**
 	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
 	 * this then adds in any to the database that do not already exist
 	 * @todo consider allowing extra directories to be specified to be checked for calls to the get_permission() function

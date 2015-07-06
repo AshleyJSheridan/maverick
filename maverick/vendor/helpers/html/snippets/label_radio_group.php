@@ -1,5 +1,5 @@
-<div>
-	<label>{{label}}</label>
+<div {{class}}>
+	<label {{class}}>{{label}}</label>
 	{{element}}
 	{{error}}
 </div>

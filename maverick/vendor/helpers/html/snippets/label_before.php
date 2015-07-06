@@ -1,1 +1,1 @@
-<label for="{{id}}">{{label}}</label> {{element}}
+<label {{class}} for="{{id}}">{{label}}</label> {{element}}
