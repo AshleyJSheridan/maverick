@@ -309,16 +309,28 @@ class cms_controller extends base_controller
 						
 						// loop through and add in the permissions
 						$user_perms = explode(',', $user['permissions']);
+						$old_permission_group = '';
 						foreach($user['all_permissions'] as $permission)
 						{
+							$permission_group = substr($permission['name'], 0, (strpos($permission['name'], '_')?strpos($permission['name'], '_'):strlen($permission['name']) ) );
+							
 							$elements->{$permission['name']} = (object) array(
 								'type'=>'checkbox',
 								'label'=>"<span title=\"{$permission['description']}\">{$permission['name']}</span>",
 								'values'=>array($permission['id']),
-								'class'=>'permissions',
+								'class'=>"permissions group_$permission_group",
 							);
+								
+							// set the checked status of this permission if it is in the user details
 							if(in_array($permission['id'], $user_perms))
 								$elements->{$permission['name']}->checked = 'checked';
+								
+							// if this is a new permission group, add an extra class to the first label
+							if($permission_group != $old_permission_group)
+							{
+								$elements->{$permission['name']}->class .= ' permission_group_start';
+								$old_permission_group = $permission_group;
+							}
 						}
 						
 						// add in the submit button
@@ -327,13 +339,13 @@ class cms_controller extends base_controller
 							'value' => 'save user',
 							'class' => 'action full save_user'
 						);
-//var_dump($elements);
+
 						// convert back to json
 						$elements = json_encode($elements);
 
 						$new_user_form = new \helpers\html\form('new_user', $elements);
 						$new_user_form->class = 'user edit';
-						
+
 						$view_params = array(
 							'scripts'=>array(
 								'/js/cms/users.js'=>10, 

@@ -142,6 +142,19 @@ form[name=login]
 .form_elements.edit
 {
 	width: 600px;
+	
+	label.permissions
+	{
+		width: 230px;
+		display: inline-block;
+		margin-right: $spacing*2;
+
+		&.permission_group_start
+		{
+			display: block;
+			margin-top: $spacing*4;
+		}
+	}
 }
 
 .form_elements.edit

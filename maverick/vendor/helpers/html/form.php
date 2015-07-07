@@ -212,8 +212,15 @@ class form
 						'name' => $element->name,
 						'value' => "value=\"$value\"",
 						'error' => \validator::get_first_error($element->name, $error_tags),
-						'checked' => (isset($_REQUEST[$element->name]) && ($_REQUEST[$element->name] == $value || (is_array($_REQUEST[$element->name]) && in_array($value, $_REQUEST[$element->name]) ) ) )?'checked="checked"':'',
+						'checked' => ( (isset($_REQUEST[$element->name]) 
+										&& ($_REQUEST[$element->name] == $value
+											|| (is_array($_REQUEST[$element->name])
+												&& in_array($value, $_REQUEST[$element->name]) ) 
+										)
+									)
+								|| ($element->checked) )?'checked="checked"':'',
 					) );
+						
 					$fake_element = new \stdClass();
 					$fake_element->type = $element;
 					$fake_element->class = ($element->class)?"class=\"{$element->class}\"":'';
@@ -297,8 +304,8 @@ class form_element
 	public function __construct($name, $element_obj)
 	{
 		$this->name = $name;
-		
-		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation', 'spellcheck') as $part)
+
+		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation', 'spellcheck', 'checked') as $part)
 		{
 			if(isset($element_obj->$part))
 				$this->$part = $element_obj->$part;

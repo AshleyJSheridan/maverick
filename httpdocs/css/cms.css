@@ -78,6 +78,8 @@ form[name=login] label input { width: 50%; float: right; padding: 5px; margin-bo
 form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/dialog-ok-apply.png); background-size: auto 30px; background-position: 10px center; padding: 10px; margin: 10px auto; display: block; width: 400px; }
 
 .user.edit, .form_elements.edit { width: 600px; }
+.user.edit label.permissions, .form_elements.edit label.permissions { width: 230px; display: inline-block; margin-right: 20px; }
+.user.edit label.permissions.permission_group_start, .form_elements.edit label.permissions.permission_group_start { display: block; margin-top: 40px; }
 
 .form_elements.edit .form_details, .form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
 .form_elements.edit .form_element .action { float: right; padding: 5px; margin-bottom: 10px; }
