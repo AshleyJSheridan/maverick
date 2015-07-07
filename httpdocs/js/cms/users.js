@@ -56,6 +56,22 @@
 					if(result)
 						location.href = e.target.href;
 				});
+				
+				$('form.user.edit').on('click', 'label.permissions', function(e){
+					e.preventDefault();
+					
+					if(e.shiftKey)
+					{
+						perms = $(this).attr('class').match(/group_([^ ]+)/);
+						if(perms[0])
+						{
+							if($('input', this).prop('checked'))
+								$('label.' + perms[0] + ' input').prop('checked', false);
+							else
+								$('label.' + perms[0] + ' input').prop('checked', true);
+						}
+					}
+				})
 			}
 		}
 	};
