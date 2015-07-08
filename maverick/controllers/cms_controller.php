@@ -289,6 +289,19 @@ class cms_controller extends base_controller
 					
 					$page = 'user_edit';
 					$errors = false;
+					
+					if(count($_REQUEST))
+					{
+						var_dump($_REQUEST);
+						
+						$rules = array(
+							'username' => array('required', ''),
+							
+						);
+						validator::make($rules);
+
+						//if(validator::run())
+					}
 
 					if(isset($params[2]) && is_numeric($params[2]) )
 					{
@@ -307,6 +320,34 @@ class cms_controller extends base_controller
 						// convert to an object because it's easier to work with for this bit
 						$elements = json_decode($elements);
 						
+						// loop through and add in the permissions
+						$user_perms = explode(',', $user['permissions']);
+						$old_permission_group = '';
+						$elements->permissions = (object) array(
+							'type'=>'checkbox',
+							'label'=>'Permissions',
+							'values'=>array(),
+						);
+						foreach($user['all_permissions'] as $permission)
+						{
+							$permission_group = substr($permission['name'], 0, (strpos($permission['name'], '_')?strpos($permission['name'], '_'):strlen($permission['name']) ) );
+							$first_group = '';
+							
+							// if this is a new permission group, add an extra class to the first label
+							if($permission_group != $old_permission_group)
+							{
+								$first_group = ' permission_group_start';
+								$old_permission_group = $permission_group;
+							}
+							
+							$elements->permissions->values[] = array(
+								'value'=>$permission['id'], 
+								'label'=>"<span title=\"{$permission['description']}\">{$permission['name']}</span>",
+								'checked'=>(in_array($permission['id'], $user_perms))?'checked':'',
+								'class'=>"class=\"permissions group_$permission_group $first_group\"",
+							);
+						}
+/*						
 						// loop through and add in the permissions
 						$user_perms = explode(',', $user['permissions']);
 						$old_permission_group = '';
@@ -333,7 +374,7 @@ class cms_controller extends base_controller
 								$old_permission_group = $permission_group;
 							}
 						}
-						
+*/
 						// add in the submit button
 						$elements->submit = (object) array(
 							'type' => 'submit',
@@ -347,6 +388,7 @@ class cms_controller extends base_controller
 						$new_user_form = new \helpers\html\form('new_user', $elements);
 						$new_user_form->class = 'user edit';
 						$new_user_form->autocomplete = false;
+						$new_user_form->novalidate = true;
 
 						$view_params = array(
 							'scripts'=>array(

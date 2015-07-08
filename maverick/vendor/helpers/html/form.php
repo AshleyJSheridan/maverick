@@ -211,7 +211,7 @@ class form
 						'class' => ($element->class)?"class=\"{$element->class}\"":'',
 						'id' => ($element->id)?"id=\"{$element->id}\"":'',
 						'name' => $element->name,
-						'value' => "value=\"$value\"",
+						'value' => 'value="' . ((isset($value->value))?$value->value:$value) . '"',
 						'error' => \validator::get_first_error($element->name, $error_tags),
 						'checked' => ( (isset($_REQUEST[$element->name]) 
 										&& ($_REQUEST[$element->name] == $value
@@ -219,14 +219,18 @@ class form
 												&& in_array($value, $_REQUEST[$element->name]) ) 
 										)
 									)
-								|| ($element->checked) )?'checked="checked"':'',
+								|| ($element->checked)
+								|| (isset($value->checked) && $value->checked == 'checked')
+							)?'checked="checked"':'',
 					) );
-						
+
 					$fake_element = new \stdClass();
 					$fake_element->type = $element;
-					$fake_element->class = ($element->class)?"class=\"{$element->class}\"":'';
+					$fake_element->fake = null;
+					$fake_element->class = ($element->class)?"class=\"{$element->class}\"":(isset($value->class)?$value->class:'');
 					$fake_element->label = (count($element->values)>1)?$value:$element->label;
 					$fake_element->id = '';
+
 					$html .= $this->wrap_element($fake_element, $element_html, $labels, $snippets_dir);
 				}
 				$labels = "{$element->type}_group";
@@ -253,12 +257,12 @@ class form
 			$snippet = "$snippets_dir/label_$labels_type.php";
 		else
 			$snippet = __DIR__ . "/snippets/label_$labels_type.php";
-		
+
 		$html = \helpers\html\html::load_snippet($snippet, array(
-			'label' => $element->label,
+			'label' => (isset($element->label->label))?$element->label->label:$element->label,
 			'element' => $element_html,
 			'id' => ($element->id)?$element->id:'',
-			'class' => $element->class,
+			'class' => ($element->class)?$element->class:'',
 		) );
 		
 		return $html;
