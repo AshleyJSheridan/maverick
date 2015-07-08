@@ -345,6 +345,7 @@ class cms_controller extends base_controller
 
 						$new_user_form = new \helpers\html\form('new_user', $elements);
 						$new_user_form->class = 'user edit';
+						$new_user_form->autocomplete = false;
 
 						$view_params = array(
 							'scripts'=>array(

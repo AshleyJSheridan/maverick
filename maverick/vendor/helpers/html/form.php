@@ -99,6 +99,7 @@ class form
 				$html .= " $form_attr=\"{$this->$form_attr}\"";
 		}
 		$html .= ($this->novalidate)?' novalidate':'';
+		$html .= (!$this->autocomplete)?' autocomplete="off"':'';
 		
 		$html .= '>';
 		
