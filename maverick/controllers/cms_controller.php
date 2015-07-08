@@ -209,7 +209,7 @@ class cms_controller extends base_controller
 					
 					$view_params = array(
 						'perms'=>$perm_table->render(),
-						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission', 'update permissions'), 'full', 'a'),
+						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a') . cms::generate_actions('users', '', array('update permissions'), 'full', 'a'),
 						'scripts'=>array(
 							'/js/cms/users.js'=>10, 
 						),
