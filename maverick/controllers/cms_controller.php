@@ -211,7 +211,7 @@ class cms_controller extends base_controller
 						'perms'=>$perm_table->render(),
 						'perm_buttons'=> cms::generate_actions('perms', '', array('save permissions', 'add permission'), 'full', 'a') . cms::generate_actions('users', '', array('update permissions'), 'full', 'a'),
 						'scripts'=>array(
-							'/js/cms/users.js'=>10, 
+							'/js/cms/users.js'=>10,
 						),
 					);
 					
@@ -319,6 +319,7 @@ class cms_controller extends base_controller
 								'label'=>"<span title=\"{$permission['description']}\">{$permission['name']}</span>",
 								'values'=>array($permission['id']),
 								'class'=>"permissions group_$permission_group",
+								'title'=>$permission['description'],
 							);
 								
 							// set the checked status of this permission if it is in the user details
