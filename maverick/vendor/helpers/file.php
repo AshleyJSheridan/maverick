@@ -111,6 +111,42 @@ class file
 	}
 	
 	/**
+	 * build a flat tree with full paths of each file found
+	 * a path can be supplied in the call to this method, but typically that is reserved for the method
+	 * to use when calling itself on sub-directories
+	 * @param type $dir
+	 * @return array
+	 */
+	function flat_tree($dir=false)
+	{
+		$path = ($dir)?$dir:$this->path;
+		
+		
+		if(!file_exists($path) && !is_dir($path) )
+			return false;
+		
+		$files = array();
+		$dh = opendir($path);
+		
+		while(false !== ($entry = readdir($dh) ) )
+		{
+			if(in_array($entry, array('.', '..') ) )
+				continue;
+			
+			if(is_dir("$path/$entry") )
+			{
+				$temp = $this->flat_tree("$path/$entry");
+				$files = array_merge($files, $temp);
+			}
+			else
+				$files[] = "$path/$entry";
+		}
+		
+		sort($files);
+		return $files;
+	}
+	
+	/**
 	 * returns an object containing information about a file or directory, including size, permissions, dates, etc
 	 * @return boolean|\stdClass
 	 */
