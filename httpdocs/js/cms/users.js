@@ -58,10 +58,11 @@
 				});
 				
 				$('form.user.edit').on('click', 'label.permissions', function(e){
-					e.preventDefault();
-					
+
 					if(e.shiftKey)
 					{
+						e.preventDefault();
+						
 						perms = $(this).attr('class').match(/group_([^ ]+)/);
 						if(perms[0])
 						{

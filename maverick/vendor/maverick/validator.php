@@ -225,6 +225,20 @@ class validator
 	}
 
 	/**
+	 * validates a field as required only if another field is set to the specified value
+	 * @param string $field
+	 * @param array $value
+	 * @return boolean
+	 */
+	private function rule_required_if_not_value($field, $value)
+	{
+		if(isset($_REQUEST[$value[0]]) && $_REQUEST[$value[0]] != $value[1] )
+			return !empty($_REQUEST[$field]);
+		else
+			return true;
+	}
+
+	/**
 	 * apply the accepted rule to a field
 	 * @param string $field the name of the field to which this rule applies
 	 * @return bool

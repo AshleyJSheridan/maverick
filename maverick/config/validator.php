@@ -22,6 +22,7 @@ return array(
 	'required_if' => 'The %s field is required if %s is set',
 	'required_if_yes' => 'The %s field is required if %s is yes',
 	'required_if_value' => 'The %s field is required if %s is %s',
+	'required_if_not_value' => 'The %s field is required if %s is not equal to %s',
 	'size' => 'The %s field is not of the right size',
 	'url' => 'The %s field must be a valid URL',
 );

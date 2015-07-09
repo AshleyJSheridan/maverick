@@ -573,6 +573,39 @@ class cms
 			return false;
 	}
 	
+	static function update_user_details($user_id)
+	{
+		$user_data = array(
+			'username' => $_REQUEST['username'],
+			'forename' => $_REQUEST['forename'],
+			'surname' => $_REQUEST['surname'],
+			'email' => $_REQUEST['email'],
+		);
+		// only set the password if it's supplied
+		// the validation rules should ensure that the password is required if the username changes as it's part of the md5 hash
+		if(!empty($_REQUEST['password']))
+			$user_data['password'] = md5($_REQUEST['username'] . $_REQUEST['password']);
+		
+		db::table('maverick_cms_users')
+			->where('id', '=', $user_id)
+			->update($user_data);
+		
+		db::table('maverick_cms_user_permissions')
+			->where('user_id', '=', $user_id)
+			->delete();
+		
+		$perms = array();
+		foreach($_REQUEST['permissions'] as $permission)
+		{
+			if(intval($permission))
+				$perms[] = array('user_id'=>$user_id, 'permission_id'=>$permission);
+		}
+		
+		db::table('maverick_cms_user_permissions')
+			->insert($perms);
+	}
+
+
 	/**
 	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
 	 * this then adds in any to the database that do not already exist

@@ -14,9 +14,23 @@ class log
 	 * @param string $details more details for this event entry
 	 * @param string $type either 'info' or 'error' - used to classify this event entry further
 	 */
-	function log($category, $sub_category, $details='', $type='info')
+	static function log($category, $sub_category, $details='', $type='info')
 	{
+		$app = \maverick\maverick::getInstance();
 		
+		$user_id = isset($_SESSION['maverick_id'])?$_SESSION['maverick_id']:0;
+		$request_data = $app->get_config('cms.log_request_data')?json_encode($_REQUEST):null;
+		
+		$log = db::table('maverick_cms_logs')
+			->insert(array(
+				'user_id'=>$user_id,
+				'type'=>$type,
+				'category'=>$category,
+				'sub_category'=>$sub_category,
+				'details'=>json_encode($details),
+				'added_at'=>date("Y-m-d H:i:s"),
+				'request_data'=>$request_data,
+			))->fetch();
 	}
 	
 	/**
@@ -27,7 +41,6 @@ class log
 	 */
 	static function record_login($username, $successful=false)
 	{
-		
 		$login = db::table('maverick_cms_logins')
 			->insert(array(
 				'username' => $username,

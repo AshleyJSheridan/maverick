@@ -153,6 +153,8 @@ class cms_controller extends base_controller
 					
 					cms::get_permissions_from_code();
 					
+					\maverick_cms\log::log('permissions', 'update from code', null, 'info');
+					
 					view::redirect('/' . $app->get_config('cms.path') . "/users");
 					break;
 				case 'list_permissions':
@@ -176,6 +178,9 @@ class cms_controller extends base_controller
 						if(validator::run())
 						{
 							cms::update_permissions();
+							
+							\maverick_cms\log::log('permissions', 'update manual', $_REQUEST, 'info');
+							
 							view::redirect('/' . $app->get_config('cms.path') . "/users/list_permissions");	// this ensures the form won't be re-submitted if the user hits refresh
 						}
 						else
@@ -186,6 +191,8 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && $params[2] == 'delete_permission' && isset($params[3]) && is_numeric($params[3]) )
 					{
 						$deleted = cms::remove_permission($params[3]);
+						
+						\maverick_cms\log::log('permissions', 'deletion', array('permission_id'=>$params[3]), 'info');
 						
 						if($deleted !== true)
 							$errors = "<span class=\"error\">$deleted</span>";
@@ -243,6 +250,8 @@ class cms_controller extends base_controller
 						{
 							$new_user = cms::add_new_user();
 							
+							\maverick_cms\log::log('users', 'new', $_REQUEST, 'info');
+							
 							if($new_user)
 								view::redirect('/' . $app->get_config('cms.path') . "/users");
 							else
@@ -279,7 +288,10 @@ class cms_controller extends base_controller
 					$this->cms->check_permissions('user_delete', '/' . $app->get_config('cms.path') . '/users');
 					
 					if(isset($params[2]) && is_numeric($params[2]) )
+					{
 						cms::delete_user($params[2]);
+						\maverick_cms\log::log('users', 'deleted', array('user_id'=>$params[2]), 'info');
+					}
 					
 					view::redirect('/' . $app->get_config('cms.path') . "/users");
 					
@@ -290,29 +302,38 @@ class cms_controller extends base_controller
 					$page = 'user_edit';
 					$errors = false;
 					
-					if(count($_REQUEST))
+					if(count($_REQUEST) && intval($params[2]))
 					{
-						var_dump($_REQUEST);
-						
+						$old_user = cms::get_user_details($params[2]);
 						$rules = array(
-							'username' => array('required', ''),
-							
+							'username' => array('required', 'alpha_dash'),
+							'forename' => array('required', 'alpha_apos'),
+							'surname' => array('required', 'alpha_apos'),
+							'email' => array('required', 'email'),
+							'password' => array("required_if_not_value:username:{$old_user['username']}"),
+							'password_confirm' => array('confirmed:password'),
+							'permissions'=>array('numeric'),
 						);
 						validator::make($rules);
 
-						//if(validator::run())
+						if(validator::run())
+						{
+							\maverick_cms\log::log('users', 'updated', $_REQUEST, 'info');
+							
+							cms::update_user_details($params[2]);
+						}
 					}
 
 					if(isset($params[2]) && is_numeric($params[2]) )
 					{
 						$user = cms::get_user_details($params[2]);
-						
+				
 						// generate the form
 						$elements = '{
-							"username":{"type":"text","label":"Username","placeholder":"jsmith","validation":["required","alpha_dash"]},
-							"forename":{"type":"text","label":"Forename","placeholder":"John","validation":["required","alpha_apos"]},
-							"surname":{"type":"text","label":"Surname","placeholder":"Smith","validation":["required","alpha_apos"]},
-							"email":{"type":"email","label":"Email Address","placeholder":"jsmith@email.com","validation":["required","email"]},
+							"username":{"type":"text","label":"Username","value":"'.$user['username'].'","placeholder":"jsmith","validation":["required","alpha_dash"]},
+							"forename":{"type":"text","label":"Forename","value":"'.$user['forename'].'","placeholder":"John","validation":["required","alpha_apos"]},
+							"surname":{"type":"text","label":"Surname","value":"'.$user['surname'].'","placeholder":"Smith","validation":["required","alpha_apos"]},
+							"email":{"type":"email","label":"Email Address","value":"'.$user['email'].'","placeholder":"jsmith@email.com","validation":["required","email"]},
 							"password":{"type":"password","label":"Password","validation":["required"]},
 							"password_confirm":{"type":"password","label":"Password Confirmation","validation":["required"]}
 						}';
@@ -347,34 +368,7 @@ class cms_controller extends base_controller
 								'class'=>"class=\"permissions group_$permission_group $first_group\"",
 							);
 						}
-/*						
-						// loop through and add in the permissions
-						$user_perms = explode(',', $user['permissions']);
-						$old_permission_group = '';
-						foreach($user['all_permissions'] as $permission)
-						{
-							$permission_group = substr($permission['name'], 0, (strpos($permission['name'], '_')?strpos($permission['name'], '_'):strlen($permission['name']) ) );
-							
-							$elements->{$permission['name']} = (object) array(
-								'type'=>'checkbox',
-								'label'=>"<span title=\"{$permission['description']}\">{$permission['name']}</span>",
-								'values'=>array($permission['id']),
-								'class'=>"permissions group_$permission_group",
-								'title'=>$permission['description'],
-							);
-								
-							// set the checked status of this permission if it is in the user details
-							if(in_array($permission['id'], $user_perms))
-								$elements->{$permission['name']}->checked = 'checked';
-								
-							// if this is a new permission group, add an extra class to the first label
-							if($permission_group != $old_permission_group)
-							{
-								$elements->{$permission['name']}->class .= ' permission_group_start';
-								$old_permission_group = $permission_group;
-							}
-						}
-*/
+
 						// add in the submit button
 						$elements->submit = (object) array(
 							'type' => 'submit',
@@ -494,7 +488,11 @@ class cms_controller extends base_controller
 							validator::make($rules);
 
 							if(validator::run())
+							{
 								cms::save_form($params[2]);
+								
+								\maverick_cms\log::log('forms', 'updated', $_REQUEST, 'info');
+							}
 							else
 								$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
 						}
@@ -551,6 +549,8 @@ class cms_controller extends base_controller
 					// create a new blank form, get the ID for it and redirect to the edit screen with it
 					$new_form_id = cms::new_form();
 					
+					\maverick_cms\log::log('forms', 'new', array('form_id'=>$new_form_id), 'info');
+					
 					view::redirect('/' . $app->get_config('cms.path') . "/forms/edit/$new_form_id");
 					
 					break;
@@ -561,6 +561,8 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$deleted = cms::delete_form($params[2]);
+						
+						\maverick_cms\log::log('forms', 'deleted (soft)', array('form_id'=>$params[2]), 'info');
 						
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
@@ -575,6 +577,8 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && intval($params[2]))
 					{
 						$deleted = cms::undelete_form($params[2]);
+						
+						\maverick_cms\log::log('forms', 'undeleted', array('form_id'=>$params[2]), 'info');
 						
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
@@ -591,6 +595,8 @@ class cms_controller extends base_controller
 					{
 						$deleted = cms::delete_form($params[2], true);
 						
+						\maverick_cms\log::log('forms', 'deleted (hard)', array('form_id'=>$params[2]), 'info');
+						
 						if($deleted->fetch() )
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
@@ -604,6 +610,8 @@ class cms_controller extends base_controller
 					if(isset($params[2]) && intval($params[2]))
 					{
 						cms::duplicate_form($params[2]);
+						
+						\maverick_cms\log::log('forms', 'duplicated', array('form_id'=>$params[2]), 'info');
 						
 						view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}

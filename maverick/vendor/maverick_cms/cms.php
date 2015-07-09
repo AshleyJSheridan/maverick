@@ -60,6 +60,10 @@ class cms extends \maverick\maverick
 			}
 		}
 		
+		// permissions check failed - log it
+		if(!$allowed)
+			\maverick_cms\log::log('permissions', 'check fail', array('permissions'=>$perms), 'error');
+		
 		// redirect if a URL was supplied and the permissions were not correct
 		if($redirect && !$allowed)
 			\view::redirect($redirect);

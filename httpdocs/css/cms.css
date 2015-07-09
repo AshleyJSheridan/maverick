@@ -24,7 +24,7 @@ header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
-a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
 a.action.full, button.action.full, input[type=submit].action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
 a.action:hover, button.action:hover, input[type=submit].action:hover { background-color: #0d80b9; color: #eeeeee; }
 a.action.edit, button.action.edit, input[type=submit].action.edit { background-image: url(/img/maverick/icons/edit.png); }
@@ -45,7 +45,7 @@ a.action.delete_permission, button.action.delete_permission, input[type=submit].
 a.action.delete_user, button.action.delete_user, input[type=submit].action.delete_user { background-image: url(/img/maverick/icons/delete.png); }
 a.action.save_user, button.action.save_user, input[type=submit].action.save_user { background-image: url(/img/maverick/icons/save.png); }
 
-.error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin-bottom: 10px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
+.error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin: 10px 0 20px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
 
 .clearfix:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
 

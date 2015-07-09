@@ -101,6 +101,7 @@ a.action, button.action, input[type=submit].action
 	border: 1px solid $grey;
 	border-radius: 0.5em;
 	margin-right: $spacing;
+	font-family: $body-font;
 
 	-moz-transition: all 0.5s ease 0s;
 	-o-transition: all 0.5s ease 0s;
@@ -152,7 +153,7 @@ a.action, button.action, input[type=submit].action
 	border: 1px solid $error-color;
 	border-radius: 0.5em;
 	padding: $spacing/2 $spacing;
-	margin-bottom: $spacing;
+	margin: $spacing 0 $spacing*2;
 	width: 100%;
 	
 	-webkit-box-shadow: 0px 0px 5px 1px $error-color;
