@@ -43,6 +43,7 @@ class cms_controller extends base_controller
 			case 'forms':
 			case 'users':
 			case 'ajax':
+			case 'logs':
 				$this->{$params[0]}($params);
 				break;
 			case 'login':
@@ -743,5 +744,10 @@ class cms_controller extends base_controller
 		}
 
 		return $params;
+	}
+	
+	private function logs($params)
+	{
+		var_dump('logs');
 	}
 }

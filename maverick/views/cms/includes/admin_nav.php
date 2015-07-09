@@ -7,6 +7,7 @@ $nav = array(
 	'/media' => 'Media',
 	'/pages' => 'Pages',
 	'/users' => 'Users',
+	'/logs' => 'Logs',
 );
 
 if(isset($_SESSION['maverick_login']) && $_SESSION['maverick_login'])
