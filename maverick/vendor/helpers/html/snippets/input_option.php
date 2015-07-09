@@ -2,5 +2,5 @@
 	{{selected}}
 	value="{{value}}"
 	>
-	{{value}}
+	{{display_value}}
 </option>
