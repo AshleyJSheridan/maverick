@@ -403,6 +403,11 @@ class query
 					
 					break;
 				}
+				case 'insert':
+				{
+					$results = $maverick->db->pdo->lastInsertId();
+					break;
+				}
 				default:
 					$results = true;
 			}
