@@ -35,6 +35,7 @@ class html
 	 * (such as for form elements where there may be many fields of the same type, for example)
 	 * @param string $filename the path to the snippet file
 	 * @param array $replacements an array of find/replace values to replace {{placeholders}} within the snippet with
+	 * @param bool $replace_all whether or not to replace all the {{placeholders}} within the snippet being loaded
 	 * @return boolean
 	 */
 	public static function load_snippet($filename, $replacements, $replace_all=true)

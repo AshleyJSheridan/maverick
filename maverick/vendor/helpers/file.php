@@ -145,7 +145,6 @@ class file
 		return $files;
 	}
 
-
 	/**
 	 * returns an object containing information about a file or directory, including size, permissions, dates, etc
 	 * @return boolean|\stdClass
