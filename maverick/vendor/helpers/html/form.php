@@ -15,6 +15,8 @@ class form
 	private $novalidate = false;
 	private $autocomplete = false;
 	private $snippets;
+	private $class;
+	private $id;
 	
 	/**
 	 * basic constructor for the form html object
@@ -54,6 +56,8 @@ class form
 		switch($param)
 		{
 			case 'name':
+			case 'class':
+			case 'id':
 				if(strlen($value))
 					$this->$param = $value;
 				break;
@@ -89,15 +93,15 @@ class form
 	{
 		// build the main form tag
 		$html = '<form';
-		foreach(array('name', 'method', 'action', 'enctype') as $form_attr)
+		foreach(array('name', 'method', 'action', 'enctype', 'class', 'id') as $form_attr)
 		{
 			if(!is_null($this->$form_attr) )
 				$html .= " $form_attr=\"{$this->$form_attr}\"";
 		}
 		$html .= ($this->novalidate)?' novalidate':'';
+		$html .= (!$this->autocomplete)?' autocomplete="off"':'';
 		
 		$html .= '>';
-		
 		
 		// build the form elements
 		foreach($this->elements as $element)
@@ -207,20 +211,34 @@ class form
 						'class' => ($element->class)?"class=\"{$element->class}\"":'',
 						'id' => ($element->id)?"id=\"{$element->id}\"":'',
 						'name' => $element->name,
-						'value' => "value=\"$value\"",
+						'value' => 'value="' . ((isset($value->value))?$value->value:$value) . '"',
 						'error' => \validator::get_first_error($element->name, $error_tags),
-						'checked' => (isset($_REQUEST[$element->name]) && ($_REQUEST[$element->name] == $value || (is_array($_REQUEST[$element->name]) && in_array($value, $_REQUEST[$element->name]) ) ) )?'checked="checked"':'',
+						'checked' => ( (isset($_REQUEST[$element->name]) 
+										&& ($_REQUEST[$element->name] == $value
+											|| (is_array($_REQUEST[$element->name])
+												&& in_array($value, $_REQUEST[$element->name]) ) 
+										)
+									)
+								|| ($element->checked)
+								|| (isset($value->checked) && $value->checked == 'checked')
+							)?'checked="checked"':'',
 					) );
+
 					$fake_element = new \stdClass();
-					$fake_element->label = $value;
+					$fake_element->type = $element;
+					$fake_element->fake = null;
+					$fake_element->class = ($element->class)?"class=\"{$element->class}\"":(isset($value->class)?$value->class:'');
+					$fake_element->label = (count($element->values)>1)?$value:$element->label;
 					$fake_element->id = '';
+
 					$html .= $this->wrap_element($fake_element, $element_html, $labels, $snippets_dir);
 				}
 				$labels = "{$element->type}_group";
+				
 				break;
 		}
 
-		if(!is_null($labels) && $labels != 'none')
+		if(!is_null($labels) && $labels != 'none' && ($element->type != 'checkbox' || ($element->type == 'checkbox' && count($element->values) > 1 ) ) )
 			$html = $this->wrap_element($element, $html, $labels, $snippets_dir);
 		
 		return $html;
@@ -239,11 +257,12 @@ class form
 			$snippet = "$snippets_dir/label_$labels_type.php";
 		else
 			$snippet = __DIR__ . "/snippets/label_$labels_type.php";
-			
+
 		$html = \helpers\html\html::load_snippet($snippet, array(
-			'label' => $element->label,
+			'label' => (isset($element->label->label))?$element->label->label:$element->label,
 			'element' => $element_html,
 			'id' => ($element->id)?$element->id:'',
+			'class' => ($element->class)?$element->class:'',
 		) );
 		
 		return $html;
@@ -262,7 +281,6 @@ class form
 
 		foreach($elements as $element_name => $element)
 			$this->elements[$element_name] = new \helpers\html\form_element($element_name, $element);
-		
 	}
 }
 
@@ -278,6 +296,7 @@ class form_element
 	private $id;
 	private $value;
 	private $values;
+	private $checked;
 	private $placeholder;
 	private $spellcheck = false;
 	private $validation = array();
@@ -290,8 +309,8 @@ class form_element
 	public function __construct($name, $element_obj)
 	{
 		$this->name = $name;
-		
-		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation', 'spellcheck') as $part)
+
+		foreach(array('type', 'name', 'label', 'class', 'id', 'value', 'values', 'placeholder', 'validation', 'spellcheck', 'checked') as $part)
 		{
 			if(isset($element_obj->$part))
 				$this->$part = $element_obj->$part;
