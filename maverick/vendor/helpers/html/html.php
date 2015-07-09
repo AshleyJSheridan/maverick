@@ -7,7 +7,7 @@ namespace helpers\html;
 class html
 {
 	static $_instance;
-	private $cached_snippets = array();
+	protected $cached_snippets = array();
 	
 	private function __construct() {}
 	
@@ -35,9 +35,10 @@ class html
 	 * (such as for form elements where there may be many fields of the same type, for example)
 	 * @param string $filename the path to the snippet file
 	 * @param array $replacements an array of find/replace values to replace {{placeholders}} within the snippet with
+	 * @param bool $replace_all whether or not to replace all the {{placeholders}} within the snippet being loaded
 	 * @return boolean
 	 */
-	public static function load_snippet($filename, $replacements)
+	public static function load_snippet($filename, $replacements, $replace_all=true)
 	{
 		$h = html::getInstance();
 
@@ -71,7 +72,8 @@ class html
 		$contents = str_replace($find, $replace, $contents);
 		
 		// now get rid of any placeholders left that weren't used
-		$contents = preg_replace('/\{\{[^\}]+\}\}/', '', $contents);
+		if($replace_all)
+			$contents = preg_replace('/\{\{[^\}]+\}\}/', '', $contents);
 		
 		return $contents;
 	}
