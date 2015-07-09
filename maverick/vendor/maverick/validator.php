@@ -161,7 +161,25 @@ class validator
 	 */
 	private function rule_required($field)
 	{
-		return (isset($_FILES[$field]) && $_FILES[$field]['error'] == 0 ) || (isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) );
+		$ok = false;
+		
+		// file upload rule
+		if(isset($_FILES[$field]) && $_FILES[$field]['error'] == 0 )
+			$ok = true;
+		
+		// regular element rule
+		if(isset($_REQUEST[$field]) )
+		{
+			if(is_array($_REQUEST[$field]))
+			{
+				$ok = true;
+				foreach($_REQUEST[$field] as $field)
+					$ok = $ok && !empty($field);
+			}
+			else
+				$ok = strlen($_REQUEST[$field]);
+		}
+		return $ok;
 	}
 	
 	/**
@@ -265,8 +283,24 @@ class validator
 	 */
 	private function rule_alpha_dash($field)
 	{
-		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return preg_match("/^[\p{L}\d \-_]+$/", $_REQUEST[$field]);
+		$regex = "/^[\p{L}\d \-_]+$/";
+		if(isset($_REQUEST[$field]) )
+		{
+			if(is_array($_REQUEST[$field]))
+			{
+				$ok = true;
+				
+				foreach($_REQUEST[$field] as $field)
+				{
+					if(!empty($field))
+						$ok = $ok && preg_match($regex, $field);
+				}
+				
+				return $ok;
+			}
+			else
+				return preg_match($regex, $_REQUEST[$field]);
+		}
 		else
 			return true;
 	}
@@ -278,8 +312,23 @@ class validator
 	 */
 	private function rule_numeric($field)
 	{
-		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
-			return is_numeric($_REQUEST[$field]);
+		if(isset($_REQUEST[$field]) )
+		{
+			if(is_array($_REQUEST[$field]))
+			{
+				$ok = true;
+				
+				foreach($_REQUEST[$field] as $field)
+				{
+					if(!empty($field))
+						$ok = $ok && is_numeric($field);
+				}
+				
+				return $ok;
+			}
+			else
+				return is_numeric($_REQUEST[$field]);
+		}
 		else
 			return true;
 	}
