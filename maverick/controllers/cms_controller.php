@@ -561,11 +561,11 @@ class cms_controller extends base_controller
 					// check a form ID was passed for deletion
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$deleted = cms::delete_form($params[2]);
+						$deleted = cms::delete_form($params[2])->fetch();
 						
 						\maverick_cms\log::log('forms', 'deleted (soft)', array('form_id'=>$params[2]), 'info');
 						
-						if($deleted->fetch() )
+						if($deleted)
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
 					else
@@ -577,11 +577,11 @@ class cms_controller extends base_controller
 					// check a form ID was passed for restoration
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$deleted = cms::undelete_form($params[2]);
+						$undeleted = cms::undelete_form($params[2])->fetch();
 						
 						\maverick_cms\log::log('forms', 'undeleted', array('form_id'=>$params[2]), 'info');
 						
-						if($deleted->fetch() )
+						if($undeleted)
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
 					else
@@ -594,11 +594,11 @@ class cms_controller extends base_controller
 					// check a form ID was passed for full deletion
 					if(isset($params[2]) && intval($params[2]))
 					{
-						$deleted = cms::delete_form($params[2], true);
+						$deleted = cms::delete_form($params[2], true)->fetch();
 						
 						\maverick_cms\log::log('forms', 'deleted (hard)', array('form_id'=>$params[2]), 'info');
 						
-						if($deleted->fetch() )
+						if($deleted)
 							view::redirect('/' . $app->get_config('cms.path') . '/forms');
 					}
 					else
@@ -619,6 +619,15 @@ class cms_controller extends base_controller
 					break;
 			}
 		}
+	}
+	
+	/**
+	 * method that deals with all logs created in the CMS
+	 * @param array $params the URL parameters
+	 */
+	private function logs($params)
+	{
+		
 	}
 	
 	/**
@@ -745,9 +754,5 @@ class cms_controller extends base_controller
 
 		return $params;
 	}
-	
-	private function logs($params)
-	{
-		var_dump('logs');
-	}
+
 }
