@@ -21,18 +21,17 @@ class logs_controller extends cms_controller
 		$this->cms->check_permissions('logs', '/' . $app->get_config('cms.path') . '/');
 		
 		// get and use any filter params that exist
-		$filter_params = $this->get_filter_params($params);
 		foreach(array('page', 'per_page') as $option)
 		{
-			if(!array_key_exists($option, $filter_params))
+			if(!array_key_exists($option, $_GET))
 				continue;
 				
 			switch($option)
 			{
 				case 'page':
 				case 'per_page':
-					if(intval($filter_params[$option]) )
-						$this->{$option} = $filter_params[$option];
+					if(intval($_GET[$option]) )
+						$this->{$option} = $_GET[$option];
 					break;
 			}
 		}
