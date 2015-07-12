@@ -15,6 +15,7 @@ class query
 	private $gets = array();
 	private $data = array();
 	private $results;
+	private $limit;
 	
 	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
 	private $where_conditions = array('IS', 'IS NOT');
@@ -221,6 +222,21 @@ class query
 		
 		return $q;
 	}
+	
+	/**
+	 * create a limit clause on the query
+	 * @param int $results the number of results to return
+	 * @param int $offset the offset to start with on the results
+	 */
+	public static function limit($results, $offset=0)
+	{
+		$q = query::getInstance();
+		
+		if(intval($results) && intval($offset)>-1)
+			$q->limit = array('results'=>intval($results), 'offset'=>intval($offset) );
+		
+		return $q;
+	}
 
 	/**
 	 * create a GROUP BY clause
@@ -360,7 +376,9 @@ class query
 				$select_string = implode(',', $q->gets);
 				$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
 				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string");
+				$limit_string = ($q->limit)?" LIMIT {$q->limit['offset']}, {$q->limit['results']}":'';
+				
+				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string $limit_string");
 
 				break;
 			}

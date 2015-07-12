@@ -783,11 +783,14 @@ class cms
 		return (isset($perms[0]))?$perms[0]:false;
 	}
 	
-	static function get_logs()
+	static function get_logs($page, $per_page)
 	{
+		$offset = ($page-1)*$per_page;
+
 		$logs = db::table('maverick_cms_logs AS l')
 			->orderBy('added_at', 'desc')
 			->leftJoin('maverick_cms_users AS u', array('l.user_id', '=', 'u.id') )
+			->limit($per_page, $offset)
 			->get(array('l.id', 'l.user_id', 'l.type', 'l.category', 'l.sub_category', 'l.added_at', 'u.username'))
 			->fetch();
 		

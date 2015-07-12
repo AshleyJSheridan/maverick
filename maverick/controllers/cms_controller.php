@@ -757,4 +757,20 @@ class cms_controller extends base_controller
 		return $params;
 	}
 
+	/**
+	 * search through the passed in URL parameters and return as an associative array any the match the traditional param=value format
+	 * @param array $params the URL params as a standard indexed array
+	 * @return array
+	 */
+	protected function get_filter_params($params)
+	{
+		$filter_params = array();
+		foreach($params as $param)
+		{
+			if(preg_match('/^([\p{L}\p{N}]+)=([\p{L}\p{N}]+)/', $param, $matches))
+				$filter_params[$matches[1]] = $matches[2];
+		}
+		
+		return $filter_params;
+	}
 }
