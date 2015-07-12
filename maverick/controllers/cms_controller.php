@@ -1,9 +1,10 @@
 <?php
 class cms_controller extends base_controller
 {
-	private $nav;
-	private $cms;
-	private $app;
+	protected $nav;
+	protected $cms;
+	protected $app;
+	protected $controller;
 	
 	/**
 	 * main constructor function, just deals with setting some basic options for this controller
@@ -15,6 +16,10 @@ class cms_controller extends base_controller
 		
 		$this->cms = \maverick_cms\cms::getInstance();
 		$this->app = \maverick\maverick::getInstance();
+		
+		$params = $this->app->controller['args'];
+		$params = $this->clean_params($params);
+		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
 	}
 
 	/**
@@ -25,14 +30,9 @@ class cms_controller extends base_controller
 	{
 		$params = $this->clean_params($params);
 		
-		//unset($_SESSION['']);
-		
 		// check login status
 		if(!$this->check_login_status($params))
 			view::redirect('/' . $this->app->get_config('cms.path') . '/login');
-		
-		// set up the main nav
-		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
 		
 		// this fixes an empty param set
 		if(!count($params))
@@ -43,7 +43,6 @@ class cms_controller extends base_controller
 			case 'forms':
 			case 'users':
 			case 'ajax':
-			case 'logs':
 				$this->{$params[0]}($params);
 				break;
 			case 'login':
@@ -51,10 +50,22 @@ class cms_controller extends base_controller
 			case 'dash':
 				$this->{$params[0]}();
 				break;
+			case 'logs':
+				$this->dispatch_controller($params[0], $params);
+				break;
 			default:
 				// loop through the hooks listed in the main MaVeriCk class
 				break;
 		}
+	}
+	
+	private function dispatch_controller($controller, $params)
+	{
+		$method = $controller;
+		$controller = "{$controller}_controller";
+		if(class_exists($controller) && $this->controller = new $controller)
+			$this->controller->{$method}($params);
+		//TODO: add error call here if the admin controller for this section doesn't exist
 	}
 
 	/**
@@ -622,54 +633,12 @@ class cms_controller extends base_controller
 	}
 	
 	/**
-	 * method that deals with all logs created in the CMS
-	 * @param array $params the URL parameters
-	 */
-	private function logs($params)
-	{
-		$page = 'logs';
-		$app = \maverick\maverick::getInstance();
-		
-		$this->cms->check_permissions('logs', '/' . $app->get_config('cms.path') . '/');
-		
-		// get list of users and show them
-		$logs = cms::get_logs();
-		$headers = '["ID","User","Category","Sub-Category","When","Type","Actions"]';
-		$data = array();
-
-		foreach($logs as $log)
-		{
-			$data[] = array(
-				$log['id'],
-				$log['username'],
-				$log['category'],
-				$log['sub_category'],
-				$log['added_at'],
-				$log['type'],
-				cms::generate_actions('users', $log['id'], array('view details') )
-			);
-		}
-
-		$logs_table = new \helpers\html\tables('logs', 'layout', $data, $headers);
-		$logs_table->class = 'item_table';
-
-		$view_params = array(
-			'logs'=>$logs_table->render(),
-			//'user_buttons'=> cms::generate_actions('users', '', array('new user','update permissions', 'list permissions'), 'full', 'a'),
-			/*'scripts'=>array(
-				'/js/cms/users.js'=>10, 
-			)*/
-		);
-		$this->load_view($page, $view_params );
-	}
-	
-	/**
 	 * load in an admin view - this is basically a small wrapper to view::make(), it just adds in the admin nav and any other parameters passed into it
 	 * this allows things to be added to all admin sections easily, in one method
 	 * @param string $view the view to load - this is the same format as view::make()
 	 * @param array $with_params any extra parameters that need to be passed in to this view
 	 */
-	private function load_view($view, $with_params = array() )
+	protected function load_view($view, $with_params = array() )
 	{
 		// load scripts that need to be included on all pages and then sort them by their priority
 		$global_scripts = array(
