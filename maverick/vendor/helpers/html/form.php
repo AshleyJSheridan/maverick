@@ -349,6 +349,7 @@ class form_element
 			
 			$html .= \helpers\html\html::load_snippet($snippet, array(
 				'value' => $option,
+				'display_value' => $option,
 				'selected' => $selected,
 			) );
 		}

@@ -783,7 +783,14 @@ class cms
 		return (isset($perms[0]))?$perms[0]:false;
 	}
 	
-	static function get_logs($page, $per_page)
+	/**
+	 * get all the logs with filters and pagination if specified
+	 * @param int $page the page number of results
+	 * @param int $per_page the number of results to show per page
+	 * @param bool $count whether to return the logs or the count of the logs
+	 * @return array|int
+	 */
+	static function get_logs($page, $per_page, $count=false, $since=null, $until=null, $log_type=null, $category=null)
 	{
 		$offset = ($page-1)*$per_page;
 
@@ -791,9 +798,56 @@ class cms
 			->orderBy('added_at', 'desc')
 			->leftJoin('maverick_cms_users AS u', array('l.user_id', '=', 'u.id') )
 			->limit($per_page, $offset)
-			->get(array('l.id', 'l.user_id', 'l.type', 'l.category', 'l.sub_category', 'l.added_at', 'u.username'))
+			;
+
+		// set any where clauses as determined by filters
+		foreach(array('since', 'until', 'log_type', 'category') as $filter)
+		{
+			if($$filter)
+			{
+				switch($filter)
+				{
+					case 'since':
+						$logs->where('added_at', '>', db::raw($$filter));
+						break;
+					case 'until':
+						$logs->where('added_at', '<', db::raw($$filter));
+						break;
+					case 'log_type':
+						$logs->where('type', '=', db::raw($$filter));
+						break;
+					case 'category':
+						$logs->where('category', '=', db::raw($$filter));
+						break;
+				}
+			}
+		}
+		
+		// get the count or the various fields required
+		if($count)
+			$logs->get('COUNT(l.id) AS total');
+		else
+			$logs->get(array('l.id', 'l.user_id', 'l.type', 'l.category', 'l.sub_category', 'l.added_at', 'u.username'));
+		
+		$logs = $logs->fetch();
+		
+		return ($count)?intval($logs[0]['total']):$logs;
+	}
+	
+	/**
+	 * fetch a list of all the categories currently in the logs table
+	 * this list will change over time as new log entries are created
+	 * @return array
+	 */
+	static function get_log_categories()
+	{
+		$categories = db::table('maverick_cms_logs')
+			->get(array('DISTINCT(category) AS category'))
 			->fetch();
 		
-		return $logs;
+		foreach($categories as $key => $category)
+			$categories[$key] = "\"{$category['category']}\"";
+		
+		return $categories;
 	}
 }
