@@ -14,6 +14,11 @@ label
 		width: 70%;
 		float: right;
 	}
+	select
+	{
+		/* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */
+		-moz-box-sizing: border-box;
+	}
 }
 input
 {
@@ -139,24 +144,30 @@ form[name=login]
 	}
 }
 .user.edit,
-.form_elements.edit
+.form_elements.edit,
+.filter_form
 {
 	width: 600px;
-	
-	label.permissions
+}
+.filter_form
+{
+	label
 	{
-		width: 230px;
 		display: inline-block;
-		margin-right: $spacing*2;
-
-		&.permission_group_start
+		width: 45%;
+		
+		&:nth-child(odd)
+		{
+			margin-right: $spacing*4;
+		}
+		input, select
 		{
 			display: block;
-			margin-top: $spacing*4;
+			float: none;
+			width: 100%;
 		}
 	}
 }
-
 .form_elements.edit
 {
 	.form_details, .form_element
@@ -235,6 +246,18 @@ form[name=login]
 }
 .user.edit
 {
+	label.permissions
+	{
+		width: 230px;
+		display: inline-block;
+		margin-right: $spacing*2;
+
+		&.permission_group_start
+		{
+			display: block;
+			margin-top: $spacing*4;
+		}
+	}
 	input
 	{
 		width: 60%;

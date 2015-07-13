@@ -70,6 +70,7 @@ class logs_controller extends cms_controller
 		$filter_form = new \helpers\html\form('name', $elements);
 		$filter_form->method = 'get';
 		$filter_form->enctype = 'text/plain';
+		$filter_form->class = 'filter_form';
 		
 		// get list of users and show them
 		$logs = cms::get_logs($this->page, $this->per_page, false, $this->since, $this->until, $this->log_type, $this->category);

@@ -1,4 +1,4 @@
-<h2>Permissions</h2>
+<h2>Event Logs</h2>
 
 {{filter_form}}
 
