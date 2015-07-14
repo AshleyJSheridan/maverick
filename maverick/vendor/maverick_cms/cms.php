@@ -121,4 +121,37 @@ class cms extends \maverick\maverick
 		
 		return $errors_html;
 	}
+	
+	/**
+	 * clean up the list of passed in url parameters
+	 * @param array $params the array of parameters to clean
+	 * @return array
+	 */
+	public static function clean_params($params)
+	{
+		foreach($params as $key => &$param)
+		{
+			$param = trim($param, '/');
+			
+			if($param == '')
+				unset($params[$key]);
+			
+			if(strpos($param, '/'))
+			{
+				array_splice($params, $key, 1, explode('/', $param) );
+			}
+		}
+
+		return $params;
+	}
+	
+	/**
+	 * checks the status of a user login and determines if it is valid
+	 * @param array $params the URL params - used to prevent a redirect loop
+	 * @return bool
+	 */
+	public static function check_login_status($params)
+	{
+		return !(!isset($_SESSION['maverick_login']) && $params[0] != 'login');
+	}
 }

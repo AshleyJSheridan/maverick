@@ -18,7 +18,7 @@ class cms_controller extends base_controller
 		$this->app = \maverick\maverick::getInstance();
 		
 		$params = $this->app->controller['args'];
-		$params = $this->clean_params($params);
+		$params = \maverick_cms\cms::clean_params($params); //$this->clean_params($params);
 		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
 	}
 
@@ -28,10 +28,11 @@ class cms_controller extends base_controller
 	 */
 	function main($params)
 	{
-		$params = $this->clean_params($params);
+		$params = \maverick_cms\cms::clean_params($params);
 		
 		// check login status
-		if(!$this->check_login_status($params))
+		//if(!$this->check_login_status($params))
+		if(!\maverick_cms\cms::check_login_status($params))
 			view::redirect('/' . $this->app->get_config('cms.path') . '/login');
 		
 		// this fixes an empty param set
@@ -722,39 +723,6 @@ class cms_controller extends base_controller
 		$form->method = 'post';
 		
 		$view = view::make('cms/includes/template_basic')->with('page', 'login')->with('login_form', $form->render() )->render();
-	}
-	
-	/**
-	 * checks the status of a user login and determines if it is valid
-	 * @param array $params the URL params - used to prevent a redirect loop
-	 * @return bool
-	 */
-	private function check_login_status($params)
-	{
-		return !(!isset($_SESSION['maverick_login']) && $params[0] != 'login');
-	}
-	
-	/**
-	 * clean up the list of passed in url parameters
-	 * @param array $params the array of parameters to clean
-	 * @return array
-	 */
-	private function clean_params($params)
-	{
-		foreach($params as $key => &$param)
-		{
-			$param = trim($param, '/');
-			
-			if($param == '')
-				unset($params[$key]);
-			
-			if(strpos($param, '/'))
-			{
-				array_splice($params, $key, 1, explode('/', $param) );
-			}
-		}
-
-		return $params;
 	}
 
 }
