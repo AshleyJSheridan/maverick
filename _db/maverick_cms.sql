@@ -29,11 +29,11 @@ CREATE TABLE `maverick_cms_form_elements` (
   `class` varchar(50) NOT NULL,
   `html_id` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements` */
 
-insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (1,2,'name','text','yes','Name','John Smith','',1,'',''),(2,2,'email','email','yes','Email','name@email.com','',2,'',''),(10,1,'test','text','yes','Test','test','',1,'',''),(11,1,'test2','text','yes','Test2','test2','',2,'','');
+insert  into `maverick_cms_form_elements`(`id`,`form_id`,`element_name`,`type`,`display`,`label`,`placeholder`,`value`,`display_order`,`class`,`html_id`) values (111,2,'name','text','yes','Name','John Smith','',1,'',''),(112,2,'email','email','yes','Email','name@email.com','',2,'',''),(113,2,'new element 3','text','yes','','','',3,'',''),(114,2,'new element 4','text','yes','','','',4,'',''),(135,13,'name','text','yes','Name','John Smith','',1,'',''),(136,13,'email','email','yes','Email','name@email.com','',2,'',''),(137,13,'new element 3','text','yes','','','',3,'',''),(138,13,'new element 4','text','yes','','','',4,'',''),(139,14,'name','text','yes','Name','John Smith','',1,'',''),(140,14,'email','email','yes','Email','name@email.com','',2,'',''),(141,14,'new element 3','text','yes','','','',3,'',''),(142,14,'new element 4','text','yes','','','',4,'',''),(147,16,'name','text','yes','Name','John Smith','',1,'',''),(148,16,'email','email','yes','Email','name@email.com','',2,'',''),(149,16,'new element 3','text','yes','','','',3,'','');
 
 /*Table structure for table `maverick_cms_form_elements_extra` */
 
@@ -45,11 +45,11 @@ CREATE TABLE `maverick_cms_form_elements_extra` (
   `special_type` varchar(50) NOT NULL,
   `value` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=184 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_form_elements_extra` */
 
-insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (1,1,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(2,1,'between','2:100'),(3,2,'between','5:255'),(4,1,'required','true'),(5,2,'required','true'),(6,10,'required','true'),(7,10,'between','1:10');
+insert  into `maverick_cms_form_elements_extra`(`id`,`element_id`,`special_type`,`value`) values (169,111,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(170,111,'between','2:100'),(171,112,'between','5:255'),(172,135,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(173,135,'between','2:100'),(174,136,'between','5:255'),(175,139,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(176,139,'between','2:100'),(177,140,'between','5:255'),(181,147,'regex','/^\\p{L}[\\p{L}0-9 \\-\\\']+$/'),(182,147,'between','2:100'),(183,148,'between','5:255');
 
 /*Table structure for table `maverick_cms_forms` */
 
@@ -62,11 +62,11 @@ CREATE TABLE `maverick_cms_forms` (
   `lang` varchar(5) NOT NULL DEFAULT 'en-gb',
   `deleted` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_forms` */
 
-insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`,`deleted`) values (1,'competition','yes','en-gb','no'),(2,'contact','yes','en-gb','no');
+insert  into `maverick_cms_forms`(`id`,`name`,`active`,`lang`,`deleted`) values (1,'competition','yes','en-GB','no'),(2,'contact','yes','en-GB','no'),(13,'contact','yes','en-GB','yes'),(14,'contact (copy)','yes','en-GB','yes'),(15,'competition (copy)','yes','en-GB','yes'),(16,'contact (copy)','yes','en-GB','no');
 
 /*Table structure for table `maverick_cms_languages` */
 
@@ -97,11 +97,11 @@ CREATE TABLE `maverick_cms_logins` (
   `login_at` datetime NOT NULL,
   `successful` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_logins` */
 
-insert  into `maverick_cms_logins`(`id`,`username`,`ip`,`user_agent`,`login_at`,`successful`) values (1,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-05-13 11:39:02','yes'),(2,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-01 20:28:24','yes'),(3,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:13','yes'),(4,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:22','yes'),(5,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:31:39','yes'),(6,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 21:32:06','yes'),(7,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:14:37','yes'),(8,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:09','yes'),(9,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:22','yes'),(10,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:46','yes'),(11,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:50','yes'),(12,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:51:02','yes'),(13,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:58:28','yes'),(14,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-23 00:05:18','yes'),(15,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-24 20:37:43','yes'),(16,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 17:40:35','yes'),(17,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 20:50:42','yes'),(18,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-01 15:55:40','yes');
+insert  into `maverick_cms_logins`(`id`,`username`,`ip`,`user_agent`,`login_at`,`successful`) values (1,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-05-13 11:39:02','yes'),(2,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-01 20:28:24','yes'),(3,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:13','yes'),(4,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:22','yes'),(5,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:31:39','yes'),(6,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 21:32:06','yes'),(7,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:14:37','yes'),(8,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:09','yes'),(9,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:22','yes'),(10,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:46','yes'),(11,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:50','yes'),(12,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:51:02','yes'),(13,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:58:28','yes'),(14,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-23 00:05:18','yes'),(15,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-24 20:37:43','yes'),(16,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 17:40:35','yes'),(17,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 20:50:42','yes'),(18,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-01 15:55:40','yes'),(19,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:08:14','yes'),(20,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:13:47','yes'),(21,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-06 23:45:16','yes'),(22,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 10:29:13','yes'),(23,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:35',''),(24,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:45',''),(25,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:16:22','yes'),(26,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 20:06:19','yes'),(27,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-12 09:32:54','yes'),(28,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:08:41','yes'),(29,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:26:39','yes'),(30,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-17 21:03:14','yes'),(31,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-20 19:44:36','yes');
 
 /*Table structure for table `maverick_cms_logs` */
 
@@ -113,12 +113,15 @@ CREATE TABLE `maverick_cms_logs` (
   `type` enum('info','error') NOT NULL DEFAULT 'info',
   `category` varchar(100) NOT NULL,
   `sub_category` varchar(100) NOT NULL,
-  `details` varchar(250) NOT NULL,
+  `details` varchar(250) DEFAULT NULL,
   `added_at` datetime NOT NULL,
+  `request_data` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_logs` */
+
+insert  into `maverick_cms_logs`(`id`,`user_id`,`type`,`category`,`sub_category`,`details`,`added_at`,`request_data`) values (5,1,'info','permissions','update from code','null','2015-07-09 13:59:33','[]'),(6,1,'info','permissions','update from code','null','2015-07-09 13:59:59','[]'),(7,1,'info','permissions','update manual','{\"id\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\",\"12\",\"26\",\"27\",\"28\",\"25\",\"39\",\"24\",\"\"],\"name\":[\"form\",\"form_copy\",\"form_delete\",\"form_delete_full\",\"form_edit\",\"form_new\",\"form_undelete\",\"user\",\"user_create\",\"user_delete\",\"user_edit\",\"user_list_permissions\",\"u','2015-07-09 14:00:16','{\"id\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\",\"12\",\"26\",\"27\",\"28\",\"25\",\"39\",\"24\",\"\"],\"name\":[\"form\",\"form_copy\",\"form_delete\",\"form_delete_full\",\"form_edit\",\"form_new\",\"form_undelete\",\"user\",\"user_create\",\"user_delete\",\"user_edit\",\"user_list_permissions\",\"user_new_permission\",\"user_update_permissions\",\"test\"],\"description\":[\"Permissions to access the form admin area\",\"able to duplicate forms\",\"able to mark a form as deleted in the db\",\"able to delete forms\",\"able to edit forms\",\"able to create new forms\",\"able to undelete forms marked in the db\",\"able to view the list of users\",\"able to create new users\",\"able to delete users\",\"able to edit users\",\"able to list all permissions within the cms\",\"able to edit permissions manually\",\"able to update the list of permissions from those used in code files\",\"test\"]}'),(8,1,'info','permissions','deletion','{\"permission_id\":\"208\"}','2015-07-09 14:00:57','[]'),(9,1,'info','permissions','update manual','{\"id\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\",\"12\",\"26\",\"27\",\"28\",\"25\",\"39\",\"24\"],\"name\":[\"form\",\"form_copy\",\"form_delete\",\"form_delete_full\",\"form_edit\",\"form_new\",\"form_undelete\",\"user\",\"user_create\",\"user_delete\",\"user_edit\",\"user_list_permissions\",\"user','2015-07-09 14:01:03','{\"id\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\",\"12\",\"26\",\"27\",\"28\",\"25\",\"39\",\"24\"],\"name\":[\"form\",\"form_copy\",\"form_delete\",\"form_delete_full\",\"form_edit\",\"form_new\",\"form_undelete\",\"user\",\"user_create\",\"user_delete\",\"user_edit\",\"user_list_permissions\",\"user_new_permission\",\"user_update_permissions\"],\"description\":[\"Permissions to access the form admin area\",\"able to duplicate forms\",\"able to mark a form as deleted in the db\",\"able to delete forms\",\"able to edit forms\",\"able to create new forms\",\"able to undelete forms marked in the db\",\"able to view the list of users\",\"able to create new users\",\"able to delete users\",\"able to edit users\",\"able to list all permissions within the cms\",\"able to edit permissions manually\",\"able to update the list of permissions from those used in code files\"]}'),(10,1,'info','forms','undeleted','{\"form_id\":\"13\"}','2015-07-09 14:01:27','[]'),(11,1,'info','forms','deleted (soft)','{\"form_id\":\"14\"}','2015-07-09 14:01:39','[]'),(12,1,'info','forms','deleted (soft)','{\"form_id\":\"13\"}','2015-07-09 14:01:43','[]'),(13,1,'info','forms','duplicated','{\"form_id\":\"2\"}','2015-07-09 14:01:45','[]'),(14,1,'info','users','updated','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:29:01','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(15,1,'info','users','updated','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:29:17','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(16,1,'info','users','updated','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:43:33','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(17,1,'info','users','updated','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:46:16','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(18,1,'info','users','updated','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:53:58','{\"username\":\"ash\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(19,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:54:23','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(20,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:55:25','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(21,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 20:55:36','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(22,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 21:03:05','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(23,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 21:03:20','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(24,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 21:09:49','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(25,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 21:10:18','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"password\",\"password_confirm\":\"password\",\"permissions\":[\"1\",\"3\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(26,1,'info','users','updated','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}','2015-07-09 21:10:25','{\"username\":\"ash2\",\"forename\":\"Ashley\",\"surname\":\"Sheridan\",\"email\":\"ash@ashleysheridan.co.uk\",\"password\":\"\",\"password_confirm\":\"\",\"permissions\":[\"1\",\"19\",\"3\",\"18\",\"2\",\"16\",\"15\"],\"submit\":\"save user\"}'),(27,1,'info','forms','updated','{\"form_name\":\"contact (copy)\",\"lang\":\"en-GB\",\"id\":[\"143\",\"144\",\"145\"],\"type\":[\"text\",\"email\",\"text\"],\"name\":[\"name\",\"email\",\"new element 3\"],\"label\":[\"Name\",\"Email\",\"\"],\"value\":[\"\",\"\",\"\"],\"display_order\":[\"1\",\"2\",\"3\"],\"class\":[\"\",\"\",\"\"],\"html_id\":[\"\"','2015-07-14 20:10:11','{\"form_name\":\"contact (copy)\",\"lang\":\"en-GB\",\"id\":[\"143\",\"144\",\"145\"],\"type\":[\"text\",\"email\",\"text\"],\"name\":[\"name\",\"email\",\"new element 3\"],\"label\":[\"Name\",\"Email\",\"\"],\"value\":[\"\",\"\",\"\"],\"display_order\":[\"1\",\"2\",\"3\"],\"class\":[\"\",\"\",\"\"],\"html_id\":[\"\",\"\",\"\"],\"placeholder\":[\"John Smith\",\"name@email.com\",\"\"],\"display\":[\"on\",\"on\",\"on\"],\"regex\":[\"\\/^\\\\p{L}[\\\\p{L}0-9 \\\\-\\\\\']+$\\/\",\"\",\"\"],\"min\":[\"2\",\"5\",\"\"],\"max\":[\"100\",\"255\",\"\"]}'),(28,1,'info','forms','undeleted','{\"form_id\":\"15\"}','2015-07-14 20:10:22','[]'),(29,1,'info','forms','deleted (soft)','{\"form_id\":\"15\"}','2015-07-14 20:10:27','[]');
 
 /*Table structure for table `maverick_cms_nav` */
 
@@ -157,6 +160,53 @@ CREATE TABLE `maverick_cms_nav_elements` (
 
 insert  into `maverick_cms_nav_elements`(`id`,`nav_id`,`name`,`uri`,`page_id`,`order`,`class`,`display`) values (7,1,'Privacy','http://www.unileverprivacypolicy.com/en_gb/policy.aspx',0,2,'','yes');
 
+/*Table structure for table `maverick_cms_page_content` */
+
+DROP TABLE IF EXISTS `maverick_cms_page_content`;
+
+CREATE TABLE `maverick_cms_page_content` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `page_id` int(10) unsigned NOT NULL,
+  `content_order` mediumint(9) NOT NULL,
+  `content` text,
+  `display` enum('yes','no') NOT NULL DEFAULT 'yes',
+  PRIMARY KEY (`id`,`page_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `maverick_cms_page_content` */
+
+/*Table structure for table `maverick_cms_page_tags` */
+
+DROP TABLE IF EXISTS `maverick_cms_page_tags`;
+
+CREATE TABLE `maverick_cms_page_tags` (
+  `page_id` int(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY (`page_id`,`tag_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `maverick_cms_page_tags` */
+
+/*Table structure for table `maverick_cms_pages` */
+
+DROP TABLE IF EXISTS `maverick_cms_pages`;
+
+CREATE TABLE `maverick_cms_pages` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `page_name` varchar(250) NOT NULL,
+  `page_url` varchar(250) NOT NULL,
+  `status` enum('draft','live','deleted') NOT NULL DEFAULT 'draft',
+  `template_id` mediumint(9) unsigned NOT NULL,
+  `added_at` datetime NOT NULL,
+  `last_edit` datetime NOT NULL,
+  `template` enum('yes','no') NOT NULL DEFAULT 'no',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+/*Data for the table `maverick_cms_pages` */
+
+insert  into `maverick_cms_pages`(`id`,`page_name`,`page_url`,`status`,`template_id`,`added_at`,`last_edit`,`template`) values (1,'home','/','draft',0,'2015-07-20 21:03:17','2015-07-20 21:03:17','no');
+
 /*Table structure for table `maverick_cms_permissions` */
 
 DROP TABLE IF EXISTS `maverick_cms_permissions`;
@@ -165,12 +215,25 @@ CREATE TABLE `maverick_cms_permissions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `description` varchar(250) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_permissions` */
 
-insert  into `maverick_cms_permissions`(`id`,`name`,`description`) values (1,'form','Permissions to access the form admin area'),(2,'form edit','able to edit forms'),(3,'form delete','able to delete forms');
+insert  into `maverick_cms_permissions`(`id`,`name`,`description`) values (1,'form','Permissions to access the form admin area'),(2,'form_edit','able to edit forms'),(3,'form_delete','able to mark a form as deleted in the db'),(12,'user','able to view the list of users'),(15,'form_undelete','able to undelete forms marked in the db'),(16,'form_new','able to create new forms'),(18,'form_delete_full','able to delete forms'),(19,'form_copy','able to duplicate forms'),(24,'user_update_permissions','able to update the list of permissions from those used in code files'),(25,'user_list_permissions','able to list all permissions within the cms'),(26,'user_create','able to create new users'),(27,'user_delete','able to delete users'),(28,'user_edit','able to edit users'),(39,'user_new_permission','able to edit permissions manually');
+
+/*Table structure for table `maverick_cms_tags` */
+
+DROP TABLE IF EXISTS `maverick_cms_tags`;
+
+CREATE TABLE `maverick_cms_tags` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `tag` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `maverick_cms_tags` */
 
 /*Table structure for table `maverick_cms_user_permissions` */
 
@@ -184,7 +247,7 @@ CREATE TABLE `maverick_cms_user_permissions` (
 
 /*Data for the table `maverick_cms_user_permissions` */
 
-insert  into `maverick_cms_user_permissions`(`user_id`,`permission_id`) values (1,1),(1,2);
+insert  into `maverick_cms_user_permissions`(`user_id`,`permission_id`) values (2,1),(2,2),(2,3),(2,15),(2,16),(2,18),(2,19);
 
 /*Table structure for table `maverick_cms_users` */
 
@@ -203,7 +266,7 @@ CREATE TABLE `maverick_cms_users` (
 
 /*Data for the table `maverick_cms_users` */
 
-insert  into `maverick_cms_users`(`id`,`username`,`password`,`email`,`forename`,`surname`,`admin`) values (1,'admin','e3274be5c857fb42ab72d786e281b4b8','ash@ashleysheridan.co.uk','Ashley','Sheridan','yes'),(2,'ash','81cf14fabc01b7c88b186ee9e64fd5c5','ash@ashleysheridan.co.uk','Ashley','Sheridan','no');
+insert  into `maverick_cms_users`(`id`,`username`,`password`,`email`,`forename`,`surname`,`admin`) values (1,'admin','e3274be5c857fb42ab72d786e281b4b8','ash@ashleysheridan.co.uk','Ashley','Sheridan','yes'),(2,'ash2','d89b4b1c28556f8e23828101ecd28665','ash@ashleysheridan.co.uk','Ashley','Sheridan','no');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
