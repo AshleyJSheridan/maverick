@@ -850,4 +850,30 @@ class cms
 		
 		return $categories;
 	}
+	
+	/**
+	 * get all the tags in the db, and their group if applicable
+	 */
+	static function get_tags()
+	{
+		$tags = array();
+		$tags_list = db::table('maverick_cms_tags AS t')
+			->leftJoin('maverick_cms_tag_groups AS tg', array('t.group_id', '=', 'tg.id') )
+			->orderBy('tg.group_name', 'desc')
+			->get(array(
+				't.tag', 'tg.group_name'
+			))
+			->fetch();
+		
+		foreach($tags_list as $tag)
+		{
+			// luckily, null gets converted to an empty string with automatic casting, which works perfectly here
+			if(!isset($tags[$tag['group_name']]))
+				$tags[$tag['group_name']] = array();
+			
+			$tags[$tag['group_name']][] = $tag;
+		}
+		
+		return $tags;
+	}
 }

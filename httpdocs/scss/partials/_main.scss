@@ -148,6 +148,26 @@ a.action, button.action, input[type=submit].action
 	&.save_user {background-image: url(/img/maverick/icons/save.png);}
 	&.view_details {background-image: url(/img/maverick/icons/view_details.png);}
 	&.filter {background-image: url(/img/maverick/icons/filter.png);}
+	&.add_group {background-image: url(/img/maverick/icons/add_element.png);}
+	&.add_tag {background-image: url(/img/maverick/icons/add_tag.png);}
+}
+
+.tag_groups
+{
+	.tag_group
+	{
+		background-color: $light-grey;
+		border-radius: 1em;
+		margin: $spacing $spacing $spacing 0;
+		width: 200px;
+		padding: $spacing;
+		float: left;
+		
+		-ms-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		box-sizing: border-box;
+	}
 }
 
 // errors

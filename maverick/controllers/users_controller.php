@@ -229,7 +229,7 @@ class users_controller extends cms_controller
 	 * deals with updating a user profile and their assigned permissions
 	 * @param array $params the URL parameters
 	 */
-	private function edit_user($params)
+	private function edit($params)
 	{
 		$this->cms->check_permissions('user_edit', '/' . $this->app->get_config('cms.path') . '/users');
 					

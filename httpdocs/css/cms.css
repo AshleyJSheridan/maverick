@@ -48,6 +48,10 @@ a.action.delete_user, button.action.delete_user, input[type=submit].action.delet
 a.action.save_user, button.action.save_user, input[type=submit].action.save_user { background-image: url(/img/maverick/icons/save.png); }
 a.action.view_details, button.action.view_details, input[type=submit].action.view_details { background-image: url(/img/maverick/icons/view_details.png); }
 a.action.filter, button.action.filter, input[type=submit].action.filter { background-image: url(/img/maverick/icons/filter.png); }
+a.action.add_group, button.action.add_group, input[type=submit].action.add_group { background-image: url(/img/maverick/icons/add_element.png); }
+a.action.add_tag, button.action.add_tag, input[type=submit].action.add_tag { background-image: url(/img/maverick/icons/add_tag.png); }
+
+.tag_groups .tag_group { background-color: #dddddd; border-radius: 1em; margin: 10px 10px 10px 0; width: 200px; padding: 10px; float: left; -ms-box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
 .error { display: block; background: #ff8888; color: #333333; border: 1px solid red; border-radius: 0.5em; padding: 5px 10px; margin: 10px 0 20px; width: 100%; -webkit-box-shadow: 0px 0px 5px 1px red; -moz-box-shadow: 0px 0px 5px 1px red; box-shadow: 0px 0px 5px 1px red; }
 
