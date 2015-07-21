@@ -14,10 +14,7 @@ class forms_controller extends cms_controller
 	 */
 	function forms($params)
 	{
-		
-		$app = \maverick\maverick::getInstance();
-		
-		$this->cms->check_permissions('form', '/' . $app->get_config('cms.path') . '/');
+		$this->cms->check_permissions('form', '/' . $this->app->get_config('cms.path') . '/');
 
 		// show the list of forms as this is the main forms page requested
 		if(!isset($params[1]))

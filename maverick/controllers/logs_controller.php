@@ -20,9 +20,8 @@ class logs_controller extends cms_controller
 	function logs($params)
 	{
 		$page = 'logs';
-		$app = \maverick\maverick::getInstance();
-		
-		$this->cms->check_permissions('logs', '/' . $app->get_config('cms.path') . '/');
+
+		$this->cms->check_permissions('logs', '/' . $this->app->get_config('cms.path') . '/');
 
 		// get and use any filter params that exist
 		foreach(array('page', 'per_page', 'until', 'since', 'log_type', 'category') as $option)

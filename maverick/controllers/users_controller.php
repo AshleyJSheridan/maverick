@@ -13,9 +13,8 @@ class users_controller extends cms_controller
 	public function users($params)
 	{
 		$page = 'users';
-		$app = \maverick\maverick::getInstance();
-		
-		$this->cms->check_permissions('user', '/' . $app->get_config('cms.path') . '/');
+
+		$this->cms->check_permissions('user', '/' . $this->app->get_config('cms.path') . '/');
 		
 		// show the list of users in the CMS
 		if(!isset($params[1]))
