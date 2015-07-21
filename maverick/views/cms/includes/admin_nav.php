@@ -6,6 +6,7 @@ $nav = array(
 	'/forms' => 'Forms',
 	'/media' => 'Media',
 	'/pages' => 'Pages',
+	'/tags' => 'Tags',
 	'/users' => 'Users',
 	'/logs' => 'Logs',
 );

@@ -52,6 +52,7 @@ class cms_controller extends base_controller
 			case 'logs':
 			case 'forms':
 			case 'users':
+			case 'tags':
 				$this->dispatch_controller($params[0], $params);
 				break;
 			default:

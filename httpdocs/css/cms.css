@@ -20,6 +20,7 @@ header nav a.home { background-image: url(/img/maverick/icons/home.png); }
 header nav a.forms { background-image: url(/img/maverick/icons/forms.png); }
 header nav a.media { background-image: url(/img/maverick/icons/media.png); }
 header nav a.pages { background-image: url(/img/maverick/icons/pages.png); }
+header nav a.tags { background-image: url(/img/maverick/icons/tags.png); }
 header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header nav a.logs { background-image: url(/img/maverick/icons/logs.png); }
