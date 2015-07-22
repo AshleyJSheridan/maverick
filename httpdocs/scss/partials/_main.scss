@@ -167,6 +167,14 @@ a.action, button.action, input[type=submit].action
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		box-sizing: border-box;
+		
+		.tag_group_name
+		{
+			text-align: center;
+			background-color: $light;
+			padding: $spacing/2;
+			border-radius: 0.5em;
+		}
 	}
 }
 
