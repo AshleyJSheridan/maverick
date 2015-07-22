@@ -108,6 +108,8 @@ form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/
 .user.edit label.permissions.permission_group_start { display: block; margin-top: 40px; }
 .user.edit input { width: 60%; }
 
+.tag_groups input { width: 100%; display: none; }
+
 /*  Created on : 23-Jun-2015, 00:12:12 Author     : ashley
 */
 table.item_table { border-collapse: collapse; border: 1px solid #cccccc; margin: 10px 0; }
