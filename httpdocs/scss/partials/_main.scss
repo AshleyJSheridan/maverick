@@ -175,6 +175,12 @@ a.action, button.action, input[type=submit].action
 			padding: $spacing/2;
 			border-radius: 0.5em;
 		}
+		.tag
+		{
+			cursor: -moz-grabbing;
+			cursor: -webkit-grabbing;
+			cursor: grabbing;
+		}
 	}
 }
 
