@@ -154,6 +154,9 @@ a.action, button.action, input[type=submit].action
 
 .tag_groups
 {
+	width: 700px;
+	margin: $spacing auto;
+	
 	.tag_group
 	{
 		background-color: $light-grey;
@@ -174,6 +177,14 @@ a.action, button.action, input[type=submit].action
 			background-color: $light;
 			padding: $spacing/2;
 			border-radius: 0.5em;
+		}
+		.tags
+		{
+			border: 1px solid $grey;
+			border-radius: 0.5em;
+			min-height: 20px;
+			padding: $spacing/2;
+			margin-top: $spacing;
 		}
 		.tag
 		{

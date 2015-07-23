@@ -34,6 +34,7 @@ class tags_controller extends cms_controller
 						'group_name'=>(strlen($tag['group_name']))?$tag['group_name']:'ungrouped',
 						'tag_html'=>$tag_html,
 						'group'=>(strlen($tag['group_name']))?'grouped':'ungrouped',
+						'group_class'=>(str_replace(' ', '_', strlen($tag['group_name']) ) )?'grouped':'ungrouped',
 					)
 				);
 			}
