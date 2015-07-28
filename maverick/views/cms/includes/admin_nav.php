@@ -8,6 +8,7 @@ $nav = array(
 	'/pages' => 'Pages',
 	'/tags' => 'Tags',
 	'/users' => 'Users',
+	'cultures' => 'Cultures',
 	'/logs' => 'Logs',
 );
 
