@@ -13,6 +13,34 @@ class tags_controller extends cms_controller
 		// show the tags
 		if(!isset($params[1]))
 		{
+			if(count($_REQUEST) )
+			{
+				// loop through the tags, and keep track of the tag counts, assigning them to groups
+				$tags = array();
+				$tag_group = 0;
+				$tag_group_count = 1;
+
+				for($i=0; $i<count($_REQUEST['tag']); $i++)
+				{
+					$tag_group_name = $_REQUEST['tag_group'][$tag_group];
+
+					if($tag_group_count == $_REQUEST['tag_count'][$tag_group])
+					{
+						$tag_group++;
+						$tag_group_count = 0;
+					}
+
+					if(!isset($tags[$tag_group_name]))
+						$tags[$tag_group_name] = array();
+					
+					$tags[$tag_group_name][] = $_REQUEST['tag'][$i];
+					
+					$tag_group_count ++;
+				}
+				
+				cms::update_tags($tags);
+			}
+			
 			$tags = cms::get_tags();
 			$tag_groups = '';
 			

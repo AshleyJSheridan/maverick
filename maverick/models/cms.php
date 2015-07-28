@@ -876,4 +876,22 @@ class cms
 		
 		return $tags;
 	}
+	
+	/**
+	 * update a list of tags within the cms
+	 * @param array $tags an associative array of tags and their groups
+	 */
+	static function update_tags($tags)
+	{
+		$insert = array('group_name'=>'test');
+		$update = array('group_name'=>'test');
+		
+		$insert_update = db::table('maverick_cms_tag_groups')
+			->insertOnDuplicate($insert)
+			->updateOnDuplicate($update)
+			->get('id')
+			->fetch();
+		
+		var_dump($insert_update);
+	}
 }

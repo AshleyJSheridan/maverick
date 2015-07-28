@@ -24,6 +24,7 @@ header nav a.tags { background-image: url(/img/maverick/icons/tags.png); }
 header nav a.users { background-image: url(/img/maverick/icons/users.png); }
 header nav a.logout { background-image: url(/img/maverick/icons/logout.png); }
 header nav a.logs { background-image: url(/img/maverick/icons/logs.png); }
+header nav a.cultures { background-image: url(/img/maverick/icons/cultures.png); }
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
 a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }

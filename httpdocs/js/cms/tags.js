@@ -45,13 +45,13 @@
 			$('.action.add_tag').on('click', function(e){
 				e.preventDefault();
 
-				$('.tag_group.ungrouped .tags').append('<div class="tag">new tag</div>');
-				$('.tag_group.ungrouped .tags .tag').draggable({
-					revert: 'invalid', // when not dropped, the item will revert back to its initial position
-					containment: '.tag_groups',
-					cursor: 'grabbing',
-					appendTo: 'body'
-				});
+				var new_tag_name = 'new tag';
+				
+				$('.tag_group .tag').first()
+					.clone()
+					.appendTo('.tag_group.ungrouped .tags')
+						.find('span').html(new_tag_name)
+						.parent().find('input').attr('value', new_tag_name)
 			});
 			
 			// add group button
@@ -78,6 +78,19 @@
 							}
 						})
 						.parent().find('.tags .tag').remove();
+			});
+			
+			// save button
+			$('.action.save').on('click', function(e){
+				e.preventDefault();
+				
+				$('.tag_groups .tag_group').each(function(t, obj){
+					tag_count = $('.tag', obj).length;
+					
+					$('input[name=tag_count\\[\\]]', obj).attr('value', tag_count);
+				});
+
+				$('form.tag_groups').submit();
 			});
 		}
 	};
