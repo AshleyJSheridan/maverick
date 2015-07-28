@@ -17,6 +17,8 @@ class image
 	private $line_height = 0;
 	private $colours = array();
 	private $foreground = '';
+	private $exif;
+	private $auto_rotate = false;
 
 	/**
 	 * generates the image object, either from a file, or using the supplied parameters
@@ -24,9 +26,10 @@ class image
 	 * @param int $width the width in pixels to use for a new image
 	 * @param int $height the height in pixels to use for a new image
 	 * @param string $format the type of image to generate, either jpg, gif, or png
+	 * @param bool $auto_rotate if the image needs to be automatically rotated or not based on the exif data
 	 * @return GD_ImageResource|bool
 	 */
-	public function __construct($from_file=null, $width=100, $height=100, $format='jpg')
+	public function __construct($from_file=null, $width=100, $height=100, $format='jpg', $auto_rotate=false)
 	{
 		// set some defaults here as we can't use the string concatenator or method calls in the initial variable initalisation
 		$this->font = MAVERICK_BASEDIR . 'views/LiberationSans-Regular.ttf';
@@ -47,6 +50,12 @@ class image
 			
 			$this->image = imagecreatetruecolor($this->width, $this->height);
 		}
+		
+		if($auto_rotate)
+			$this->auto_rotate = true;
+		
+		if(!$this->exif)
+			$this->exif = exif_read_data($this->filename);
 
 		return (!empty($this->image))?$this:false;
 	}
@@ -87,6 +96,10 @@ class image
 			case 'foreground':
 				if(preg_match('/^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/', $value, $matches))
 					$this->$param = $this->add_colour($matches[1]);
+				break;
+			case 'auto_rotate':
+				if(is_bool($value))
+					$this->$param = $value;
 				break;
 		}
 	}
@@ -398,6 +411,22 @@ class image
 	 */
 	public function output($filename=null)
 	{
+		if($this->auto_rotate && $this->info('orientation') )
+		{
+			switch($this->info('orientation') )
+			{
+				case 8:
+					$this->effect('rotate', array(90) );
+					break;
+				case 3:
+					$this->effect('rotate', array(180) );
+					break;
+				case 6:
+					$this->effect('rotate', array(-90) );
+					break;
+			}
+		}
+		
 		if(empty($filename))
 		{
 			header("Content-Type: $this->mime");
@@ -500,6 +529,38 @@ class image
 		}
 		else
 			imagettftext($this->image, $this->font_size, 0, $x, $y, $this->foreground, $this->font, $text);
+	}
+	
+	/**
+	 * gets a list of exif data attached to the image
+	 * @param string|array $fields a field or list of fields that you want to specifically return
+	 * @return array
+	 */
+	public function info($fields = array() )
+	{
+		if($fields)
+		{
+			if(is_array($fields))
+			{
+				$exif = array();
+				
+				foreach($fields as $field)
+				{
+					if(preg_match("/\b($field)\b/i", join(',', array_keys($this->exif) ), $matches ) )
+						$exif[$field] = $this->exif[$matches[0]];
+				}
+			}
+			else
+			{
+				$exif = '';
+				if(preg_match("/\b($fields)\b/i", join(',', array_keys($this->exif) ), $matches ) )
+					$exif = $this->exif[$matches[0]];
+			}
+		}
+		else
+			$exif = $this->exif;
+
+		return $exif;
 	}
 	
 	/**
