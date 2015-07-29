@@ -14,7 +14,10 @@ class query
 	private $order_bys = array();
 	private $gets = array();
 	private $data = array();
+	private $data_ins = array();
+	private $data_up = array();
 	private $results;
+	private $limit;
 	
 	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
 	private $where_conditions = array('IS', 'IS NOT');
@@ -37,7 +40,7 @@ class query
 			
 			$q = query::getInstance();
 			
-			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data') as $var)
+			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up') as $var)
 				$q->$var = array();
 		}
 		
@@ -121,7 +124,7 @@ class query
 	public static function whereIn($field, $values)
 	{
 		$q = query::getInstance();
-		
+
 		if(!is_array($values))
 			return $q;
 		
@@ -221,6 +224,21 @@ class query
 		
 		return $q;
 	}
+	
+	/**
+	 * create a limit clause on the query
+	 * @param int $results the number of results to return
+	 * @param int $offset the offset to start with on the results
+	 */
+	public static function limit($results, $offset=0)
+	{
+		$q = query::getInstance();
+		
+		if(intval($results) && intval($offset)>-1)
+			$q->limit = array('results'=>intval($results), 'offset'=>intval($offset) );
+		
+		return $q;
+	}
 
 	/**
 	 * create a GROUP BY clause
@@ -278,8 +296,12 @@ class query
 		}
 		else
 			$q->gets[] = $fields;
-		
-		$q->result('select');
+	
+		// this check determines if there is data set to perform an ON DUPLICATE KEY UPDATE query that then returns a single field
+		if(count($q->data_ins) && count($q->data_up) && count($fields) == 1 && $fields[0] != '*')
+			$q->result('insert_on_duplicate_key_update');
+		else
+			$q->result('select');
 		
 		return $q;
 	}
@@ -304,6 +326,23 @@ class query
 	}
 	
 	/**
+	 * adds the insert data for an ON DUPLICATE KEY UPDATE clause
+	 * @param array $data the data to use in the insert
+	 * @return boolean|\maverick\query
+	 */
+	public static function insertOnDuplicate($data)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($data))
+			return false;
+		
+		$q->data_ins = $data;
+
+		return $q;
+	}
+	
+	/**
 	 * creates an UPDATE clause
 	 * @param array $data the data to use in the update
 	 * @return boolean|\maverick\query
@@ -318,6 +357,23 @@ class query
 		$q->data = $data;
 		
 		$q->result('update');
+		
+		return $q;
+	}
+	
+	/**
+	 * adds the update data for an ON DUPLICATE KEY UPDATE clause
+	 * @param array $data the data to use in the update
+	 * @return boolean|\maverick\query
+	 */
+	public static function updateOnDuplicate($data)
+	{
+		$q = query::getInstance();
+		
+		if(!is_array($data))
+			return false;
+		
+		$q->data_up = $data;
 		
 		return $q;
 	}
@@ -360,7 +416,9 @@ class query
 				$select_string = implode(',', $q->gets);
 				$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
 				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string");
+				$limit_string = ($q->limit)?" LIMIT {$q->limit['offset']}, {$q->limit['results']}":'';
+				
+				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string $limit_string");
 
 				break;
 			}
@@ -375,7 +433,7 @@ class query
 			case 'delete':
 			{
 				$params = $where_params;
-				
+
 				$stmt = $maverick->db->pdo->prepare("DELETE FROM {$q->from} $where_string");
 				
 				break;
@@ -386,6 +444,18 @@ class query
 				$params = array_merge($update_params, $where_params);
 				
 				$stmt = $maverick->db->pdo->prepare("UPDATE {$q->from} SET $update_string  $where_string");
+
+				break;
+			}
+			case 'insert_on_duplicate_key_update':
+			{
+				list($insert_string, $insert_params) = $q->compile_inserts($q->data_ins);
+				list($update_string, $update_params) = $q->compile_updates($q->data_up);
+
+				$params = array_merge($insert_params, $update_params);
+				
+				//$update_str = "INSERT INTO {$q->from} $insert_string ON DUPLICATE KEY UPDATE {$q->gets[0]}=LAST_INSERT_ID({$q->gets[0]}), $update_string";
+				$stmt = $maverick->db->pdo->prepare("INSERT INTO {$q->from} $insert_string ON DUPLICATE KEY UPDATE {$q->gets[0]}=LAST_INSERT_ID({$q->gets[0]}), $update_string");
 
 				break;
 			}
@@ -404,6 +474,7 @@ class query
 					break;
 				}
 				case 'insert':
+				case 'insert_on_duplicate_key_update':
 				{
 					$results = $maverick->db->pdo->lastInsertId();
 					break;
