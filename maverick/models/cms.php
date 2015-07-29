@@ -883,15 +883,54 @@ class cms
 	 */
 	static function update_tags($tags)
 	{
-		$insert = array('group_name'=>'test');
-		$update = array('group_name'=>'test');
+		$tag_group_ids = array(0);	// this will keep track of all the tag groups currently in the cms; used for cleanup later - the 0 is for ungrouped tags
+		$tag_ids = array();
 		
-		$insert_update = db::table('maverick_cms_tag_groups')
-			->insertOnDuplicate($insert)
-			->updateOnDuplicate($update)
-			->get('id')
-			->fetch();
+		// loop through the tag groups, using an insert/update into the db, capturing the id from it after
+		// this id is then used to insert/update the tags table
+		foreach($tags as $group_name => $tag_list)
+		{
+			$group_id = 0;
+			if($group_name != 'ungrouped')
+			{
+				$insert = array('group_name'=>$group_name);
+				$update = array('group_name'=>$group_name);
+
+				$group_id = db::table('maverick_cms_tag_groups')
+					->insertOnDuplicate($insert)
+					->updateOnDuplicate($update)
+					->get('id')
+					->fetch();
+
+				$tag_group_ids[] = $group_id;
+			}
 		
-		var_dump($insert_update);
+			// now do the tags attached to this group
+			foreach($tag_list as $tag)
+			{
+				$insert = array('tag'=>$tag, 'group_id'=>$group_id);
+				$update = array('tag'=>$tag, 'group_id'=>$group_id);
+				
+				$tag_id = db::table('maverick_cms_tags')
+					->insertOnDuplicate($insert)
+					->updateOnDuplicate($update)
+					->get('id')
+					->fetch();
+				
+				$tag_ids[] = $tag_id;
+			}
+		}
+		
+		// this is the cleanup bit - remove any groups and tags that were not in the list above
+		// note that this will remove any tag groups that had all their child tags removed
+		$group_delete = db::table('maverick_cms_tag_groups')
+			->whereNotIn('id', $tag_group_ids)
+			->delete();
+		
+		$tag_delete = db::table('maverick_cms_tags')
+			->whereNotIn('id', $tag_ids)
+			->delete();
+		
+		
 	}
 }

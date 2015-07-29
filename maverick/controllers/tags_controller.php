@@ -14,31 +14,20 @@ class tags_controller extends cms_controller
 		if(!isset($params[1]))
 		{
 			if(count($_REQUEST) )
-			{
+			{				
 				// loop through the tags, and keep track of the tag counts, assigning them to groups
 				$tags = array();
-				$tag_group = 0;
-				$tag_group_count = 1;
-
-				for($i=0; $i<count($_REQUEST['tag']); $i++)
+				for($i=0; $i<count($_REQUEST['tag_count']); $i++)
 				{
-					$tag_group_name = $_REQUEST['tag_group'][$tag_group];
-
-					if($tag_group_count == $_REQUEST['tag_count'][$tag_group])
-					{
-						$tag_group++;
-						$tag_group_count = 0;
-					}
-
-					if(!isset($tags[$tag_group_name]))
-						$tags[$tag_group_name] = array();
+					$tag_count = intval($_REQUEST['tag_count'][$i]);
 					
-					$tags[$tag_group_name][] = $_REQUEST['tag'][$i];
-					
-					$tag_group_count ++;
+					if($tag_count)
+						$tags[$_REQUEST['tag_group'][$i]] = array_splice($_REQUEST['tag'], 0, $tag_count);
 				}
 				
 				cms::update_tags($tags);
+				
+				view::redirect('/' . $this->app->get_config('cms.path') . '/tags');
 			}
 			
 			$tags = cms::get_tags();
@@ -63,6 +52,17 @@ class tags_controller extends cms_controller
 						'tag_html'=>$tag_html,
 						'group'=>(strlen($tag['group_name']))?'grouped':'ungrouped',
 						'group_class'=>(str_replace(' ', '_', strlen($tag['group_name']) ) )?'grouped':'ungrouped',
+					)
+				);
+			}
+			
+			// if there were no tags in the ungrouped category, create the ungrouped block separately
+			if(!array_key_exists('', $tags))
+			{
+				$tag_groups .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag_group.php', array(
+						'group_name'=>'ungrouped',
+						'group'=>'ungrouped',
+						'group_class'=>'ungrouped',
 					)
 				);
 			}
