@@ -97,11 +97,11 @@ CREATE TABLE `maverick_cms_logins` (
   `login_at` datetime NOT NULL,
   `successful` enum('yes','no') NOT NULL DEFAULT 'no',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_logins` */
 
-insert  into `maverick_cms_logins`(`id`,`username`,`ip`,`user_agent`,`login_at`,`successful`) values (1,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-05-13 11:39:02','yes'),(2,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-01 20:28:24','yes'),(3,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:13','yes'),(4,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:22','yes'),(5,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:31:39','yes'),(6,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 21:32:06','yes'),(7,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:14:37','yes'),(8,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:09','yes'),(9,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:22','yes'),(10,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:46','yes'),(11,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:50','yes'),(12,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:51:02','yes'),(13,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:58:28','yes'),(14,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-23 00:05:18','yes'),(15,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-24 20:37:43','yes'),(16,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 17:40:35','yes'),(17,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 20:50:42','yes'),(18,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-01 15:55:40','yes'),(19,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:08:14','yes'),(20,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:13:47','yes'),(21,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-06 23:45:16','yes'),(22,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 10:29:13','yes'),(23,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:35',''),(24,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:45',''),(25,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:16:22','yes'),(26,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 20:06:19','yes'),(27,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-12 09:32:54','yes'),(28,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:08:41','yes'),(29,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:26:39','yes'),(30,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-17 21:03:14','yes'),(31,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-20 19:44:36','yes');
+insert  into `maverick_cms_logins`(`id`,`username`,`ip`,`user_agent`,`login_at`,`successful`) values (1,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-05-13 11:39:02','yes'),(2,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-01 20:28:24','yes'),(3,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:13','yes'),(4,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:25:22','yes'),(5,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 20:31:39','yes'),(6,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 21:32:06','yes'),(7,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:14:37','yes'),(8,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:09','yes'),(9,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:44:22','yes'),(10,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:46','yes'),(11,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:50:50','yes'),(12,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:51:02','yes'),(13,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-22 23:58:28','yes'),(14,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-23 00:05:18','yes'),(15,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-24 20:37:43','yes'),(16,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 17:40:35','yes'),(17,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-06-28 20:50:42','yes'),(18,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-01 15:55:40','yes'),(19,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:08:14','yes'),(20,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-05 15:13:47','yes'),(21,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-06 23:45:16','yes'),(22,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 10:29:13','yes'),(23,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:35',''),(24,'test','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:15:45',''),(25,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 13:16:22','yes'),(26,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-09 20:06:19','yes'),(27,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-12 09:32:54','yes'),(28,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:08:41','yes'),(29,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-14 19:26:39','yes'),(30,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-17 21:03:14','yes'),(31,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-20 19:44:36','yes'),(32,'admin','127.0.0.1','Mozilla/5.0 (X11; Linux i686; rv:26.0) Gecko/20100101 Firefox/26.0','2015-07-27 18:28:09','yes');
 
 /*Table structure for table `maverick_cms_logs` */
 
@@ -218,7 +218,7 @@ CREATE TABLE `maverick_cms_permissions` (
   `description` varchar(250) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_permissions` */
 
@@ -231,12 +231,13 @@ DROP TABLE IF EXISTS `maverick_cms_tag_groups`;
 CREATE TABLE `maverick_cms_tag_groups` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `group_name` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `group_name` (`group_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_tag_groups` */
 
-insert  into `maverick_cms_tag_groups`(`id`,`group_name`) values (1,'fruits'),(2,'uk');
+insert  into `maverick_cms_tag_groups`(`id`,`group_name`) values (1,'fruits'),(31,'test'),(2,'uk');
 
 /*Table structure for table `maverick_cms_tags` */
 
@@ -246,7 +247,8 @@ CREATE TABLE `maverick_cms_tags` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `tag` varchar(50) NOT NULL,
   `group_id` smallint(5) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tag` (`tag`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Data for the table `maverick_cms_tags` */
