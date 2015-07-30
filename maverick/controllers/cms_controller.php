@@ -54,6 +54,7 @@ class cms_controller extends base_controller
 			case 'users':
 			case 'tags':
 			case 'cultures':
+			case 'pages':
 				$this->dispatch_controller($params[0], $params);
 				break;
 			default:

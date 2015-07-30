@@ -24,7 +24,10 @@
 	<header>
 		<h1>MaVeriCk CMS</h1>
 		<nav>
-			{{admin_nav}}
+			<?php
+			$var = "{{admin_nav}}";
+			echo $var;
+			?>
 		</nav>
 	</header>
 	<section class="main">
