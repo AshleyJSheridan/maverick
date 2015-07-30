@@ -27,6 +27,8 @@ class tags_controller extends cms_controller
 				
 				cms::update_tags($tags);
 				
+				\maverick_cms\log::log('tags', 'updated', $tags, 'info');
+				
 				view::redirect('/' . $this->app->get_config('cms.path') . '/tags');
 			}
 			
