@@ -173,7 +173,10 @@ class view
 				$view = $v->parse_view($view);
 
 			// this just stores the view if the config value is set to cache it
-			if($app->get_config('cache.on') !== false)
+			// the extra check ensures that the admin section is never cached, because that would be silly
+			if($app->get_config('cache.on') !== false &&
+				!(strlen($app->get_config('cms.path') ) && strstr($app->requested_route_string, $app->get_config('cms.path') ) )
+			)
 			{
 				$hash = $app->get_request_route_hash();
 				\maverick\cache::store($hash, $view);
