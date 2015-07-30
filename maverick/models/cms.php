@@ -930,7 +930,19 @@ class cms
 		$tag_delete = db::table('maverick_cms_tags')
 			->whereNotIn('id', $tag_ids)
 			->delete();
+	}
+	
+	/**
+	 * get a list of all of the language cultures that exist from the database - this should be a full list of all possible ones available
+	 * as it's unlikely more will be added for extra languages/countries in the near future
+	 * @return array
+	 */
+	static function get_all_cultures()
+	{
+		$cultures = db::table('maverick_cms_language_cultures')
+			->get()
+			->fetch();
 		
-		
+		return $cultures;
 	}
 }

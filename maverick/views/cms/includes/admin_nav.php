@@ -8,7 +8,7 @@ $nav = array(
 	'/pages' => 'Pages',
 	'/tags' => 'Tags',
 	'/users' => 'Users',
-	'cultures' => 'Cultures',
+	'/cultures' => 'Cultures',
 	'/logs' => 'Logs',
 );
 
