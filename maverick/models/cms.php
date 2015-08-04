@@ -147,6 +147,75 @@ class cms
 	}
 
 	/**
+	 * get a form and all of its form elements based on the form name
+	 * @param string $form_name
+	 * @return array
+	 */
+	static function get_form_by_name($form_name)
+	{
+		$form = db::table('maverick_cms_forms AS f')
+			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
+			->where('f.name', '=', db::raw($form_name))
+			->where('f.deleted', '=', db::raw('no'))
+			->orderBy('fe.display_order')
+			->get(array(
+				'f.name AS form_name',
+				'f.active AS form_active',
+				'f.lang',
+				'f.deleted AS form_deleted',
+				'fe.id AS element_id',
+				'fe.element_name',
+				'fe.type',
+				'fe.display',
+				'fe.label',
+				'fe.placeholder',
+				'fe.value',
+				'fe.display_order',
+				'fe.class',
+				'fe.html_id',
+			))
+			->fetch();
+		
+		$elements = array();
+		foreach($form as $element)
+			$elements[] = $element['element_id'];
+		
+		// get the extra bits for any fields, such as select values and extra validation parameters
+		$extra = db::table('maverick_cms_form_elements_extra AS fee')
+			->whereIn('fee.element_id', $elements)
+			->get()
+			->fetch();
+		
+		foreach($form as &$element)
+		{
+			if(count($extra))
+			{
+				for($i=0; $i<count($extra); $i++)
+				{
+					// if the id matches then this extra bit belongs to the element
+					if($extra[$i]['element_id'] == $element['element_id'])
+					{
+						$type = $extra[$i]['special_type'];
+						if(!isset($element[$type]))
+							$element[$type] = array();
+						
+						$element[$type][] = $extra[$i]['value'];
+						
+						// this bit removes the elements from the $extra array so that we're not looping through them later
+						// it will pay off dramatically for forms that contain large select lists!
+						array_splice($extra, $i, 1);
+						$i--;
+					}
+				}
+			}
+			
+			// create the CMS HTML for each element
+		}
+		
+		var_dump($form);
+	}
+	
+	/**
 	 * get a fom and all of its form elements with their respective element details
 	 * if no elements are attached to a form, then the returned array contains a single element with mostly missing details
 	 * if no form is found, a completely empty array is returned
