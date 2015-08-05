@@ -1,0 +1,9 @@
+<input
+		type="file"
+		{{class}}
+		{{id}}
+		name="{{name}}"
+		{{required}}
+		{{accept}}
+	/>
+{{error}}

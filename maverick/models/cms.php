@@ -157,6 +157,7 @@ class cms
 			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
 			->where('f.name', '=', db::raw($form_name))
 			->where('f.deleted', '=', db::raw('no'))
+			->where('fe.display', '=', db::raw('yes'))
 			->orderBy('fe.display_order')
 			->get(array(
 				'f.name AS form_name',
@@ -208,11 +209,9 @@ class cms
 					}
 				}
 			}
-			
-			// create the CMS HTML for each element
 		}
 		
-		var_dump($form);
+		return $form;
 	}
 	
 	/**
@@ -295,11 +294,15 @@ class cms
 	 * because the element is not passed by reference, the 'element_html' array element is scoped to this method only
 	 * @param array $element the element details which are passed to \helpers\html\html::load_snippet
 	 * @param bool $render whether or not to render the HTML for this
+	 * @param string $snippets_dir if non-null, this will be used as the snippets directory for building the form elements
 	 * @return string
 	 */
-	static function get_form_element($element, $render=false)
+	static function get_form_element($element, $render=false, $snippets_dir=null)
 	{
-		$element['element_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/input_{$element['type']}.php", $element);
+		if(!$snippets_dir || !file_exists($snippets_dir))
+			$snippets_dir = MAVERICK_VIEWSDIR . 'cms/includes/snippets';
+
+		$element['element_html'] = \helpers\html\html::load_snippet("$snippets_dir/input_{$element['type']}.php", $element);
 		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
 		$forced_index = intval($element['display_order']) - 1;
 		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/input_checkbox_manual_array.php',
@@ -331,7 +334,7 @@ class cms
 				->render(true, true);
 		}
 		else
-			return \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/form_element.php', $element);
+			return \helpers\html\html::load_snippet("$snippets_dir/form_element.php", $element);
 	}
 	
 	/**

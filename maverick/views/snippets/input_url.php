@@ -1,0 +1,14 @@
+<input
+		type="url"
+		{{class}}
+		{{id}}
+		name="{{name}}"
+		{{value}}
+		{{placeholder}}
+		{{required}}
+		{{regex}}
+		{{minlength}}
+		{{maxlength}}
+		{{size}}
+	/>
+{{error}}

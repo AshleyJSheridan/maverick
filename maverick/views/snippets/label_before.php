@@ -1,0 +1,1 @@
+<label {{class}} for="{{id}}">{{label}}</label> {{element}}

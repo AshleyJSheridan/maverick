@@ -1,0 +1,10 @@
+<input
+		type="color"
+		{{class}}
+		{{id}}
+		name="{{name}}"
+		{{value}}
+		{{required}}
+		{{regex}}
+	/>
+{{error}}

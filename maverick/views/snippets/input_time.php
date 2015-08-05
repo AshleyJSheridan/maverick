@@ -1,0 +1,12 @@
+<input
+		type="date"
+		{{class}}
+		{{id}}
+		name="{{name}}"
+		{{value}}
+		{{placeholder}}
+		{{required}}
+		{{min}}
+		{{max}}
+	/>
+{{error}}

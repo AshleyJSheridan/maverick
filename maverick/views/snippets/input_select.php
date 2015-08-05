@@ -1,0 +1,10 @@
+<select
+	name="{{name}}"
+	{{class}}
+	{{id}}
+	{{required}}
+	{{regex}}
+	>
+	{{values}}
+</select>
+{{error}}

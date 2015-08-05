@@ -1,0 +1,9 @@
+<textarea
+	{{class}}
+	{{id}}
+	name="{{name}}"
+	{{placeholder}}
+	{{required}}
+	{{spellcheck}}
+>{{value}}</textarea>
+{{error}}

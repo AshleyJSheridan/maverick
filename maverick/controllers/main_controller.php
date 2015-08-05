@@ -67,6 +67,37 @@ class main_controller extends base_controller
 		
 		$form = cms::get_form_by_name($form_name);
 		
+		//var_dump(\json_decode('{"element":{"type":"select","label":"Title","class":"form_title","id":"form_title","values":["Mr","Mrs","Miss","Other"],"validation":["required"]}}') );
+
+		$elements = new \stdClass();
+		foreach($form as $element)
+		{
+			$elements->{$element['element_name']} = new \stdClass();
+			
+			$attributes = array(
+				'type'=>'type',
+				'class'=>'class',
+				'id'=>'html_id',
+				'label'=>'label',
+				'value'=>'value',
+				'placeholder'=>'placeholder',
+			);
+			
+			foreach($attributes as $attribute => $mapped_to)
+			{
+				// TODO: check for elements that have a list of values and assign them to the values array in the object correctly
+				if(isset($element[$mapped_to]) && strlen($element[$mapped_to]) )
+					$elements->{$element['element_name']}->{$attribute} = $element[$mapped_to];
+			}
+
+			// validation bits
+			
+			
+			var_dump($element);
+		}
+		
+		var_dump($elements);
+		
 		return 'form';
 	}
 }
