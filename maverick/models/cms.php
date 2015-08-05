@@ -305,13 +305,13 @@ class cms
 		$element['element_html'] = \helpers\html\html::load_snippet("$snippets_dir/input_{$element['type']}.php", $element);
 		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
 		$forced_index = intval($element['display_order']) - 1;
-		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/input_checkbox_manual_array.php',
+		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/cms_snippets/input_checkbox_manual_array.php',
 			array(
 				'name'=>"required[$forced_index]",
 				'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
 			)
 		);
-		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/input_checkbox_manual_array.php', 
+		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/cms_snippets/input_checkbox_manual_array.php', 
 			array(
 				'name'=>"display[$forced_index]",
 				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
