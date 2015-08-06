@@ -257,7 +257,8 @@ class cms
 			->whereIn('fee.element_id', $elements)
 			->get()
 			->fetch();
-		
+
+		$count = 0;
 		foreach($form as &$element)
 		{
 			if(count($extra))
@@ -281,9 +282,26 @@ class cms
 				}
 			}
 			
+			// get the HTML for the set of values if that array key exists, or build a single empty element otherwise
+			$element['values_html'] = '';
+			if(in_array($element['type'], array('select', 'datalist') ) )
+				$element['values_block_show_class'] = 'show';
+
+			if(!empty($element['values']))
+			{
+				foreach($element['values'] as $value)
+					$element['values_html'] .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/list_values_block.php", array('value'=>$value, 'id'=>$count) );
+			}
+			else
+			{
+				$element['values_html'] .= \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/list_values_block.php", array('id'=>$count) );
+			}
+
 			// create the CMS HTML for each element
 			if($element['element_id'])
 				$element['html'] = cms::get_form_element($element);
+			
+			$count++;	// this is used as a crude way of forcing a multi-dimensional array for the list of values sent by the browser to php, as the [][] syntax doesn't work in this case
 		}
 
 		return $form;
@@ -330,6 +348,7 @@ class cms
 				->with('display_order', $element['display_order'])
 				->with('display_checkbox', $element['display_checkbox'])
 				->with('required_checkbox', $element['required_checkbox'])
+				->with('values_html', $element['values_html'])
 				->headers(array('content-type'=>'text/plain') )
 				->render(true, true);
 		}
@@ -487,7 +506,7 @@ class cms
 			// skip anything that isn't an array, as it doesn't belong to an element
 			if(!is_array($values))
 				continue;
-			
+
 			// loop through the supplied element data
 			for($i=0; $i<count($values); $i++)
 			{
@@ -496,15 +515,19 @@ class cms
 					$elements[$i] = $extra[$i] = array();
 				
 				// add in the data values to the corresponding array by filtering out those that will become part of the _extra table
-				if(in_array($element, array('required', 'regex', 'min', 'max') ) )
+				if(in_array($element, array('required', 'regex', 'min', 'max', 'values') ) )
 				{
 					// fix for checkboxes not sending values if they're not checked
 					if($element == 'required')
 						$values[$i] = 'true';
-					
+
 					// check to see if there was actually a value sent for this elements extra details
-					if(strlen($values[$i]))
-						$extra[$i][$element] = $values[$i];	
+					if(is_string($values[$i]) && strlen($values[$i]))
+						$extra[$i][$element] = $values[$i];
+					// special case for lists - always add the sent values
+					if(is_array($values[$i]) && in_array($elements[$i]['type'], array('select', 'datalist') ) )
+						$extra[$i][$element] = $values[$i];
+					
 				}
 				else
 				{
@@ -527,7 +550,7 @@ class cms
 				unset($extra[$i]['max']);
 			}
 		}
-		
+
 		// delete the old element row - have to do it the old way because MaVeriCk doesn't support multiple-table deletes yet
 		// TODO : add multiple-table deletes to the query class
 		$delete_elements = db::table('maverick_cms_form_elements')
@@ -564,14 +587,24 @@ class cms
 			
 			$extra_details = array();
 			foreach($extra[$key] as $special_type => $value)
-				$extra_details[] = array('element_id'=>$element_id, 'special_type'=>$special_type, 'value'=>$value);
+			{
+				// if it's not an array, put the value straight into the $extra array as a single insert
+				// otherwise - loop through the array to generate the multiple insert values
+				if(!is_array($value) )
+					$extra_details[] = array('element_id'=>$element_id, 'special_type'=>$special_type, 'value'=>$value);
+				else
+				{
+					foreach($value as $sub_value)
+						$extra_details[] = array('element_id'=>$element_id, 'special_type'=>$special_type, 'value'=>$sub_value);
+				}
+			}
 			
 			// only run the extra bits query if there's something to do
 			if(!empty($extra_details))
 				$extra_insert = db::table('maverick_cms_form_elements_extra')
 					->insert($extra_details);
 		}
-		
+
 	}
 	
 	/**

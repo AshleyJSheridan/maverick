@@ -113,6 +113,14 @@ a.action, button.action, input[type=submit].action
 	-webkit-transition: all 0.5s ease 0s;
 	transition: all 0.5s ease 0s;
 	
+	&.small
+	{
+		width: 15px;
+		height: 15px;
+		margin-bottom: 0;
+		background-size: 18px auto;
+		float: none;
+	}
 	&.full
 	{
 		width: 140px;
@@ -132,9 +140,11 @@ a.action, button.action, input[type=submit].action
 	
 	&.edit {background-image: url(/img/maverick/icons/edit.png);}
 	&.delete {background-image: url(/img/maverick/icons/delete.png);}
+	&.remove_value {background-image: url(/img/maverick/icons/delete.png);}
 	&.duplicate {background-image: url(/img/maverick/icons/duplicate.png);}
 	&.save {background-image: url(/img/maverick/icons/save.png);}
 	&.add_element {background-image: url(/img/maverick/icons/add_element.png);}
+	&.add_value {background-image: url(/img/maverick/icons/add.png);}
 	&.new_form {background-image: url(/img/maverick/icons/form_new.png);}
 	&.deleted_forms {background-image: url(/img/maverick/icons/trash.png);}
 	&.delete_full {background-image: url(/img/maverick/icons/delete.png);}

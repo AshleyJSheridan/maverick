@@ -64,7 +64,6 @@ class forms_controller extends cms_controller
 			// process the posted data and save the form if the required fields are present
 			if(count($_REQUEST))
 			{
-				//var_dump($_REQUEST);
 				$rules = array(
 					'form_name' => 'required',
 					'lang' => 'required',

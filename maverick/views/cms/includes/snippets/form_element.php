@@ -25,6 +25,12 @@
 				<label>Name: <input type="text" name="name[]" value="{{element_name}}"/></label>
 				<label>Label: <input type="text" name="label[]" value="{{label}}"/></label>
 				<label>Default Value: <input type="text" name="value[]" value="{{value}}"/></label>
+				<div class="list_values {{values_block_show_class}}">List Values:
+					<div class="list_values_container">
+						{{values_html}}
+					</div>
+					<button class="add_value action small no_float">add value</button>
+				</div>
 			</div>
 		</div>
 		<div class="tab display">

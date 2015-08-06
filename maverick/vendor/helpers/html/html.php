@@ -63,7 +63,7 @@ class html
 		// replace the sections in the template snippet with the values from the array passed in
 		foreach($replacements as $key => $value)
 		{
-			if($value && (!is_array($value) || (is_array($value) && count($value) == 1 ) ) )
+			if(!is_null($value) && (!is_array($value) || (is_array($value) && count($value) == 1 ) ) )
 			{
 				$find[] = '{{' . $key . '}}';
 				$replace[] = (is_array($value))?$value[0]:$value;

@@ -13,6 +13,7 @@ label
 	{
 		width: 70%;
 		float: right;
+		padding: 3px;
 	}
 	select
 	{
@@ -186,11 +187,15 @@ form[name=login]
 		{
 			float: right;
 			padding: $spacing/2;
-			margin-bottom: $spacing;
+			//margin-bottom: $spacing;
 			
 			&:last-child
 			{
 				margin-right: 0;
+			}
+			&.no_float
+			{
+				float: none;
 			}
 		}
 		.label
@@ -241,6 +246,16 @@ form[name=login]
 		&.active
 		{
 			display: block;
+		}
+		
+		.list_values
+		{
+			display: none;
+			
+			&.show
+			{
+				display: block;
+			}
 		}
 	}
 }

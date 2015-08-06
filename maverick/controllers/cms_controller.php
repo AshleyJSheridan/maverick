@@ -107,6 +107,8 @@ class cms_controller extends base_controller
 					
 					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
 					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
+					$element['values_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/list_values_block.php",
+						array('id'=>($display_order-1) ) );
 
 					$element_html = cms::get_form_element($element, true);
 					break;

@@ -28,13 +28,16 @@ header nav a.cultures { background-image: url(/img/maverick/icons/cultures.png);
 header h1 { margin: 0; text-indent: -999em; height: 0; }
 
 a.action, button.action, input[type=submit].action { background-repeat: no-repeat; background-size: auto 26px; background-position: center center; display: inline-block; width: 20px; height: 20px; text-indent: -999em; position: relative; padding: 10px; cursor: pointer; border: 1px solid #cccccc; border-radius: 0.5em; margin-right: 10px; font-family: "Lato", Arial, Verdana, sans-serif; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
+a.action.small, button.action.small, input[type=submit].action.small { width: 15px; height: 15px; margin-bottom: 0; background-size: 18px auto; float: none; }
 a.action.full, button.action.full, input[type=submit].action.full { width: 140px; text-indent: inherit; padding-left: 30px; background-position: 5px center; background-color: #dddddd; color: #333333; text-decoration: none; text-align: center; }
 a.action:hover, button.action:hover, input[type=submit].action:hover { background-color: #0d80b9; color: #eeeeee; }
 a.action.edit, button.action.edit, input[type=submit].action.edit { background-image: url(/img/maverick/icons/edit.png); }
 a.action.delete, button.action.delete, input[type=submit].action.delete { background-image: url(/img/maverick/icons/delete.png); }
+a.action.remove_value, button.action.remove_value, input[type=submit].action.remove_value { background-image: url(/img/maverick/icons/delete.png); }
 a.action.duplicate, button.action.duplicate, input[type=submit].action.duplicate { background-image: url(/img/maverick/icons/duplicate.png); }
 a.action.save, button.action.save, input[type=submit].action.save { background-image: url(/img/maverick/icons/save.png); }
 a.action.add_element, button.action.add_element, input[type=submit].action.add_element { background-image: url(/img/maverick/icons/add_element.png); }
+a.action.add_value, button.action.add_value, input[type=submit].action.add_value { background-image: url(/img/maverick/icons/add.png); }
 a.action.new_form, button.action.new_form, input[type=submit].action.new_form { background-image: url(/img/maverick/icons/form_new.png); }
 a.action.deleted_forms, button.action.deleted_forms, input[type=submit].action.deleted_forms { background-image: url(/img/maverick/icons/trash.png); }
 a.action.delete_full, button.action.delete_full, input[type=submit].action.delete_full { background-image: url(/img/maverick/icons/delete.png); }
@@ -68,7 +71,7 @@ section.main { padding: 10px; float: left; }
 /*  Created on : 22-Jun-2015, 20:55:34 Author     : ashley
 */
 label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
-label input, label textarea, label select { width: 70%; float: right; }
+label input, label textarea, label select { width: 70%; float: right; padding: 3px; }
 label select { /* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */ -moz-box-sizing: border-box; }
 
 input { border: 1px solid #cccccc; -moz-transition: all 0.5s ease 0s; -o-transition: all 0.5s ease 0s; -webkit-transition: all 0.5s ease 0s; transition: all 0.5s ease 0s; }
@@ -98,8 +101,9 @@ form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/
 .filter_form label input, .filter_form label select { display: block; float: none; width: 100%; }
 
 .form_elements.edit .form_details, .form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
-.form_elements.edit .form_element .action { float: right; padding: 5px; margin-bottom: 10px; }
+.form_elements.edit .form_element .action { float: right; padding: 5px; }
 .form_elements.edit .form_element .action:last-child { margin-right: 0; }
+.form_elements.edit .form_element .action.no_float { float: none; }
 .form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; width: 90%; padding: 5px; }
 .form_elements.edit .form_element .label:after { content: "▾"; position: absolute; right: 10px; top: 0; }
 .form_elements.edit .form_element .label:hover { background-color: #cccccc; }
@@ -107,6 +111,8 @@ form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/
 .form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 grey; }
 .form_elements.edit .details { display: none; }
 .form_elements.edit .details.active { display: block; }
+.form_elements.edit .details .list_values { display: none; }
+.form_elements.edit .details .list_values.show { display: block; }
 
 .user.edit label.permissions { width: 230px; display: inline-block; margin-right: 20px; }
 .user.edit label.permissions.permission_group_start { display: block; margin-top: 40px; }
