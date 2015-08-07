@@ -147,15 +147,16 @@ class cms
 	}
 
 	/**
-	 * get a form and all of its form elements based on the form name
+	 * get a form and all of its form elements based on the form id
+	 * this differs from the get_form() method as it is intended for the front-end rendering, not for the cms admin area
 	 * @param string $form_name
 	 * @return array
 	 */
-	static function get_form_by_name($form_name)
+	static function get_form_by_id($form_id)
 	{
 		$form = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
-			->where('f.name', '=', db::raw($form_name))
+			->where('f.id', '=', db::raw($form_id))
 			->where('f.deleted', '=', db::raw('no'))
 			->where('fe.display', '=', db::raw('yes'))
 			->orderBy('fe.display_order')

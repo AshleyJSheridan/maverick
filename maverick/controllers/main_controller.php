@@ -63,9 +63,12 @@ class main_controller extends base_controller
 	
 	static function parse_form_render($matches = array() )
 	{
-		$form_name = $matches[1];
+		$form_id = intval($matches[1]);
 		
-		$form = cms::get_form_by_name($form_name);
+		if(!$form_id)
+			return false;
+		
+		$form = cms::get_form_by_id($form_id);
 		
 		//var_dump(\json_decode('{"element":{"type":"select","label":"Title","class":"form_title","id":"form_title","values":["Mr","Mrs","Miss","Other"],"validation":["required"]}}') );
 
@@ -80,24 +83,70 @@ class main_controller extends base_controller
 				'id'=>'html_id',
 				'label'=>'label',
 				'value'=>'value',
+				'values'=>'values',
 				'placeholder'=>'placeholder',
+				'label'=>'label',
 			);
 			
 			foreach($attributes as $attribute => $mapped_to)
 			{
-				// TODO: check for elements that have a list of values and assign them to the values array in the object correctly
-				if(isset($element[$mapped_to]) && strlen($element[$mapped_to]) )
+				if(isset($element[$mapped_to]) && !empty($element[$mapped_to]) )
 					$elements->{$element['element_name']}->{$attribute} = $element[$mapped_to];
 			}
+			
+			// validation bits - handled a little bit messily
+			$validation_rules = array();
+			
+			// required
+			if(!empty($element['required']))
+				$validation_rules[] = 'required';
+			
+			// min and max
+			switch($element['type'])
+			{
+				case 'date':
+				case 'number':
+				case 'range':
+				case 'time':
+					if(!empty($element['min']))
+						$validation_rules[] = "min:{$element['min'][0]}";
+					if(!empty($element['max']))
+						$validation_rules[] = "max:{$element['max'][0]}";
+					if(!empty($element['between']))
+						$validation_rules[] = "between:{$element['between'][0]}";
+					
+					break;
+				case 'email':
+				case 'file':
+				case 'password':
+				case 'tel':
+				case 'textarea':
+				case 'text':
+				case 'url':
+					if(!empty($element['min']))
+						$validation_rules[] = "minlength:{$element['min'][0]}";
+					if(!empty($element['max']))
+						$validation_rules[] = "maxlength:{$element['max'][0]}";
+					if(!empty($element['between']))
+					{
+						list($min, $max) = explode(':', $element['between'][0]);
+						$validation_rules[] = "minlength:$min";
+						$validation_rules[] = "maxlength:$max";
+					}
+					break;
+			}
+			
+			// regex
+			if(!empty($element['regex']))
+				$validation_rules[] = "regex:{$element['regex'][0]}";
 
-			// validation bits
-			
-			
-			var_dump($element);
+			// now add in the valdation rules to the element if the rule list is not empty
+			if(!empty($validation_rules))
+				$elements->{$element['element_name']}->validation = $validation_rules;
 		}
 		
-		var_dump($elements);
+		$form = new \helpers\html\form($form[0]['form_name'], json_encode($elements));
 		
-		return 'form';
+		return $form->render();
 	}
 }
