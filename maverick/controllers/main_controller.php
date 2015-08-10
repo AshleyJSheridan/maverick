@@ -64,11 +64,12 @@ class main_controller extends base_controller
 	static function parse_form_render($matches = array() )
 	{
 		$form_id = intval($matches[1]);
-		
+		$language_culture = (!empty($matches[3]))?$matches[3]:null;
+
 		if(!$form_id)
 			return false;
 		
-		$form = cms::get_form_by_id($form_id);
+		$form = cms::get_form_by_id($form_id, $language_culture);
 		
 		//var_dump(\json_decode('{"element":{"type":"select","label":"Title","class":"form_title","id":"form_title","values":["Mr","Mrs","Miss","Other"],"validation":["required"]}}') );
 
@@ -145,6 +146,9 @@ class main_controller extends base_controller
 				$elements->{$element['element_name']}->validation = $validation_rules;
 		}
 		
+		if(empty($form))
+			return '';
+			
 		$form = new \helpers\html\form($form[0]['form_name'], json_encode($elements));
 		
 		return $form->render();

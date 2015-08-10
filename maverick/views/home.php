@@ -4,4 +4,4 @@ home
 
 {{server.REMOTE_ADDR}}
 
-{{form:2}}
+{{form:2:en_GB}}

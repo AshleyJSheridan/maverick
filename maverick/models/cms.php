@@ -152,14 +152,28 @@ class cms
 	 * @param string $form_name
 	 * @return array
 	 */
-	static function get_form_by_id($form_id)
+	static function get_form_by_id($form_id, $language_culture=null)
 	{
+		if($language_culture == 'language_culture')
+		{
+			$app = \maverick\maverick::getInstance();
+			
+			$language_culture = $app->language_culture;
+		}
+		$language_culture = str_replace('_', '-', $language_culture);
+		
+		
 		$form = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('fe.form_id', '=', 'f.id') )
 			->where('f.id', '=', db::raw($form_id))
 			->where('f.deleted', '=', db::raw('no'))
-			->where('fe.display', '=', db::raw('yes'))
-			->orderBy('fe.display_order')
+			->where('fe.display', '=', db::raw('yes'));
+		
+		
+		if($language_culture)
+			$form->where('f.lang', '=', db::raw($language_culture) );
+		
+		$form = $form->orderBy('fe.display_order')
 			->get(array(
 				'f.name AS form_name',
 				'f.active AS form_active',
@@ -177,7 +191,7 @@ class cms
 				'fe.html_id',
 			))
 			->fetch();
-		
+
 		$elements = array();
 		foreach($form as $element)
 			$elements[] = $element['element_id'];
