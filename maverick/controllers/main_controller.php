@@ -23,7 +23,7 @@ class main_controller extends base_controller
 				->parse_handler('form', 'main_controller->parse_form_render')
 				->parse_handler('template', 'main_controller->parse_template_render');
 			
-			$view = $this->add_variables($view);
+			$view = $this->add_variables($view, $page);
 			
 			$view->render();
 			
@@ -39,9 +39,10 @@ class main_controller extends base_controller
 
 	/**
 	 * this adds in to the view the main variables using the ->with() chainable method so that they can be used more easily in templates
-	 * @param type $vars
+	 * @param \maverick\view $view the view object
+	 * @param array $page the returned array from the db query which matched for this page
 	 */
-	private function add_variables($view)
+	private function add_variables($view, $page)
 	{
 		// add in the super globals
 		$vars = array('server', 'get', 'post', 'files', 'cookie', 'session', 'request', 'env');
@@ -57,6 +58,9 @@ class main_controller extends base_controller
 		foreach($member_vars as $var)
 			$maverick_vars[$var] = $this->app->{$var};
 		$view->with('maverick', $maverick_vars);
+		
+		// add in the passed in $page bits
+		$view->with('page', $page);
 		
 		return $view;
 	}
@@ -160,6 +164,9 @@ class main_controller extends base_controller
 	{
 		var_dump($matches);
 		
-		return 'wtf';
+		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[1]}.php"))
+			return '';
+		
+		$view = view::make(MAVERICK_VIEWSDIR . "{$matches[1]}.php");
 	}
 }

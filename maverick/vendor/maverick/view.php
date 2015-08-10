@@ -282,8 +282,14 @@ class view
 			{
 				list($controller, $method) = explode('->', $parse_handler[1]);
 
-				//$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_\/]+)(:([\p{L}\p{N}_\/]+))?(:([\p{L}\p{N}_\/]+))?\}\}/", array($controller, $method), $view);
-				$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_\/]+)(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?\}\}/", array($controller, $method), $view);
+				// build the match string used to replace snippets in the templates
+				$match_arguments = "([\p{L}\p{N}_\/\[\]\"\=, ]+)";	// this is the portion of the regex responsible for a single argument match - adjust to allow for more argument characters
+				$match_str = "$match_arguments";
+				$num_arguments = 5;	// this controls how many arguments are matched - beyond this and the template parser will fail to match at all
+				for($i=0; $i<$num_arguments; $i++)
+					$match_str .= "(?::$match_arguments)?";
+				
+				$view = preg_replace_callback("/\{\{{$parse_handler[0]}:$match_str\}\}/", array($controller, $method), $view);
 			}
 		}
 			

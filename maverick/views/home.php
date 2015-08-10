@@ -1,4 +1,4 @@
-{{template:snippets/header:test2:test3:test4}}
+{{template:snippets/header:["test"="some value","test2"="another value"]}}
 
 home
 
@@ -8,3 +8,4 @@ home
 
 {{form:2:en_GB}}
 
+{{page.page_name}}
