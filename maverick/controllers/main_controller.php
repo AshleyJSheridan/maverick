@@ -20,7 +20,9 @@ class main_controller extends base_controller
 		else
 		{
 			$view = view::make($page['template_path'])
-				->parse_handler('form', 'main_controller->parse_form_render');
+				->parse_handler('form', 'main_controller->parse_form_render')
+				->parse_handler('template', 'main_controller->parse_template_render');
+			
 			$view = $this->add_variables($view);
 			
 			$view->render();
@@ -64,8 +66,8 @@ class main_controller extends base_controller
 	static function parse_form_render($matches = array() )
 	{
 		$form_id = intval($matches[1]);
-		$language_culture = (!empty($matches[3]))?$matches[3]:null;
-
+		$language_culture = (!empty($matches[2]))?$matches[2]:null;
+		
 		if(!$form_id)
 			return false;
 		
@@ -152,5 +154,12 @@ class main_controller extends base_controller
 		$form = new \helpers\html\form($form[0]['form_name'], json_encode($elements));
 		
 		return $form->render();
+	}
+	
+	static function parse_template_render($matches)
+	{
+		var_dump($matches);
+		
+		return 'wtf';
 	}
 }

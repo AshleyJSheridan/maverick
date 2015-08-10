@@ -282,7 +282,8 @@ class view
 			{
 				list($controller, $method) = explode('->', $parse_handler[1]);
 
-				$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_]+)(:([\p{L}\p{N}_]+))?(:([\p{L}\p{N}_]+))?\}\}/", array($controller, $method), $view);
+				//$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_\/]+)(:([\p{L}\p{N}_\/]+))?(:([\p{L}\p{N}_\/]+))?\}\}/", array($controller, $method), $view);
+				$view = preg_replace_callback("/\{\{{$parse_handler[0]}:([\p{L}\p{N}_\/]+)(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?(?::([\p{L}\p{N}_\/]+))?\}\}/", array($controller, $method), $view);
 			}
 		}
 			
