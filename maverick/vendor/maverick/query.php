@@ -42,6 +42,9 @@ class query
 			
 			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up') as $var)
 				$q->$var = array();
+			
+			foreach(array('limit') as $var)
+				$q->$var = null;
 		}
 		
 		if(!(self::$_instance instanceof self))

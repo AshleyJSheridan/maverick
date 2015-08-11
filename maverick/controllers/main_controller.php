@@ -76,8 +76,6 @@ class main_controller extends base_controller
 			return false;
 		
 		$form = cms::get_form_by_id($form_id, $language_culture);
-		
-		//var_dump(\json_decode('{"element":{"type":"select","label":"Title","class":"form_title","id":"form_title","values":["Mr","Mrs","Miss","Other"],"validation":["required"]}}') );
 
 		$elements = new \stdClass();
 		foreach($form as $element)
@@ -162,11 +160,15 @@ class main_controller extends base_controller
 	
 	static function parse_template_render($matches)
 	{
-		var_dump($matches);
-		
 		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[1]}.php"))
 			return '';
+
+		$replacements = array();
+		if(isset($matches[2]))
+			$replacements = (array)json_decode(str_replace(array('=', '[', ']'), array(':', '{', '}'), $matches[2]) );
 		
-		$view = view::make(MAVERICK_VIEWSDIR . "{$matches[1]}.php");
+		$template_view = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "{$matches[1]}.php", $replacements, false);
+		
+		return $template_view;
 	}
 }

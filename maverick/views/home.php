@@ -1,11 +1,18 @@
-{{template:snippets/header:["test"="some value","test2"="another value"]}}
+start_header
+{{template:snippets/header:["page_type"="homepage","main_colour"="green"]}}
+end_header
 
-home
+<br/>
+language_culture: {{maverick.language_culture}}
+<br/>
+remote_addr: {{server.REMOTE_ADDR}}
 
-{{maverick.language_culture}}
+<br/>
 
-{{server.REMOTE_ADDR}}
-
+start_form
 {{form:2:en_GB}}
+end_form
 
-{{page.page_name}}
+<br/>
+
+page_name: {{page.page_name}}
