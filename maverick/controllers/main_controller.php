@@ -23,7 +23,7 @@ class main_controller extends base_controller
 				->parse_handler('form', 'main_controller->parse_form_render')
 				->parse_handler('template', 'main_controller->parse_template_render');
 			
-			$view = $this->add_variables($view, $page);
+			$view = $this::add_variables($view, $page);
 			
 			$view->render();
 			
@@ -42,8 +42,10 @@ class main_controller extends base_controller
 	 * @param \maverick\view $view the view object
 	 * @param array $page the returned array from the db query which matched for this page
 	 */
-	private function add_variables($view, $page)
+	private static function add_variables($view, $page=null)
 	{
+		$app = \maverick\maverick::getInstance();
+		
 		// add in the super globals
 		$vars = array('server', 'get', 'post', 'files', 'cookie', 'session', 'request', 'env');
 		foreach($vars as $var)
@@ -56,11 +58,12 @@ class main_controller extends base_controller
 		$member_vars = array('requested_route_string', 'error_routes', 'language_culture');
 		$maverick_vars = array();
 		foreach($member_vars as $var)
-			$maverick_vars[$var] = $this->app->{$var};
+			$maverick_vars[$var] = $app->{$var};
 		$view->with('maverick', $maverick_vars);
 		
 		// add in the passed in $page bits
-		$view->with('page', $page);
+		if($page)
+			$view->with('page', $page);
 		
 		return $view;
 	}
@@ -166,9 +169,11 @@ class main_controller extends base_controller
 		$replacements = array();
 		if(isset($matches[2]))
 			$replacements = (array)json_decode(str_replace(array('=', '[', ']'), array(':', '{', '}'), $matches[2]) );
+
+		$template_view = new maverick\mview($matches[1]);
 		
-		$template_view = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "{$matches[1]}.php", $replacements, false);
+		$template_view = main_controller::add_variables($template_view);
 		
-		return $template_view;
+		return $template_view->render(false);
 	}
 }
