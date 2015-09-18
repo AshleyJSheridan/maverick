@@ -10,6 +10,7 @@ class query
 	private $from = '';
 	private $joins = array();
 	private $wheres = array();
+	private $havings = array();
 	private $group_bys = array();
 	private $order_bys = array();
 	private $gets = array();
@@ -205,6 +206,25 @@ class query
 			return $q;
 		
 		$q->add_where($condition, $field, $value);
+		
+		return $q;
+	}
+	
+	/**
+	 * creates a HAVING clause
+	 * @param string $field the field to HAVING
+	 * @param array $condition the conditions to create the HAVING on
+	 * @param mixed $value the value(s) to use in the HAVING
+	 * @return \maverick\query
+	 */
+	public static function having($field, $condition, $value)
+	{
+		$q = query::getInstance();
+		
+		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
+			return $q;
+		
+		$q->add_having($condition, $field, $value);
 		
 		return $q;
 	}
@@ -424,6 +444,7 @@ class query
 		$from = "FROM {$q->from}";
 		list($join_string, $join_params) = $q->compile_joins($q->joins);
 		list($where_string, $where_params) = $q->compile_wheres($q->wheres);
+		list($having_string, $having_params) = $q->compile_havings($q->havings);
 		list($group_by_string, $group_by_params) = $q->compile_group_bys($q->group_bys);
 		list($order_by_string, $order_by_params) = $q->compile_order_bys($q->order_bys);
 
@@ -432,11 +453,11 @@ class query
 			case 'select':
 			{
 				$select_string = implode(',', $q->gets);
-				$params = array_merge($join_params, $where_params, $group_by_params, $order_by_params);
+				$params = array_merge($join_params, $where_params, $group_by_params, $having_params, $order_by_params);
 				
 				$limit_string = ($q->limit)?" LIMIT {$q->limit['offset']}, {$q->limit['results']}":'';
 				
-				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $order_by_string $limit_string");
+				$stmt = $maverick->db->pdo->prepare("SELECT $select_string $from $join_string $where_string $group_by_string $having_string $order_by_string $limit_string");
 
 				break;
 			}
@@ -689,6 +710,74 @@ class query
 	}
 	
 	/**
+	 * compile the havings, create those parts of the query string and adds any
+	 * values to be parameterised into the $params array
+	 * @param array $havings the array of having clauses
+	 * @return array
+	 */
+	private function compile_havings($havings)
+	{
+		$having_string = '';
+		$params = array();
+
+		for($i=0; $i<count($havings); $i++)
+		{
+			$having_string .= (!$i)?' HAVING ':" {$havings[$i]['type']} ";
+			
+			if(is_object($havings[$i]['field']) && get_class($havings[$i]['field']) == 'maverick\db_raw')
+			{
+				$having_string .= ' ? ';
+				$params[] = (string)$havings[$i]['field'];
+			}
+			else
+				$having_string .= $havings[$i]['field'];
+			
+			$having_string .= " {$havings[$i]['condition']} ";
+
+			if(is_object($havings[$i]['value']) && get_class($havings[$i]['value']) == 'maverick\db_raw')
+			{
+				$having_string .= ' ? ';
+				$params[] = (string)$havings[$i]['value'];
+			}
+			else
+			{
+				switch($havings[$i]['condition'])
+				{
+					case 'IN':
+					case 'NOT IN':
+					{
+						if(is_array($havings[$i]['value']))
+						{
+							$having_string .= ' (';
+							for($j=0; $j<count($havings[$i]['value']); $j++)
+							{
+								$having_string .= ($j)?',':'';
+								
+								$having_string .= '?';
+								$params[] = $havings[$i]['value'][$j];
+							}
+							$having_string .= ') ';
+						}
+
+						break;
+					}
+					case 'LIKE':
+					{
+						$having_string .= '?';
+						$params[] = $havings[$i]['value'];
+						break;
+					}
+					default:
+						$having_string .= $havings[$i]['value'];
+				}
+			}
+				//$having_string .= $havings[$i]['field'];
+		}
+		
+		return array($having_string, $params);
+	}
+	
+	/**
 	 * compile the group bys, create those parts of the query string and adds any
 	 * values to be parameterised into the $params array
 	 * @param array $group_bys the array of group by clauses
@@ -769,6 +858,31 @@ class query
 			return $q;
 		
 		$q->wheres[] = array(
+			'field' => $field,
+			'condition' => $condition,
+			'value' => $value,
+			'type' => strtoupper($type),
+		);
+		
+		return $q;
+	}
+	
+	/**
+	 * adds a having clause to the query object
+	 * @param string $condition the condition to HAVING on
+	 * @param string $field the field to HAVING on
+	 * @param mixed $value the value to HAVING on
+	 * @param string $type the type of HAVING, either 'and' or 'or'
+	 * @return \maverick\query
+	 */
+	private function add_having($condition, $field, $value, $type='and')
+	{
+		$q = query::getInstance();
+		
+		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
+			return $q;
+		
+		$q->havings[] = array(
 			'field' => $field,
 			'condition' => $condition,
 			'value' => $value,
