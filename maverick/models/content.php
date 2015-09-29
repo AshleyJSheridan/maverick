@@ -3,12 +3,17 @@ use \maverick\db as db;
 
 /**
  * the main model used in the app
- * @package Userspace
+ * @package MaverickCMS
  * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class content
 {
-	static function get_page($uri)
+	/**
+	 * get a page from the db
+	 * @param string $uri the url of the page to fetch (after any preparsers have modified the url)
+	 * @return array|bool
+	 */
+	public static function get_page($uri)
 	{
 		$uri = '/' . $uri;
 		

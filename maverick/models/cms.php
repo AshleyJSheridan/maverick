@@ -2,7 +2,9 @@
 use \maverick\db as db;
 
 /**
- * the main model for the CMS
+ * the main model used in the cms
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class cms
 {
@@ -12,7 +14,7 @@ class cms
 	 * @param string $password the password for the user
 	 * @return int|bool false if the user is not valid, or the id of the user otherwise
 	 */
-	static function check_login($username, $password)
+	public static function check_login($username, $password)
 	{
 		$data = db::table('maverick_cms_users')
 			->where('username', '=', db::raw($username) )
@@ -20,7 +22,7 @@ class cms
 			->get()
 			->fetch();
 
-		return(isset($data[0])?(int)$data[0]['id']:false );
+		return (isset($data[0])?(int)$data[0]['id']:false );
 	}
 	
 	/**
@@ -28,7 +30,7 @@ class cms
 	 * @param bool $deleted whether to return a list of forms that are marked as deleted or not
 	 * @return array
 	 */
-	static function get_forms($deleted=false)
+	public static function get_forms($deleted=false)
 	{
 		$data = db::table('maverick_cms_forms AS f')
 			->leftJoin('maverick_cms_form_elements AS fe', array('f.id', '=', 'fe.form_id') )
@@ -47,11 +49,11 @@ class cms
 	/**
 	 * get a list of the languages listed in the database
 	 * this list is a full list of ISO-639x language cultures
-	 * @param bool $all determines if only languages currently being used within the CMS are to be returned
+	 * @param bool $all   determines if only languages currently being used within the CMS are to be returned
 	 * @param bool $short if set to true, this returns a simple culture=>fullname array, otherwise returns a full array from the database
 	 * @return array
 	 */
-	static function get_languages($all=false, $short=false)
+	public static function get_languages($all=false, $short=false)
 	{
 		$languages = db::table('maverick_cms_languages');
 		
@@ -82,22 +84,25 @@ class cms
 	 * create a new empty form and return the ID for it
 	 * @return int
 	 */
-	static function new_form()
+	public static function new_form()
 	{
 		$new_form_id = db::table('maverick_cms_forms')
-			->insert(array(
-				'name'=>'new form ' . date("y-m-d H:i"),
-			))->fetch();
+			->insert(
+				array(
+					'name'=>'new form ' . date("y-m-d H:i"),
+				)
+			)->fetch();
 		
 		return $new_form_id;
 	}
 
 	/**
 	 * mark a form as deleted in the database, but don't actually delete it
-	 * @param int $form_id the ID of the form to soft delete
+	 * @param int  $form_id     the ID of the form to soft delete
 	 * @param bool $hard_delete whether this is just a soft delete (false) or a full delete (true)
+	 * @return bool
 	 */
-	static function delete_form($form_id, $hard_delete=false)
+	public static function delete_form($form_id, $hard_delete=false)
 	{
 		if($hard_delete)
 		{
@@ -128,7 +133,7 @@ class cms
 			$deleted = db::table('maverick_cms_forms')
 				->where('id', '=', db::raw($form_id))
 				->update(array('deleted'=>db::raw('yes')) );
-		}
+		}//end if
 		
 		return $deleted;
 	}
@@ -136,8 +141,9 @@ class cms
 	/**
 	 * restore a form that was marked as deleted in the database, but don't actually delete it
 	 * @param int $form_id the ID of the form to soft delete
+	 * @return bool
 	 */
-	static function undelete_form($form_id)
+	public static function undelete_form($form_id)
 	{
 		$undeleted = db::table('maverick_cms_forms')
 			->where('id', '=', db::raw($form_id))
@@ -149,10 +155,11 @@ class cms
 	/**
 	 * get a form and all of its form elements based on the form id
 	 * this differs from the get_form() method as it is intended for the front-end rendering, not for the cms admin area
-	 * @param string $form_name
+	 * @param string      $form_id          the id of the form to fetch
+	 * @param string|null $language_culture the language culture of the form, if there are several forms with the same name
 	 * @return array
 	 */
-	static function get_form_by_id($form_id, $language_culture=null)
+	public static function get_form_by_id($form_id, $language_culture=null)
 	{
 		if($language_culture == 'language_culture')
 		{
@@ -174,22 +181,24 @@ class cms
 			$form->where('f.lang', '=', db::raw($language_culture) );
 		
 		$form = $form->orderBy('fe.display_order')
-			->get(array(
-				'f.name AS form_name',
-				'f.active AS form_active',
-				'f.lang',
-				'f.deleted AS form_deleted',
-				'fe.id AS element_id',
-				'fe.element_name',
-				'fe.type',
-				'fe.display',
-				'fe.label',
-				'fe.placeholder',
-				'fe.value',
-				'fe.display_order',
-				'fe.class',
-				'fe.html_id',
-			))
+			->get(
+				array(
+					'f.name AS form_name',
+					'f.active AS form_active',
+					'f.lang',
+					'f.deleted AS form_deleted',
+					'fe.id AS element_id',
+					'fe.element_name',
+					'fe.type',
+					'fe.display',
+					'fe.label',
+					'fe.placeholder',
+					'fe.value',
+					'fe.display_order',
+					'fe.class',
+					'fe.html_id',
+				)
+			)
 			->fetch();
 
 		$elements = array();
@@ -224,7 +233,7 @@ class cms
 					}
 				}
 			}
-		}
+		}//end foreach
 		
 		return $form;
 	}
@@ -236,7 +245,7 @@ class cms
 	 * @param int $form_id the ID of the form to retrieve
 	 * @return array
 	 */
-	static function get_form($form_id)
+	public static function get_form($form_id)
 	{
 		$form_id = intval($form_id);
 
@@ -245,22 +254,24 @@ class cms
 			->where('f.id', '=', db::raw($form_id))
 			->where('f.deleted', '=', db::raw('no'))
 			->orderBy('fe.display_order')
-			->get(array(
-				'f.name AS form_name',
-				'f.active AS form_active',
-				'f.lang',
-				'f.deleted AS form_deleted',
-				'fe.id AS element_id',
-				'fe.element_name',
-				'fe.type',
-				'fe.display',
-				'fe.label',
-				'fe.placeholder',
-				'fe.value',
-				'fe.display_order',
-				'fe.class',
-				'fe.html_id',
-			))
+			->get(
+				array(
+					'f.name AS form_name',
+					'f.active AS form_active',
+					'f.lang',
+					'f.deleted AS form_deleted',
+					'fe.id AS element_id',
+					'fe.element_name',
+					'fe.type',
+					'fe.display',
+					'fe.label',
+					'fe.placeholder',
+					'fe.value',
+					'fe.display_order',
+					'fe.class',
+					'fe.html_id',
+				)
+			)
 			->fetch();
 		
 		$elements = array();
@@ -314,10 +325,10 @@ class cms
 
 			// create the CMS HTML for each element
 			if($element['element_id'])
-				$element['html'] = cms::get_form_element($element);
+				$element['html'] = self::get_form_element($element);
 			
 			$count++;	// this is used as a crude way of forcing a multi-dimensional array for the list of values sent by the browser to php, as the [][] syntax doesn't work in this case
-		}
+		}//end foreach
 
 		return $form;
 	}
@@ -325,12 +336,12 @@ class cms
 	/**
 	 * build a form element snippet for use in the CMS
 	 * because the element is not passed by reference, the 'element_html' array element is scoped to this method only
-	 * @param array $element the element details which are passed to \helpers\html\html::load_snippet
-	 * @param bool $render whether or not to render the HTML for this
+	 * @param array  $element      the element details which are passed to \helpers\html\html::load_snippet
+	 * @param bool   $render       whether or not to render the HTML for this
 	 * @param string $snippets_dir if non-null, this will be used as the snippets directory for building the form elements
 	 * @return string
 	 */
-	static function get_form_element($element, $render=false, $snippets_dir=null)
+	public static function get_form_element($element, $render=false, $snippets_dir=null)
 	{
 		if(!$snippets_dir || !file_exists($snippets_dir))
 			$snippets_dir = MAVERICK_VIEWSDIR . 'cms/includes/snippets';
@@ -338,13 +349,15 @@ class cms
 		$element['element_html'] = \helpers\html\html::load_snippet("$snippets_dir/input_{$element['type']}.php", $element);
 		$element['elements'] = implode(\helpers\html\cms::get_available_elements('form', array('default'=>$element['type']) ) );
 		$forced_index = intval($element['display_order']) - 1;
-		$element['required_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/checkbox_manual_array.php',
+		$element['required_checkbox'] = \helpers\html\html::load_snippet(
+			MAVERICK_VIEWSDIR . 'cms/includes/snippets/checkbox_manual_array.php',
 			array(
 				'name'=>"required[$forced_index]",
 				'checked'=>(isset($element['required'][0]) && $element['required'][0] == 'true')?'checked="checked"':''
 			)
 		);
-		$element['display_checkbox'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/checkbox_manual_array.php', 
+		$element['display_checkbox'] = \helpers\html\html::load_snippet(
+			MAVERICK_VIEWSDIR . 'cms/includes/snippets/checkbox_manual_array.php', 
 			array(
 				'name'=>"display[$forced_index]",
 				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
@@ -373,14 +386,14 @@ class cms
 	
 	/**
 	 * deals with the creation of action buttons (links) used throughout the CMS to do something
-	 * @param string $section the section, as all links will contain this in their URL
-	 * @param int $id the ID of the object being worked on
-	 * @param array $actions a basic single dimensional array of single-word actions, that go into the URL and the text of the link
+	 * @param string $section       the section, as all links will contain this in their URL
+	 * @param int    $id            the ID of the object being worked on
+	 * @param array  $actions       a basic single dimensional array of single-word actions, that go into the URL and the text of the link
 	 * @param string $extra_classes a string of extra classes that should be added to each button
-	 * @param string $type the type of element to use, either a button or a link
+	 * @param string $type          the type of element to use, either a button or a link
 	 * @return string
 	 */
-	static function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
+	public static function generate_actions($section, $id, $actions = array(), $extra_classes='', $type='link')
 	{
 		if(empty($actions) || empty($section) )
 			return '';
@@ -406,8 +419,9 @@ class cms
 	
 	/**
 	 * builds a form element preview for the admin area directly from AJAX data
+	 * @return bool
 	 */
-	static function get_form_element_preview()
+	public static function get_form_element_preview()
 	{
 		$available_elements = \helpers\html\cms::get_available_elements('form', array(), false);
 		
@@ -426,8 +440,9 @@ class cms
 	/**
 	 * duplicates a form and all of its elements under a new name
 	 * @param int $form_id the ID of the form to duplicate
+	 * @return bool
 	 */
-	static function duplicate_form($form_id)
+	public static function duplicate_form($form_id)
 	{
 		// get the form row
 		$form = db::table('maverick_cms_forms')
@@ -498,21 +513,25 @@ class cms
 				$new_extras = db::table('maverick_cms_form_elements_extra')
 					->insert($extras);
 			}
-		}
+		}//end if
 	}
 	
 	/**
 	 * process the form data and save the elements
+	 * @param int $form_id the id of the form to save from submitted parameters
+	 * @return bool
 	 */
-	static function save_form($form_id)
+	public static function save_form($form_id)
 	{
 		// update the main form details
 		$form = db::table('maverick_cms_forms')
 			->where('id', '=', db::raw($form_id))
-			->update(array(
-				'name' => db::raw($_REQUEST['form_name']),
-				'lang' => db::raw($_REQUEST['lang']),
-			));
+			->update(
+				array(
+					'name' => db::raw($_REQUEST['form_name']),
+					'lang' => db::raw($_REQUEST['lang']),
+				)
+			);
 
 		// build up form element details for the inserts
 		$elements = $extra = array();
@@ -551,9 +570,9 @@ class cms
 						$values[$i] = (isset($values[$i]))?'yes':'no';
 					
 					$elements[$i][$element] = $values[$i];
-				}
-			}
-		}
+				}//end if
+			}//end for
+		}//end foreach
 
 		// last cleanup to convert combinations of min and max into a single between
 		for($i=0; $i<count($extra); $i++)
@@ -587,18 +606,20 @@ class cms
 		foreach($elements as $key => $element)
 		{
 			$element_id = db::table('maverick_cms_form_elements')
-				->insert(array(
-					'form_id' => $form_id,
-					'element_name' => $element['name'],
-					'type' => $element['type'],
-					'display' => isset($element['display'])?$element['display']:'no',
-					'label' => $element['label'],
-					'placeholder' => $element['placeholder'],
-					'value' => $element['value'],
-					'display_order' => $element['display_order'],
-					'class' => $element['class'],
-					'html_id' => $element['html_id'],
-				))->fetch();
+				->insert(
+					array(
+						'form_id' => $form_id,
+						'element_name' => $element['name'],
+						'type' => $element['type'],
+						'display' => isset($element['display'])?$element['display']:'no',
+						'label' => $element['label'],
+						'placeholder' => $element['placeholder'],
+						'value' => $element['value'],
+						'display_order' => $element['display_order'],
+						'class' => $element['class'],
+						'html_id' => $element['html_id'],
+					)
+				)->fetch();
 			
 			$extra_details = array();
 			foreach($extra[$key] as $special_type => $value)
@@ -618,7 +639,7 @@ class cms
 			if(!empty($extra_details))
 				$extra_insert = db::table('maverick_cms_form_elements_extra')
 					->insert($extra_details);
-		}
+		}//end foreach
 
 	}
 	
@@ -626,7 +647,7 @@ class cms
 	 * gets a list of all the users in the CMS as defined in the database
 	 * @return array
 	 */
-	static function get_users()
+	public static function get_users()
 	{
 		$data = db::table('maverick_cms_users')
 			->get(array('id', 'username', 'forename', 'surname', 'admin'))
@@ -637,17 +658,20 @@ class cms
 	
 	/**
 	 * add a new user from $_POST data
+	 * @return bool
 	 */
-	static function add_new_user()
+	public static function add_new_user()
 	{
 		$new_user = db::table('maverick_cms_users')
-			->insert(array(
-				'username' => $_REQUEST['username'],
-				'forename' => $_REQUEST['forename'],
-				'surname' => $_REQUEST['surname'],
-				'email' => $_REQUEST['email'],
-				'password' => $_REQUEST['password'],
-			))
+			->insert(
+				array(
+					'username' => $_REQUEST['username'],
+					'forename' => $_REQUEST['forename'],
+					'surname' => $_REQUEST['surname'],
+					'email' => $_REQUEST['email'],
+					'password' => $_REQUEST['password'],
+				)
+			)
 			->fetch();
 		
 		return $new_user;
@@ -656,8 +680,9 @@ class cms
 	/**
 	 * permanently delete a user from the CMS
 	 * @param int $user_id the ID of the user to delete
+	 * @return bool
 	 */
-	static function delete_user($user_id)
+	public static function delete_user($user_id)
 	{
 		$deleted = db::table('maverick_cms_users')
 			->where('id', '=', db::raw($user_id) )
@@ -672,7 +697,7 @@ class cms
 	 * @param int $user_id the ID of the user to get permissions for
 	 * @return array
 	 */
-	static function get_user_details($user_id)
+	public static function get_user_details($user_id)
 	{
 		$user = db::table('maverick_cms_users AS u')
 			->leftJoin('maverick_cms_user_permissions AS up', array('u.id', '=', 'up.user_id') )
@@ -685,7 +710,7 @@ class cms
 		{
 			$user = $user[0];
 
-			$user['all_permissions'] = cms::get_all_permissions();
+			$user['all_permissions'] = self::get_all_permissions();
 			
 			return $user;
 		}
@@ -693,7 +718,12 @@ class cms
 			return false;
 	}
 	
-	static function update_user_details($user_id)
+	/**
+	 * updates a users details in the db from the REQUEST data
+	 * @param int $user_id the id of the user to update the details for
+	 * @return bool
+	 */
+	public static function update_user_details($user_id)
 	{
 		$user_data = array(
 			'username' => $_REQUEST['username'],
@@ -730,8 +760,9 @@ class cms
 	 * reads in all models and controllers and fetchs out any permissions that are found within that are being called with the get_permissions() call
 	 * this then adds in any to the database that do not already exist
 	 * @todo consider allowing extra directories to be specified to be checked for calls to the get_permission() function
+	 * @return bool
 	 */
-	static function get_permissions_from_code()
+	public static function get_permissions_from_code()
 	{
 		$directories = array(MAVERICK_BASEDIR . 'controllers', MAVERICK_BASEDIR . 'models');	// only models and controllers are checked, as they are the only ones in the CMS that should be redirecting
 
@@ -779,9 +810,10 @@ class cms
 							}
 						}
 					}
-				}
-			}
-		}
+				}//end if
+			}//end foreach
+		}//end foreach
+		
 		// ensure they're unique
 		$perms = array_unique($perms);
 		
@@ -789,17 +821,20 @@ class cms
 		foreach($perms as $perm)
 		{
 			$insert = db::table('maverick_cms_permissions')
-				->insert(array(
-					'name' => $perm,
-				))->fetch();
+				->insert(
+					array(
+						'name' => $perm,
+				)
+				)->fetch();
 		}
 	}
 	
 	/**
 	 * fetch a list of all the permissions in the CMS
-	 * @param bool 
+	 * @param bool $group whether or not to group the permissions before returning them
+	 * @return bool
 	 */
-	static function get_all_permissions($group=false)
+	public static function get_all_permissions($group=false)
 	{
 		$perms = db::table('maverick_cms_permissions')
 			->orderBy('name')
@@ -827,8 +862,9 @@ class cms
 	
 	/**
 	 * update the list of permissions from the user submitted data
+	 * @return bool
 	 */
-	static function update_permissions()
+	public static function update_permissions()
 	{
 		foreach($_REQUEST['id'] as $key => $id)
 		{
@@ -837,23 +873,27 @@ class cms
 				// update existing rules
 				$perm = db::table('maverick_cms_permissions')
 					->where('id', '=', $id)
-					->update(array(
-						'name'=>$_REQUEST['name'][$key],
-						'description'=>$_REQUEST['description'][$key],
-					))
+					->update(
+						array(
+							'name'=>$_REQUEST['name'][$key],
+							'description'=>$_REQUEST['description'][$key],
+						)
+					)
 					->fetch();
 			}
 			else
 			{
 				// add new rules
 				$perm = db::table('maverick_cms_permissions')
-					->insert(array(
-						'name'=>$_REQUEST['name'][$key],
-						'description'=>$_REQUEST['description'][$key],
-					))
+					->insert(
+						array(
+							'name'=>$_REQUEST['name'][$key],
+							'description'=>$_REQUEST['description'][$key],
+						)
+					)
 					->fetch();
-			}
-		}
+			}//end if
+		}//end foreach
 	}
 	
 	/**
@@ -861,7 +901,7 @@ class cms
 	 * @param int $permission_id the id of the permission to remove
 	 * @return string|boolean return true on success, or an error message on failure
 	 */
-	static function remove_permission($permission_id)
+	public static function remove_permission($permission_id)
 	{
 		$permission_id = intval($permission_id);
 		
@@ -887,38 +927,43 @@ class cms
 	 * @param int $user_id the id of the user to get permissions for
 	 * @return array
 	 */
-	static function get_permissions($user_id)
+	public static function get_permissions($user_id)
 	{
 		$perms = db::table('maverick_cms_users AS u')
 			->leftJoin('maverick_cms_user_permissions AS up', array('up.user_id', '=', 'u.id') )
-			->leftJoin('maverick_cms_permissions AS p', array(
+			->leftJoin(
+				'maverick_cms_permissions AS p',
+				array(
 					array('up.permission_id', '=', 'p.id'),
-				))
+				)
+			)
 			->where('u.id', '=', db::raw($user_id))
 			->get(array('u.admin', 'GROUP_CONCAT(p.id) AS perm_ids', 'GROUP_CONCAT(p.name) AS perm_names') )
 			->groupBy('u.id')
-			->fetch()
-			;
+			->fetch();
 		
 		return (isset($perms[0]))?$perms[0]:false;
 	}
 	
 	/**
 	 * get all the logs with filters and pagination if specified
-	 * @param int $page the page number of results
-	 * @param int $per_page the number of results to show per page
-	 * @param bool $count whether to return the logs or the count of the logs
+	 * @param int    $page     the page number of results
+	 * @param int    $per_page the number of results to show per page
+	 * @param bool   $count    whether to return the logs or the count of the logs
+	 * @param string $since    a string date for which no logs should be returned before
+	 * @param string $until    a string date up until which no logs should be returned
+	 * @param string $log_type the type of log entries to retrieve
+	 * @param string $category the category for which logs should be returned
 	 * @return array|int
 	 */
-	static function get_logs($page, $per_page, $count=false, $since=null, $until=null, $log_type=null, $category=null)
+	public static function get_logs($page, $per_page, $count=false, $since=null, $until=null, $log_type=null, $category=null)
 	{
 		$offset = ($page-1)*$per_page;
 
 		$logs = db::table('maverick_cms_logs AS l')
 			->orderBy('added_at', 'desc')
 			->leftJoin('maverick_cms_users AS u', array('l.user_id', '=', 'u.id') )
-			->limit($per_page, $offset)
-			;
+			->limit($per_page, $offset);
 
 		// set any where clauses as determined by filters
 		foreach(array('since', 'until', 'log_type', 'category') as $filter)
@@ -959,7 +1004,7 @@ class cms
 	 * this list will change over time as new log entries are created
 	 * @return array
 	 */
-	static function get_log_categories()
+	public static function get_log_categories()
 	{
 		$categories = db::table('maverick_cms_logs')
 			->get(array('DISTINCT(category) AS category'))
@@ -973,16 +1018,19 @@ class cms
 	
 	/**
 	 * get all the tags in the db, and their group if applicable
+	 * @return bool
 	 */
-	static function get_tags()
+	public static function get_tags()
 	{
 		$tags = array();
 		$tags_list = db::table('maverick_cms_tags AS t')
 			->leftJoin('maverick_cms_tag_groups AS tg', array('t.group_id', '=', 'tg.id') )
 			->orderBy('tg.group_name', 'desc')
-			->get(array(
-				't.tag', 'tg.group_name'
-			))
+			->get(
+				array(
+					't.tag', 'tg.group_name'
+				)
+			)
 			->fetch();
 		
 		foreach($tags_list as $tag)
@@ -1000,8 +1048,9 @@ class cms
 	/**
 	 * update a list of tags within the cms
 	 * @param array $tags an associative array of tags and their groups
+	 * @return bool
 	 */
-	static function update_tags($tags)
+	public static function update_tags($tags)
 	{
 		$tag_group_ids = array(0);	// this will keep track of all the tag groups currently in the cms; used for cleanup later - the 0 is for ungrouped tags
 		$tag_ids = array();
@@ -1039,7 +1088,7 @@ class cms
 				
 				$tag_ids[] = $tag_id;
 			}
-		}
+		}//end foreach
 		
 		// this is the cleanup bit - remove any groups and tags that were not in the list above
 		// note that this will remove any tag groups that had all their child tags removed
@@ -1057,7 +1106,7 @@ class cms
 	 * as it's unlikely more will be added for extra languages/countries in the near future
 	 * @return array
 	 */
-	static function get_all_cultures()
+	public static function get_all_cultures()
 	{
 		$cultures = db::table('maverick_cms_language_cultures')
 			->get()

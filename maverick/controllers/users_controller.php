@@ -1,7 +1,15 @@
 <?php
+/**
+ * the controller responsible for dealing with the users on the site
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class users_controller extends cms_controller
-{	
-	function __construct()
+{
+	/**
+	 * the magic constructor
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 	}
@@ -9,6 +17,7 @@ class users_controller extends cms_controller
 	/**
 	 * method that handles the users list and passes control out to other methods for more specific actions with users and permissions
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	public function users($params)
 	{
@@ -51,12 +60,13 @@ class users_controller extends cms_controller
 		{
 			if(method_exists($this, $params[1]))
 				$this->{$params[1]}($params);
-		}
+		}//end if
 	}
 	
 	/**
 	 * updates the list of permissions in the database by analysing the code for permission checks
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function update_permissions($params)
 	{
@@ -72,6 +82,7 @@ class users_controller extends cms_controller
 	/**
 	 * list the permissions held in the permissions table of the database, and handles the ability to update their names, descriptions, and delete them if they're not in use
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function list_permissions($params)
 	{
@@ -102,7 +113,7 @@ class users_controller extends cms_controller
 			}
 			else
 				$errors = $this->cms->get_all_errors_as_string(null, array('<span class="error">', '</span>') );
-		}
+		}//end if
 
 		// if any have been requested for deletion, process them
 		if(isset($params[2]) && $params[2] == 'delete_permission' && isset($params[3]) && is_numeric($params[3]) )
@@ -148,6 +159,7 @@ class users_controller extends cms_controller
 	/**
 	 * a form that allows a new user to be created with basic details
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function new_user($params)
 	{
@@ -180,7 +192,7 @@ class users_controller extends cms_controller
 				else
 					$errors = "There was a problem saving the user to the database.";
 			}
-		}
+		}//end if
 
 		$elements = '{
 			"username":{"type":"text","label":"Username","placeholder":"jsmith","validation":["required","alpha_dash"]},
@@ -211,6 +223,7 @@ class users_controller extends cms_controller
 	/**
 	 * handles deleting a user completely from the database
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function delete_user($params)
 	{
@@ -228,6 +241,7 @@ class users_controller extends cms_controller
 	/**
 	 * deals with updating a user profile and their assigned permissions
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function edit($params)
 	{
@@ -329,7 +343,7 @@ class users_controller extends cms_controller
 				$view_params['errors'] = $errors;
 
 			$this->load_view($page, $view_params );
-		}
+		}//end if
 		else
 			view::redirect('/' . $this->app->get_config('cms.path') . "/users");
 	}

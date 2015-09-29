@@ -224,8 +224,9 @@ class validator
 
 	/**
 	 * validates a field as required only if another field is set to the specified value
-	 * @param string $field
-	 * @param array $value
+	 * @param string $field the field to make optionally required
+	 * @param array  $value an array containing the name of the second field to check and the value to check for
+	 * @todo backport this into master branch
 	 * @return boolean
 	 */
 	private function rule_required_if_not_value($field, $value)

@@ -1,9 +1,17 @@
 <?php
+/**
+ * the controller responsible for dealing with the forms on the site
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class forms_controller extends cms_controller
-{	
+{
 	private $page = 'form';
 	
-	function __construct()
+	/**
+	 * magic constructor
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 	}
@@ -11,8 +19,9 @@ class forms_controller extends cms_controller
 	/**
 	 * method that deals with all forms created in the CMS
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
-	function forms($params)
+	public function forms($params)
 	{
 		$this->cms->check_permissions('form', '/' . $this->app->get_config('cms.path') . '/');
 
@@ -42,12 +51,13 @@ class forms_controller extends cms_controller
 		{
 			if(method_exists($this, $params[1]))
 				$this->{$params[1]}($params);
-		}
+		}//end if
 	}
 	
 	/**
 	 * handles editing of a form and its fields
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function edit($params)
 	{
@@ -86,26 +96,36 @@ class forms_controller extends cms_controller
 				view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
 
 			// build up the extra fields for the form-specific details, like form name, etc
-			$form_details = \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-				'label'=>'Form Name',
-				'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php', array(
-						'value'=>"value=\"{$form[0]['form_name']}\"",
-						'placeholder'=>"placeholder=\"form name\"",
-						'name'=>'form_name'
-					))
+			$form_details = \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Form Name',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php',
+						array(
+							'value'=>"value=\"{$form[0]['form_name']}\"",
+							'placeholder'=>"placeholder=\"form name\"",
+							'name'=>'form_name'
+						)
+					)
 				)
 			);
-			$form_details .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php', array(
-				'label'=>'Form Language',
-				'element'=>\helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php', array(
-						'values'=> $this->cms->build_select_options(
-							cms::get_languages(false, true),
-							$form[0]['lang'],
-							true,
-							MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'
-						),
-						'name'=>'lang'
-					))
+			$form_details .= \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Form Language',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php',
+						array(
+							'values'=> $this->cms->build_select_options(
+								cms::get_languages(false, true),
+								$form[0]['lang'],
+								true,
+								MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'
+							),
+							'name'=>'lang'
+						)
+					)
 				)
 			);
 
@@ -122,7 +142,7 @@ class forms_controller extends cms_controller
 				$view_params['errors'] = $errors;
 
 			$this->load_view('form_edit', $view_params );
-		}
+		}//end if
 		else
 			view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
 	}
@@ -130,6 +150,7 @@ class forms_controller extends cms_controller
 	/**
 	 * creates a new blank form and goes to its edit screen
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function new_form($params)
 	{
@@ -146,6 +167,7 @@ class forms_controller extends cms_controller
 	 * marks a form as deleted in the db - not a full delete
 	 * this action can be undone
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function delete($params)
 	{
@@ -168,6 +190,7 @@ class forms_controller extends cms_controller
 	/**
 	 * undeletes a form that was marked as deleted in the db
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function undelete($params)
 	{
@@ -190,6 +213,7 @@ class forms_controller extends cms_controller
 	/**
 	 * completely removes a form from the database
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function delete_full($params)
 	{
@@ -212,6 +236,7 @@ class forms_controller extends cms_controller
 	/**
 	 * duplicates a form and all of its fields
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function duplicate($params)
 	{
@@ -231,6 +256,7 @@ class forms_controller extends cms_controller
 	/**
 	 * handles the list of deleted forms
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
 	private function deleted_forms($params)
 	{

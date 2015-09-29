@@ -1,6 +1,11 @@
 <?php
+/**
+ * the controller responsible for dealing with the logs on the site
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class logs_controller extends cms_controller
-{	
+{
 	private $page = 1;
 	private $per_page = 10;
 	private $since;
@@ -8,7 +13,10 @@ class logs_controller extends cms_controller
 	private $log_type;
 	private $category;
 	
-	function __construct()
+	/**
+	 * the magic constructor
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 	}
@@ -16,8 +24,9 @@ class logs_controller extends cms_controller
 	/**
 	 * method that deals with all logs created in the CMS
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
-	function logs($params)
+	public function logs($params)
 	{
 		$page = 'logs';
 
@@ -47,7 +56,7 @@ class logs_controller extends cms_controller
 					if($_GET[$option] != 'all')
 						$this->{$option} = $_GET[$option];
 			}
-		}
+		}//end foreach
 		
 		// fetch log count and calulate the number of pages this will spread across
 		$log_count = cms::get_logs(1, $this->per_page, true);

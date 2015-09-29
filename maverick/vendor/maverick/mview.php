@@ -1,6 +1,12 @@
 <?php
 namespace maverick;
 
+/**
+ * a new view class which behaves the same as \maverick\view but isn't a singleton
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ * @todo backport this to the master branch
+ */
 class mview
 {
 	private $view = '';
@@ -10,7 +16,12 @@ class mview
 	private $parse_handlers = array();
 	private $app;
 	
-	function __construct($view=null)
+	/**
+	 * the magic constructor
+	 * errors out if a view was not specified
+	 * @param string $view the view to use in this instance
+	 */
+	public function __construct($view=null)
 	{
 		$this->app = \maverick\maverick::getInstance();
 		
@@ -23,7 +34,7 @@ class mview
 	/**
 	 * set a named parameter to add to this instances data array
 	 * @param string $name the name by which to reference this data
-	 * @param mixed $data the data to add
+	 * @param mixed  $data the data to add
 	 * @return view
 	 */
 	public function with($name, $data)
@@ -67,7 +78,7 @@ class mview
 						$this->headers[$header] = $this->convert_header_case($header) . ": $value";
 					break;
 				case 'cache-control':
-					if(preg_match('/^(public|private|no-cache(, must-revalidate)?|no-store|max-age=\d+(, (public|private))?(, must-revalidate)?)$/' ,$value) )
+					if(preg_match('/^(public|private|no-cache(, must-revalidate)?|no-store|max-age=\d+(, (public|private))?(, must-revalidate)?)$/', $value) )
 						$this->headers[$header] = $this->convert_header_case($header) . ": $value";
 					break;
 				case 'pragma':
@@ -85,10 +96,10 @@ class mview
 					break;
 				default:
 					$this->headers[$header] = $this->convert_header_case($header) . ": $value";
-			}
+			}//end switch
 			
 			$this->original_headers[$header] = $value;	// make a record of the actual requested header, regardless of whether it was actually successfully added due to parsing rules
-		}
+		}//end foreach
 
 		return $this;
 	}
@@ -97,7 +108,7 @@ class mview
 	 * adds a custom parse handler to a member array on the view object that can then be iterated
 	 * to allow userland code to parse the rendered view and replace custom template snippets
 	 * @param string $namespace the namespace given to a template snippet, e.g. {{namespace:
-	 * @param string $handler a string in the form of controller->method, where method is the static method of the given controller which is used as the callback in preg_replace_callback() for the custom parser
+	 * @param string $handler   a string in the form of controller->method, where method is the static method of the given controller which is used as the callback in preg_replace_callback() for the custom parser
 	 * @return view
 	 */
 	public function parse_handler($namespace, $handler)
@@ -113,7 +124,7 @@ class mview
 	/**
 	 * use object buffering to build up the views into a single string and either return or echo it
 	 * optionally output any headers that have been added to the view instance
-	 * @param bool $echo whether to echo the view or return it as a string
+	 * @param bool $echo         whether to echo the view or return it as a string
 	 * @param bool $with_headers if set to true and $echo is also set to true, then send headers to the browser, otherwise do nothing
 	 * @return string
 	 */
@@ -169,8 +180,9 @@ class mview
 	
 	/**
 	 * perform a redirect and add in a response code if it was set
-	 * @param string $url the URL to redirect to - although the specs say it has to be absolute, every browser accepts relative too
-	 * @param int $response_code if a positive integer, this is the HTTP response code that is sent too
+	 * @param string $url           the URL to redirect to - although the specs say it has to be absolute, every browser accepts relative too
+	 * @param int    $response_code if a positive integer, this is the HTTP response code that is sent too
+	 * @return bool
 	 */
 	public static function redirect($url, $response_code = null)
 	{
@@ -368,11 +380,11 @@ class mview
 			511 => 'Network Authentication Required',
 			598 => 'Network read timeout error',
 			599 => 'Network connect timeout error',
- 		);
+		);
 		
-		if(isset($codes[$code]))
+		if(isset($codes[$code]) )
 			return "{$_SERVER["SERVER_PROTOCOL"]} $code {$codes[$code]}";
 		else
-			return $this->set_status_code (200);
+			return $this->set_status_code(200);
 	}
 }

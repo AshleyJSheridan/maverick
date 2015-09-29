@@ -1,12 +1,15 @@
 <?php
 /**
- * the main controller that all the routes point to
- * @package Userspace
+ * the main controller that all the front-end routes point to
+ * @package MaverickCMS
  * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class main_controller extends base_controller
 {
-	function __construct()
+	/**
+	 * main constructor - creates a session if one does not yet exist (although it shouldn't at this point in the code) and gets an instance of the main framework
+	 */
+	public function __construct()
 	{
 		if(!isset($_SESSION))
 			session_start();
@@ -14,13 +17,19 @@ class main_controller extends base_controller
 		$this->app = \maverick\maverick::getInstance();
 	}
 	
-	function main($params)
+	/**
+	 * the main method called by all front-end routes
+	 * @param array $params the url parameters
+	 * @return bool
+	 */
+	public function main($params)
 	{
 		$page = content::get_page($params);
 
 		if(!$page || !file_exists(MAVERICK_VIEWSDIR . $page['template_path'] . '.php'))
 		{
 			// do 404 stuff here
+			echo 'do 404 stuff here';
 		}
 		else
 		{
@@ -31,13 +40,15 @@ class main_controller extends base_controller
 			$view = $this::add_variables($view, $page);
 			
 			$view->render();
-			
-			
-			
-		}
+		}//end if
 	}
 
-	function error()
+	/**
+	 * error method for 404s and stuff
+	 * @todo implement this
+	 * @return bool
+	 */
+	public function error()
 	{
 		echo 'error';
 	}
@@ -46,7 +57,8 @@ class main_controller extends base_controller
 	/**
 	 * this adds in to the view the main variables using the ->with() chainable method so that they can be used more easily in templates
 	 * @param \maverick\view $view the view object
-	 * @param array $page the returned array from the db query which matched for this page
+	 * @param array          $page the returned array from the db query which matched for this page
+	 * @return \maverick\view
 	 */
 	private static function add_variables($view, $page=null)
 	{
@@ -56,7 +68,7 @@ class main_controller extends base_controller
 		$vars = array('server', 'get', 'post', 'files', 'cookie', 'session', 'request', 'env');
 		foreach($vars as $var)
 		{
-			if(isset( $GLOBALS['_'.strtoupper($var)]) )
+			if(isset($GLOBALS['_'.strtoupper($var)]) )
 				$view->with($var, $GLOBALS['_'.strtoupper($var)]);
 		}
 		
@@ -74,9 +86,12 @@ class main_controller extends base_controller
 		return $view;
 	}
 	
-	
-	
-	static function parse_form_render($matches = array() )
+	/**
+	 * parses the view templates and inserts forms where a corresponding template tag was found
+	 * @param array $matches any extra parameters for the parse renderer that were included in the template tag
+	 * @return boolean|string
+	 */
+	public static function parse_form_render($matches = array() )
 	{
 		$form_id = intval($matches[1]);
 		$language_culture = (!empty($matches[2]))?$matches[2]:null;
@@ -148,7 +163,7 @@ class main_controller extends base_controller
 						$validation_rules[] = "maxlength:$max";
 					}
 					break;
-			}
+			}//end switch
 			
 			// regex
 			if(!empty($element['regex']))
@@ -157,7 +172,7 @@ class main_controller extends base_controller
 			// now add in the valdation rules to the element if the rule list is not empty
 			if(!empty($validation_rules))
 				$elements->{$element['element_name']}->validation = $validation_rules;
-		}
+		}//end foreach
 		
 		if(empty($form))
 			return '';
@@ -167,7 +182,12 @@ class main_controller extends base_controller
 		return $form->render();
 	}
 	
-	static function parse_template_render($matches)
+	/**
+	 * a view parser that can include extra template snippets
+	 * @param array $matches any extra parameters for the parse renderer that were included in the template tag
+	 * @return string
+	 */
+	public static function parse_template_render($matches)
 	{
 		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[1]}.php"))
 			return '';
@@ -178,7 +198,7 @@ class main_controller extends base_controller
 
 		$template_view = new maverick\mview($matches[1]);
 		
-		$template_view = main_controller::add_variables($template_view);
+		$template_view = self::add_variables($template_view);
 		
 		return $template_view->render(false);
 	}

@@ -1,4 +1,9 @@
 <?php
+/**
+ * the main maverick cms controller, which will delegate out to other controllers for specific sections within the cms
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class cms_controller extends base_controller
 {
 	protected $nav;
@@ -9,7 +14,7 @@ class cms_controller extends base_controller
 	/**
 	 * main constructor function, just deals with setting some basic options for this controller
 	 */
-	function __construct()
+	public function __construct()
 	{
 		if(!isset($_SESSION))
 			session_start();
@@ -18,20 +23,20 @@ class cms_controller extends base_controller
 		$this->app = \maverick\maverick::getInstance();
 		
 		$params = $this->app->controller['args'];
-		$params = \maverick_cms\cms::clean_params($params); //$this->clean_params($params);
+		$params = \maverick_cms\cms::clean_params($params);
 		$this->nav = view::make('cms/includes/admin_nav')->with('params', $params)->render(false);
 	}
 
 	/**
 	 * the main method that all the admin routes will point to, which will determine which methods handle the request
 	 * @param array $params the URL parameters
+	 * @return bool
 	 */
-	function main($params)
+	public function main($params)
 	{
 		$params = \maverick_cms\cms::clean_params($params);
 		
 		// check login status
-		//if(!$this->check_login_status($params))
 		if(!\maverick_cms\cms::check_login_status($params))
 			view::redirect('/' . $this->app->get_config('cms.path') . '/login');
 		
@@ -60,9 +65,15 @@ class cms_controller extends base_controller
 			default:
 				// loop through the hooks listed in the main MaVeriCk class
 				break;
-		}
+		}//end switch
 	}
 	
+	/**
+	 * calls out to an external controller for a section of the cms
+	 * @param string $controller the controller to call
+	 * @param array  $params     extra parameters, such as method and arguments
+	 * @return bool
+	 */
 	private function dispatch_controller($controller, $params)
 	{
 		$method = $controller;
@@ -74,6 +85,7 @@ class cms_controller extends base_controller
 
 	/**
 	 * method for showing the main CMS dashboard
+	 * @return bool
 	 */
 	private function dash()
 	{
@@ -86,6 +98,7 @@ class cms_controller extends base_controller
 	 * method to handle ajax requests coming through to the admin area
 	 * @param array $params the URL parameters
 	 * @todo the ajax URLs are currently hard-coded into the javascript - need a way to pass the value in the PHP config to the js
+	 * @return bool
 	 */
 	private function ajax($params)
 	{
@@ -107,23 +120,28 @@ class cms_controller extends base_controller
 					
 					$display_order = (isset($_REQUEST['display_order']) && intval($_REQUEST['display_order']) )?intval($_REQUEST['display_order']):1;
 					$element = array('type'=>'text', 'display'=>'yes', 'display_order'=>$display_order, 'element_name'=>"new element $display_order" );
-					$element['values_html'] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . "cms/includes/snippets/list_values_block.php",
-						array('id'=>($display_order-1) ) );
+					$element['values_html'] = \helpers\html\html::load_snippet(
+						MAVERICK_VIEWSDIR . "cms/includes/snippets/list_values_block.php",
+						array(
+							'id'=>($display_order-1)
+						)
+					);
 
 					$element_html = cms::get_form_element($element, true);
 					break;
 				default:
 					// handle ajax extensions here
 					break;
-			}
-		}
+			}//end switch
+		}//end if
 	}
 
 	/**
 	 * load in an admin view - this is basically a small wrapper to view::make(), it just adds in the admin nav and any other parameters passed into it
 	 * this allows things to be added to all admin sections easily, in one method
-	 * @param string $view the view to load - this is the same format as view::make()
-	 * @param array $with_params any extra parameters that need to be passed in to this view
+	 * @param string $view        the view to load - this is the same format as view::make()
+	 * @param array  $with_params any extra parameters that need to be passed in to this view
+	 * @return bool
 	 */
 	protected function load_view($view, $with_params = array() )
 	{
@@ -161,6 +179,7 @@ class cms_controller extends base_controller
 
 	/**
 	 * log a user out of the admin area
+	 * @return bool
 	 */
 	private function logout()
 	{
@@ -175,6 +194,7 @@ class cms_controller extends base_controller
 	/**
 	 * handles the showing of the login form and login of a user
 	 * failed logins are recorded
+	 * @return bool
 	 */
 	private function login()
 	{
@@ -198,7 +218,7 @@ class cms_controller extends base_controller
 			}
 			else
 				\maverick_cms\log::record_login($_POST['username']);
-		}
+		}//end if
 		
 		$elements = '{
 			"username":{"type":"text","label":"Username","validation":["required"]},
@@ -210,5 +230,4 @@ class cms_controller extends base_controller
 		
 		$view = view::make('cms/includes/template_basic')->with('page', 'login')->with('login_form', $form->render() )->render();
 	}
-
 }

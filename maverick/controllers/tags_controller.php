@@ -1,12 +1,25 @@
 <?php
+/**
+ * the controller responsible for dealing with the tags on the site
+ * @package MaverickCMS
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class tags_controller extends cms_controller
-{	
-	function __construct()
+{
+	/**
+	 * the magic constructor
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 	}
 	
-	function tags($params)
+	/**
+	 * main method for handling all requests to work on tags within the cms
+	 * @param array $params the url parameters
+	 * @return bool
+	 */
+	public function tags($params)
 	{
 		$this->cms->check_permissions('tags', '/' . $this->app->get_config('cms.path') . '/');
 		
@@ -30,7 +43,7 @@ class tags_controller extends cms_controller
 				\maverick_cms\log::log('tags', 'updated', $tags, 'info');
 				
 				view::redirect('/' . $this->app->get_config('cms.path') . '/tags');
-			}
+			}//end if
 			
 			$tags = cms::get_tags();
 			$tag_groups = '';
@@ -43,25 +56,31 @@ class tags_controller extends cms_controller
 				
 				foreach($tag_group as $tag)
 				{
-					$tag_html .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag.php', array(
+					$tag_html .= \helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag.php',
+						array(
 							'tag'=>$tag['tag'],
 						)
 					);
 				}
 				
-				$tag_groups .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag_group.php', array(
+				$tag_groups .= \helpers\html\html::load_snippet(
+					MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag_group.php',
+					array(
 						'group_name'=>(strlen($tag['group_name']))?$tag['group_name']:'ungrouped',
 						'tag_html'=>$tag_html,
 						'group'=>(strlen($tag['group_name']))?'grouped':'ungrouped',
 						'group_class'=>(str_replace(' ', '_', strlen($tag['group_name']) ) )?'grouped':'ungrouped',
 					)
 				);
-			}
+			}//end foreach
 			
 			// if there were no tags in the ungrouped category, create the ungrouped block separately
 			if(!array_key_exists('', $tags))
 			{
-				$tag_groups .= \helpers\html\html::load_snippet(MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag_group.php', array(
+				$tag_groups .= \helpers\html\html::load_snippet(
+					MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/tag_group.php',
+					array(
 						'group_name'=>'ungrouped',
 						'group'=>'ungrouped',
 						'group_class'=>'ungrouped',
@@ -79,6 +98,6 @@ class tags_controller extends cms_controller
 			);
 
 			$this->load_view('tags', $view_params );
-		}
+		}//end if
 	}
 }
