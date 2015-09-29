@@ -1,4 +1,9 @@
 <?php
+/**
+ * the main controller that all the routes point to
+ * @package Userspace
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class main_controller extends base_controller
 {
 	function __construct()
@@ -36,6 +41,7 @@ class main_controller extends base_controller
 	{
 		echo 'error';
 	}
+
 
 	/**
 	 * this adds in to the view the main variables using the ->with() chainable method so that they can be used more easily in templates

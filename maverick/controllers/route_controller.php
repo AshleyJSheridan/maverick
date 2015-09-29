@@ -1,4 +1,10 @@
 <?php
+/**
+ * a controller in userspace which contains custom methods for dealing with routes
+ * this could contain multiple methods for different types of routes
+ * @package Userspace
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class route_controller extends base_controller
 {
 	function maverick_cms()

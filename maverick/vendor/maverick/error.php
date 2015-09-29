@@ -1,19 +1,20 @@
 <?php
 /**
  * a class which handles errors for the application
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class error
 {
-	private function __clone() {}
-	
 	/**
 	 * static method used to force show an error, with optional HTTP status code
 	 * using the view file specified in the config
 	 * this method terminates the rest of the application execution
-	 * @param string $message the error message to show
-	 * @param int $http_code the HTTP status code to respond with
+	 * @param string $message   the error message to show
+	 * @param int    $http_code the HTTP status code to respond with
+	 * @return bool
 	 */
-	static function show($message, $http_code=500)
+	public static function show($message, $http_code=500)
 	{
 		$maverick = \maverick\maverick::getInstance();
 		
@@ -33,17 +34,18 @@ class error
 	
 	/**
 	 * static method used to log an error and optionally show it also
-	 * @param string $message the error message to show
-	 * @param bool $show whether or not to also show the error on screen
-	 * @param int $http_code the HTTP status code to respond with
+	 * @param string $message   the error message to show
+	 * @param bool   $show      whether or not to also show the error on screen
+	 * @param int    $http_code the HTTP status code to respond with
+	 * @return bool
 	 */
-	static function log($message, $show=false, $http_code=500)
+	public static function log($message, $show=false, $http_code=500)
 	{
 		$maverick = \maverick\maverick::getInstance();
 		
 		//$caller = debug_backtrace();
 		if($maverick->get_config('config.error_detail'))
-			$message .= error::generate_call_trace();	
+			$message .= self::generate_call_trace();	
 		
 		if($maverick->get_config('config.log_errors'))	// only log the errors if the config says to
 		{
@@ -52,7 +54,7 @@ class error
 		}		
 		
 		if($show)
-			error::show(nl2br($message), $http_code);
+			self::show(nl2br($message), $http_code);
 	}
 	
 	/**

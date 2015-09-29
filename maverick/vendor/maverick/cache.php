@@ -4,15 +4,18 @@ namespace maverick;
 /**
  * a class used to handle caching of strings of information, typically generated views
  * the caching is handled either with files in the cache directory, or by APC which is faster but requires an extra Apache module
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class cache
 {
 	/**
 	 * stores an item in the cache
-	 * @param string $key the key to store, which should be unique
+	 * @param string $key   the key to store, which should be unique
 	 * @param string $value the value to store against the key
+	 * @return bool
 	 */
-	static function store($key, $value)
+	public static function store($key, $value)
 	{
 		$app = \maverick\maverick::getInstance();
 		
@@ -42,7 +45,7 @@ class cache
 	 * @param string $key the key to retreive the item for
 	 * @return string
 	 */
-	static function fetch($key)
+	public static function fetch($key)
 	{
 		$app = \maverick\maverick::getInstance();
 		
@@ -71,8 +74,9 @@ class cache
 	
 	/**
 	 * clear all caches held for the cache type specified in the cache config file
+	 * @return bool
 	 */
-	static function clear()
+	public static function clear()
 	{
 		$app = \maverick\maverick::getInstance();
 		

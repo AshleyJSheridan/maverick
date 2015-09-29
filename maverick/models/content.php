@@ -1,6 +1,11 @@
 <?php
 use \maverick\db as db;
 
+/**
+ * the main model used in the app
+ * @package Userspace
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class content
 {
 	static function get_page($uri)

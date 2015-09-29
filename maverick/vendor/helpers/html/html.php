@@ -3,16 +3,14 @@ namespace helpers\html;
 
 /**
  * a class containing basic shared methods for all html helper sub-classes
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class html
 {
-	static $_instance;
+	public static $_instance;
 	protected $cached_snippets = array();
-	
-	private function __construct() {}
-	
-	private function __clone() {}
-	
+
 	/**
 	 * returns an instance of the singleton html object - there can be only one!
 	 * @return type
@@ -33,14 +31,15 @@ class html
 	 * 
 	 * the loaded snippet is saved to an internal array to avoid reading in the same file repeatedly
 	 * (such as for form elements where there may be many fields of the same type, for example)
-	 * @param string $filename the path to the snippet file
-	 * @param array $replacements an array of find/replace values to replace {{placeholders}} within the snippet with
-	 * @param bool $replace_all whether or not to replace all the {{placeholders}} within the snippet being loaded
+	 * 
+	 * @param string $filename     the path to the snippet file
+	 * @param array  $replacements an array of find/replace values to replace {{placeholders}} within the snippet with
+	 * @param bool   $replace_all  whether or not to replace all the {{placeholders}} within the snippet being loaded
 	 * @return boolean
 	 */
 	public static function load_snippet($filename, $replacements, $replace_all=true)
 	{
-		$h = html::getInstance();
+		$h = self::getInstance();
 
 		if(!file_exists($filename))
 			return false;
@@ -78,6 +77,11 @@ class html
 		return $contents;
 	}
 	
+	/**
+	 * generate an HTML-safe id string
+	 * @param string $string the string to use as a base
+	 * @return string
+	 */
 	public static function generate_id($string)
 	{
 		$id = preg_replace('/[^\p{L}]/', '_', $string);
