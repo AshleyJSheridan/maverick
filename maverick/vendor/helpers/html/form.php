@@ -3,6 +3,8 @@ namespace helpers\html;
 
 /**
  * a class to render an html form including all of its elements and errors (if the form is posted)
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class form
 {
@@ -20,7 +22,7 @@ class form
 	
 	/**
 	 * basic constructor for the form html object
-	 * @param string $name the name of the form
+	 * @param string $name     the name of the form
 	 * @param string $elements a json formatted string of form elements - the format for which is outlined below:
 	 * 
 	 *	{
@@ -43,13 +45,14 @@ class form
 		$this->name = $name;
 		
 		if($elements && $elements = \json_decode($elements) )
-			$this->set_elements ($elements);
+			$this->set_elements($elements);
 	}
 	
 	/**
 	 * a magic setter for the form html object
 	 * @param string $param the name of the element to set
 	 * @param string $value the value to set - which will be subject to certain constraints per element
+	 * @return bool
 	 */
 	public function __set($param, $value)
 	{
@@ -82,7 +85,7 @@ class form
 				if(is_dir($value))
 					$this->$param = $value;
 				break;
-		}
+		}//end switch
 	}
 	
 	/**
@@ -114,9 +117,10 @@ class form
 	
 	/**
 	 * generates the html for an individual form element using a template file for that form element type
-	 * @param \helpers\html\form_element $element the form element object
-	 * @param string $labels a string representing the position of the element label in relation to the element
-	 * @param array $error_tags an array of two strings which should be used to wrap errors when the form is posted, defaults to a span with an error class
+	 * @param \helpers\html\form_element $element      the form element object
+	 * @param string                     $labels       a string representing the position of the element label in relation to the element
+	 * @param string                     $snippets_dir an optional path string to a directory of snippets that can be used instead of the ones built into the framework
+	 * @param array                      $error_tags   an array of two strings which should be used to wrap errors when the form is posted, defaults to a span with an error class
 	 * @return string
 	 */
 	private function render_element($element, $labels=null, $snippets_dir = null, $error_tags = array('<span class="error">', '</span>') )
@@ -152,77 +156,92 @@ class form
 					}
 				}
 
-				$html .= \helpers\html\html::load_snippet($snippet, array(
-					'class' => ($element->class)?"class=\"{$element->class}\"":'',
-					'id' => ($element->id)?"id=\"{$element->id}\"":'',
-					'name' => $element->name,
-					'value' => strlen($value)?"value=\"$value\"":'',
-					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
-					'required' => in_array('required', $element->validation)?'required="required"':'',
-					'error' => \validator::get_first_error($element->name, $error_tags),
-					'min' => isset($min)?"min=\"$min\"":'',
-					'max' => isset($max)?"max=\"$max\"":'',
-					'minlength' => isset($minlength)?"minlength=\"$minlength\"":'',
-					'maxlength' => isset($maxlength)?"maxlength=\"$maxlength\"":'',
-					'size' => isset($size)?"size=\"$size\"":'',
-					'step' => isset($step)?"step=\"$step\"":'',
-					'accept' => isset($accept)?"accept=\"$accept\"":'',
-					'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
-				) );
+				$html .= \helpers\html\html::load_snippet(
+					$snippet,
+					array(
+						'class' => ($element->class)?"class=\"{$element->class}\"":'',
+						'id' => ($element->id)?"id=\"{$element->id}\"":'',
+						'name' => $element->name,
+						'value' => strlen($value)?"value=\"$value\"":'',
+						'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
+						'required' => in_array('required', $element->validation)?'required="required"':'',
+						'error' => \validator::get_first_error($element->name, $error_tags),
+						'min' => isset($min)?"min=\"$min\"":'',
+						'max' => isset($max)?"max=\"$max\"":'',
+						'minlength' => isset($minlength)?"minlength=\"$minlength\"":'',
+						'maxlength' => isset($maxlength)?"maxlength=\"$maxlength\"":'',
+						'size' => isset($size)?"size=\"$size\"":'',
+						'step' => isset($step)?"step=\"$step\"":'',
+						'accept' => isset($accept)?"accept=\"$accept\"":'',
+						'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
+					)
+				);
 				break;
 			case 'textarea':
 				$value = isset($_REQUEST[$element->name])?$_REQUEST[$element->name]:(strlen($element->value)?$element->value:'');
 				
-				$html .= \helpers\html\html::load_snippet($snippet, array(
-					'class' => ($element->class)?"class=\"{$element->class}\"":'',
-					'id' => ($element->id)?"id=\"{$element->id}\"":'',
-					'name' => $element->name,
-					'value' => strlen($value)?$value:'',
-					'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
-					'required' => in_array('required', $element->validation)?'required="required"':'',
-					'error' => \validator::get_first_error($element->name, $error_tags),
-					'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
-				) );
+				$html .= \helpers\html\html::load_snippet(
+					$snippet,
+					array(
+						'class' => ($element->class)?"class=\"{$element->class}\"":'',
+						'id' => ($element->id)?"id=\"{$element->id}\"":'',
+						'name' => $element->name,
+						'value' => strlen($value)?$value:'',
+						'placeholder' => ($element->placeholder)?"placeholder=\"{$element->placeholder}\"":'',
+						'required' => in_array('required', $element->validation)?'required="required"':'',
+						'error' => \validator::get_first_error($element->name, $error_tags),
+						'spellcheck' => $element->spellcheck?'spellcheck="true"':'spellcheck="false"',
+					)
+				);
 				break;
 			case 'submit':
-				$html .= \helpers\html\html::load_snippet($snippet, array(
-					'class' => ($element->class)?"class=\"{$element->class}\"":'',
-					'id' => ($element->id)?"id=\"{$element->id}\"":'',
-					'name' => $element->name,
-					'value' => ($element->value)?"value=\"{$element->value}\"":'',
-				) );
+				$html .= \helpers\html\html::load_snippet(
+					$snippet,
+					array(
+						'class' => ($element->class)?"class=\"{$element->class}\"":'',
+						'id' => ($element->id)?"id=\"{$element->id}\"":'',
+						'name' => $element->name,
+						'value' => ($element->value)?"value=\"{$element->value}\"":'',
+					)
+				);
 				$labels = null;	// don't wrap the submit in a label
 				break;
 			case 'select':
 			case 'datalist':
-				$html .= \helpers\html\html::load_snippet($snippet, array(
-					'class' => ($element->class)?"class=\"{$element->class}\"":'',
-					'id' => ($element->id)?"id=\"{$element->id}\"":'',
-					'name' => $element->name,
-					'values' => \helpers\html\form_element::build_select_options($element->values, $element->name, $snippets_dir),
-					'error' => \validator::get_first_error($element->name, $error_tags),
-				) );
+				$html .= \helpers\html\html::load_snippet(
+					$snippet,
+					array(
+						'class' => ($element->class)?"class=\"{$element->class}\"":'',
+						'id' => ($element->id)?"id=\"{$element->id}\"":'',
+						'name' => $element->name,
+						'values' => \helpers\html\form_element::build_select_options($element->values, $element->name, $snippets_dir),
+						'error' => \validator::get_first_error($element->name, $error_tags),
+					)
+				);
 				break;
 			case 'checkbox':
 			case 'radio':
 				foreach($element->values as $value)
 				{
-					$element_html = \helpers\html\html::load_snippet($snippet, array(
-						'class' => ($element->class)?"class=\"{$element->class}\"":'',
-						'id' => ($element->id)?"id=\"{$element->id}\"":'',
-						'name' => $element->name,
-						'value' => 'value="' . ((isset($value->value))?$value->value:$value) . '"',
-						'error' => \validator::get_first_error($element->name, $error_tags),
-						'checked' => ( (isset($_REQUEST[$element->name]) 
-										&& ($_REQUEST[$element->name] == $value
-											|| (is_array($_REQUEST[$element->name])
-												&& in_array($value, $_REQUEST[$element->name]) ) 
+					$element_html = \helpers\html\html::load_snippet(
+						$snippet,
+						array(
+							'class' => ($element->class)?"class=\"{$element->class}\"":'',
+							'id' => ($element->id)?"id=\"{$element->id}\"":'',
+							'name' => $element->name,
+							'value' => 'value="' . ((isset($value->value))?$value->value:$value) . '"',
+							'error' => \validator::get_first_error($element->name, $error_tags),
+							'checked' => ( (isset($_REQUEST[$element->name]) 
+											&& ($_REQUEST[$element->name] == $value
+												|| (is_array($_REQUEST[$element->name])
+													&& in_array($value, $_REQUEST[$element->name]) ) 
+											)
 										)
-									)
-								|| ($element->checked)
-								|| (isset($value->checked) && $value->checked == 'checked')
-							)?'checked="checked"':'',
-					) );
+									|| ($element->checked)
+									|| (isset($value->checked) && $value->checked == 'checked')
+								)?'checked="checked"':'',
+						)
+					);
 
 					$fake_element = new \stdClass();
 					$fake_element->type = $element;
@@ -232,11 +251,11 @@ class form
 					$fake_element->id = '';
 
 					$html .= $this->wrap_element($fake_element, $element_html, $labels, $snippets_dir);
-				}
+				}//end foreach
 				$labels = "{$element->type}_group";
 				
 				break;
-		}
+		}//end switch
 
 		if(!is_null($labels) && $labels != 'none' && ($element->type != 'checkbox' || ($element->type == 'checkbox' && count($element->values) > 1 ) ) )
 			$html = $this->wrap_element($element, $html, $labels, $snippets_dir);
@@ -246,9 +265,10 @@ class form
 	
 	/**
 	 * add a label to a form element, using the specified type of label layout and using the corresponding template file
-	 * @param \helpers\html\form_element $element the form element object
-	 * @param string $element_html the rendered html of the element
-	 * @param string $labels_type the template to use for the label
+	 * @param \helpers\html\form_element $element      the form element object
+	 * @param string                     $element_html the rendered html of the element
+	 * @param string                     $labels_type  the template to use for the label
+	 * @param string                     $snippets_dir an optional path string to a directory of snippets that can be used instead of the ones built into the framework
 	 * @return string
 	 */
 	private function wrap_element($element, $element_html, $labels_type, $snippets_dir)
@@ -258,12 +278,15 @@ class form
 		else
 			$snippet = __DIR__ . "/snippets/label_$labels_type.php";
 
-		$html = \helpers\html\html::load_snippet($snippet, array(
-			'label' => (isset($element->label->label))?$element->label->label:$element->label,
-			'element' => $element_html,
-			'id' => ($element->id)?$element->id:'',
-			'class' => ($element->class)?$element->class:'',
-		) );
+		$html = \helpers\html\html::load_snippet(
+			$snippet,
+			array(
+				'label' => (isset($element->label->label))?$element->label->label:$element->label,
+				'element' => $element_html,
+				'id' => ($element->id)?$element->id:'',
+				'class' => ($element->class)?$element->class:'',
+			)
+		);
 		
 		return $html;
 	}
@@ -286,6 +309,8 @@ class form
 
 /**
  * a class for individual form elements to be attached to a form
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class form_element
 {
@@ -303,7 +328,7 @@ class form_element
 	
 	/**
 	 * constructor for the form element objects
-	 * @param string $name the name for this form element
+	 * @param string    $name        the name for this form element
 	 * @param \stdClass $element_obj the json decoded object representing a form element
 	 */
 	public function __construct($name, $element_obj)
@@ -330,8 +355,9 @@ class form_element
 	
 	/**
 	 * a static method to build a list of select list options using a template and return that list as an html string
-	 * @param array $options a list of values for the select list
+	 * @param array  $options      a list of values for the select list
 	 * @param string $element_name the name of the select list element - used to determine if this should be marked as selected in the rendered html or not (e.g. for a form posted with errors)
+	 * @param string $snippets_dir an optional path string to a directory of snippets that can be used instead of the ones built into the framework
 	 * @return string
 	 */
 	public static function build_select_options($options, $element_name, $snippets_dir)
@@ -347,11 +373,14 @@ class form_element
 			else
 				$snippet = __DIR__ . "/snippets/input_option.php";
 			
-			$html .= \helpers\html\html::load_snippet($snippet, array(
-				'value' => $option,
-				'display_value' => $option,
-				'selected' => $selected,
-			) );
+			$html .= \helpers\html\html::load_snippet(
+				$snippet,
+				array(
+					'value' => $option,
+					'display_value' => $option,
+					'selected' => $selected,
+				)
+			);
 		}
 		
 		return $html;

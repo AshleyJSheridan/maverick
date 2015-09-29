@@ -1,9 +1,16 @@
 <?php
+/**
+ * the main controller that all the routes point to
+ * @package Userspace
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class main_controller extends base_controller
 {
-	function __construct() {}
-	
-	function form()
+	/**
+	 * handles the form view from a  GET request - display only
+	 * @return bool
+	 */
+	public function form()
 	{
 		$elements = '{
 			"name":{"type":"text","label":"Name","placeholder":"John Smith","validation":["required","minlength=2","maxlength=50"],"spellcheck":true},
@@ -22,7 +29,11 @@ class main_controller extends base_controller
 		$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
 	}
 
-	function form_post()
+	/**
+	 * handles the posting of a form, including validation, and re-display of the form upon error in submission
+	 * @return bool
+	 */
+	public function form_post()
 	{
 		$app = \maverick\maverick::getInstance();
 		
@@ -38,7 +49,7 @@ class main_controller extends base_controller
 		if(validator::run())
 		{
 			// form validates - do stuff with the data - maybe pass it to a model to save in a DB and then continue to a thanks page
-			
+			echo 'form validates';
 		}
 		else
 		{
@@ -58,10 +69,14 @@ class main_controller extends base_controller
 			$form->snippets = MAVERICK_VIEWSDIR . 'includes/snippets';
 
 			$view = view::make('includes/template')->with('page', 'form')->with('form', $form)->render();
-		}
+		}//end if
 	}
 	
-	function home()
+	/**
+	 * displays the homepage of the app
+	 * @return bool
+	 */
+	public function home()
 	{
 		/*$data = array(
 			'PHP' => 'Great',
@@ -134,12 +149,22 @@ class main_controller extends base_controller
 			->render(true, true);
 	}
 
-	function error()
+	/**
+	 * handles an error view - currently just echos the word error, but that's fine because this is userspace
+	 * @return bool
+	 */
+	public function error()
 	{
 		echo 'error';
 	}
 	
-	static function parse_handler_example($matches = array() )
+	/**
+	 * an example of a custom view parser, which shows how custom templating can be used with custom handling methods
+	 * this returns a string to be used as a replacement in a preg_replace() call
+	 * @param array $matches any custom attributes which get passed along to the handler through the {{tags}} in the view
+	 * @return string
+	 */
+	public static function parse_handler_example($matches = array() )
 	{
 		$char = '';
 		switch($matches[1])
@@ -156,7 +181,7 @@ class main_controller extends base_controller
 		}
 		
 		if(strlen($char))
-			$matches[0] = str_repeat ($char, intval($matches[3]));
+			$matches[0] = str_repeat($char, intval($matches[3]));
 		
 		return $matches[0];
 	}

@@ -3,6 +3,8 @@ namespace maverick;
 
 /**
  * creates a simple object used for holding raw strings to use in a query
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class db_raw
 {
@@ -11,9 +13,10 @@ class db_raw
 	
 	/**
 	 * creates the db_raw object using the specified value
-	 * @param mixed $value
+	 * @param mixed $value the value to push into this instance of the object
+	 * @return bool
 	 */
-	function __construct($value)
+	public function __construct($value)
 	{
 		$this->value = $value;
 	}
@@ -22,7 +25,7 @@ class db_raw
 	 * converts the value to a string, casting if necessary
 	 * @return string
 	 */
-	function __toString()
+	public function __toString()
 	{
 		return (string)$this->value;
 	}

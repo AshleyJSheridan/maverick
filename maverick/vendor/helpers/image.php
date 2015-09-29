@@ -3,6 +3,8 @@ namespace helpers;
 
 /**
  * an image helper class allowing creation, resizing, text overlays and image effects
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class image
 {
@@ -22,11 +24,11 @@ class image
 
 	/**
 	 * generates the image object, either from a file, or using the supplied parameters
-	 * @param string $from_file the path to an image to use as the basis for this object
-	 * @param int $width the width in pixels to use for a new image
-	 * @param int $height the height in pixels to use for a new image
-	 * @param string $format the type of image to generate, either jpg, gif, or png
-	 * @param bool $auto_rotate if the image needs to be automatically rotated or not based on the exif data
+	 * @param string $from_file   the path to an image to use as the basis for this object
+	 * @param int    $width       the width in pixels to use for a new image
+	 * @param int    $height      the height in pixels to use for a new image
+	 * @param string $format      the type of image to generate, either jpg, gif, or png
+	 * @param bool   $auto_rotate if the image needs to be automatically rotated or not based on the exif data
 	 * @return GD_ImageResource|bool
 	 */
 	public function __construct($from_file=null, $width=100, $height=100, $format='jpg', $auto_rotate=false)
@@ -64,6 +66,7 @@ class image
 	 * set various member variables for the image object using limiting constraints
 	 * @param string $param the name of the variable to set
 	 * @param string $value the value to set the variable to
+	 * @return bool
 	 */
 	public function __set($param, $value)
 	{
@@ -101,12 +104,12 @@ class image
 				if(is_bool($value))
 					$this->$param = $value;
 				break;
-		}
+		}//end switch
 	}
 	
 	/**
 	 * getter for the image objects
-	 * @param string $param
+	 * @param string $param the parameter to fetch
 	 * @return mixed
 	 */
 	public function __get($param)
@@ -118,8 +121,9 @@ class image
 	/**
 	 * add an image effect to the image
 	 * @param string $filter the name of the effect filter to apply
-	 * @param array $params an optional list of parameters to supply the image effect - some effects require up to 4 parameters to be set
-	 * @param int $repeat the number of times to repeat this filter, e.g. to make it stronger
+	 * @param array  $params an optional list of parameters to supply the image effect - some effects require up to 4 parameters to be set
+	 * @param int    $repeat the number of times to repeat this filter, e.g. to make it stronger
+	 * @return bool
 	 */
 	public function effect($filter, $params = array(), $repeat = 1 )
 	{
@@ -236,7 +240,7 @@ class image
 				$params[1] = $this->constrain_int($params[1], 0, 20);
 				$params[2] = $this->constrain_int($params[2], 0, 50);
 				break;
-		}
+		}//end switch
 		
 		for($i=0; $i<4; $i++)
 		{
@@ -271,8 +275,9 @@ class image
 					for($i=0; $i<$repeat; $i++)
 						imagefilter($this->image, $filter_const, $params[0], $params[1], $params[2], $params[3]);
 					break;
-			}
-		}
+			}//end switch
+		}//end if
+		
 		if($filter_type == 'matrix')
 		{
 			for($i=0; $i<$repeat; $i++)
@@ -298,15 +303,15 @@ class image
 						$this->$filter_function($params[0], $params[1], $params[2]);
 			}
 			
-		}
+		}//end if
 	}
 	
 	/**
 	 * resize an image to a specified width and height
 	 * this method will return false if it determines that no resize will occur due to the passed parameters
-	 * @param string|int $width a width either expressed as pixels, a percentage, or the strings 'auto' or 'nochange'
+	 * @param string|int $width  a width either expressed as pixels, a percentage, or the strings 'auto' or 'nochange'
 	 * @param string|int $height a height either expressed as pixels, a percentage, or the strings 'auto' or 'nochange'
-	 * @param string $type how the resize should occur - regular will resize and distort the image, crop will resize and crop parts of the image that do not fit
+	 * @param string     $type   how the resize should occur - regular will resize and distort the image, crop will resize and crop parts of the image that do not fit
 	 * @return boolean
 	 */
 	public function resize($width, $height, $type='regular')
@@ -353,7 +358,7 @@ class image
 				return (imagecopyresampled($image_p, $this->image, 0, 0, 0, 0, $width, $height, $this->width, $this->height) && $this->image = $image_p);
 				
 				break;
-			}
+			}//end case
 			case 'crop':
 			{
 				$width = $this->set_dimension($this->width, $width);
@@ -396,18 +401,19 @@ class image
 						$this->width, // src_w
 						$this->width * $ratio // src_h
 					);
-				}
+				}//end if
 				return ($this->image = $image_p);
 				
 				break;
-			}
-		}
+			}//end case
+		}//end switch
 	}
 	
 	/**
 	 * outputs the image either to the standard output stream or a file
 	 * if a filename is not specified, then the appropriate content type headers will be set and the image will be output
 	 * @param null|string $filename whether or not to save this image or dump it to the standard output stream
+	 * @return bool
 	 */
 	public function output($filename=null)
 	{
@@ -461,15 +467,15 @@ class image
 					imagejpeg($this->image, $filename);
 					break;
 			}
-		}
+		}//end if
 	}
 	
 	/**
 	 * write text onto the image using the specified parameters and the font settings set on the image object
-	 * @param string $text the message to write onto the image
-	 * @param int $x the x position of the bottom left pixel of the text (or first line of text in the case of multi-line text)
-	 * @param int $y the y posiiton in pixels of the line of text (or text box for multi-line text)
-	 * @param int $width the width of the text box - if this is 0, then the text will be written out on a single line and will not wrap
+	 * @param string $text  the message to write onto the image
+	 * @param int    $x     the x position of the bottom left pixel of the text (or first line of text in the case of multi-line text)
+	 * @param int    $y     the y posiiton in pixels of the line of text (or text box for multi-line text)
+	 * @param int    $width the width of the text box - if this is 0, then the text will be written out on a single line and will not wrap
 	 * @return boolean
 	 */
 	public function write($text='', $x=0, $y=0, $width=0)
@@ -518,7 +524,8 @@ class image
 					$lines[$current_line] = $words[$i] . ' ';
 					$running_total = $widths[$words[$i]];
 				}
-			}
+			}//end for
+			
 			$lines[$current_line] = rtrim($lines[$current_line]);	// trim the trailing space from the last line
 			
 			$line_height = $this->line_height?$this->line_height:$height;	// set the line height to use - this uses the parameter set by the user code if not 0, otherwise it sets it to what it determines the height of the text is
@@ -526,7 +533,7 @@ class image
 			for($i=0; $i<count($lines); $i++)
 				imagettftext($this->image, $this->font_size, 0, $x, ($line_height*$i)+$y, $this->foreground, $this->font, $lines[$i]);
 
-		}
+		}//end if
 		else
 			imagettftext($this->image, $this->font_size, 0, $x, $y, $this->foreground, $this->font, $text);
 	}
@@ -556,7 +563,7 @@ class image
 				if(preg_match("/\b($fields)\b/i", join(',', array_keys($this->exif) ), $matches ) )
 					$exif = $this->exif[$matches[0]];
 			}
-		}
+		}//end if
 		else
 			$exif = $this->exif;
 
@@ -566,9 +573,9 @@ class image
 	/**
 	 * compares two \helpers\image objects visually and returns a number of how similar they appear to be
 	 * the lower this number the more similar
-	 * @param \helpers\image $img1
-	 * @param \helpers\image $img2
-	 * @param int $level
+	 * @param \helpers\image $img1  the first image to compare
+	 * @param \helpers\image $img2  the second image to compare
+	 * @param int            $level the accuracy of the comparison
 	 * @return int
 	 */
 	public static function compare($img1, $img2, $level=5)
@@ -589,10 +596,12 @@ class image
 			for($y=1; $y<=$level; $y++)
 			{
 				$rgb1 = imagecolorsforindex($gd1, imagecolorat($gd1, $x*$px1-($px1/2), $y*$py1-($py1/2) ) );
-				$hsl1 = \helpers\image::rgbToHsl($rgb1['red'], $rgb1['green'], $rgb1['blue']);
+				//$hsl1 = \helpers\image::rgbToHsl($rgb1['red'], $rgb1['green'], $rgb1['blue']);
+				$hsl1 = self::rgbToHsl($rgb1['red'], $rgb1['green'], $rgb1['blue']);
 				
 				$rgb2 = imagecolorsforindex($gd2, imagecolorat($gd2, $x*$px2-($px2/2), $y*$py2-($py2/2) ) );
-				$hsl2 = \helpers\image::rgbToHsl($rgb2['red'], $rgb2['green'], $rgb2['blue']);
+				//$hsl2 = \helpers\image::rgbToHsl($rgb2['red'], $rgb2['green'], $rgb2['blue']);
+				$hsl2 = self::rgbToHsl($rgb2['red'], $rgb2['green'], $rgb2['blue']);
 				
 				$differences[] = intval(abs($hsl1[0] - $hsl2[0]) );
 			}
@@ -603,9 +612,9 @@ class image
 	/**
 	 * converts rgb values into hsl and returns the three new values as an array
 	 * originally sourced from https://gist.github.com/brandonheyer/5254516
-	 * @param int $r
-	 * @param int $g
-	 * @param int $b
+	 * @param int $r the red component
+	 * @param int $g the green component
+	 * @param int $b the blue component
 	 * @return array
 	 */
 	public static function rgbToHsl( $r, $g, $b ) 
@@ -618,24 +627,24 @@ class image
 		$g /= 255;
 		$b /= 255;
 		
-		$max = max( $r, $g, $b );
-		$min = min( $r, $g, $b );
+		$max = max($r, $g, $b);
+		$min = min($r, $g, $b);
 		
 		$h;
 		$s;
 		$l = ( $max + $min ) / 2;
 		$d = $max - $min;
 		
-		if( $d == 0 )
+		if($d == 0 )
 			$h = $s = 0; // achromatic
 		else
 		{
-			$s = $d / ( 1 - abs( 2 * $l - 1 ) );
+			$s = $d / ( 1 - abs(2 * $l - 1 ) );
 			
 			switch( $max )
 			{
 				case $r:
-					$h = 60 * fmod( ( ( $g - $b ) / $d ), 6 );
+					$h = 60 * fmod(( ( $g - $b ) / $d ), 6 );
 					if ($b > $g)
 						$h += 360;
 					break;
@@ -646,9 +655,9 @@ class image
 					$h = 60 * ( ( $r - $g ) / $d + 4 );
 					break;
 			}
-		}
-		return array( round( $h, 2 ), round( $s, 2 ), round( $l, 2 ) );
-		} 
+		}//end if
+		return array(round($h, 2 ), round($s, 2 ), round($l, 2 ) );
+	} 
 
 	/**
 	 * add a colour resource to the image object
@@ -710,6 +719,7 @@ class image
 	 * generate an image resource from an already existing image
 	 * if the image cannot be read by GD, then do nothing
 	 * @param string $from_file the path to an existing image
+	 * @return bool
 	 */
 	private function create_from_file($from_file)
 	{
@@ -734,13 +744,13 @@ class image
 					$this->image = \imagecreatefromjpeg($this->filename);
 					$this->format = 'jpg';
 			}
-		}
+		}//end if
 	}
 	
 	/**
 	 * determine a dimension for use with an image resize
 	 * @param string|int $input_val the input dimension to determine as pixels
-	 * @param int $type the pixel value to use as a guide for calculating this dimension
+	 * @param int        $type      the pixel value to use as a guide for calculating this dimension
 	 * @return int
 	 */
 	private function set_dimension($input_val, $type)
@@ -767,7 +777,8 @@ class image
 	
 	/**
 	 * a custom image effect filter to create a pixellated image using round pixels
-	 * @param int $blocksize
+	 * @param int $blocksize the pixel size of the block to use in the pixellation
+	 * @return bool
 	 */
 	private function custom_round_pixelate($blocksize)
 	{
@@ -786,7 +797,8 @@ class image
 	
 	/**
 	 * a custom image effect filter to create a scatter effect of the pxels in the image
-	 * @param int $dist
+	 * @param int $dist the oixel value of the distribution offset
+	 * @return bool
 	 */
 	private function custom_scatter($dist)
 	{
@@ -812,23 +824,25 @@ class image
 				imagesetpixel($this->image, $x + $distx, $y + $disty, $oldcol);
 
 			}
-		}
+		}//end for
 	}
 	
 	/**
 	 * a custom image effect filter to add white noise to the image - higher values is more noise
-	 * @param int $diff
+	 * @param int $diff the value of difference to use
+	 * @return bool
 	 */
 	private function custom_noise($diff)
 	{
 		$imagex = imagesx($this->image);
 		$imagey = imagesy($this->image);
 
-		for ($x = 0; $x < $imagex; ++$x)
+		for($x = 0; $x < $imagex; ++$x)
 		{
-			for ($y = 0; $y < $imagey; ++$y)
+			for($y = 0; $y < $imagey; ++$y)
 			{
-				if (rand(0,1)) {
+				if(rand(0, 1) )
+				{
 					$rgb = imagecolorat($this->image, $x, $y);
 					$red = ($rgb >> 16) & 0xFF;
 					$green = ($rgb >> 8) & 0xFF;
@@ -847,16 +861,17 @@ class image
 
 					$newcol = imagecolorallocate($this->image, $red, $green, $blue);
 					imagesetpixel($this->image, $x, $y, $newcol);
-				}
-			}
-		}
+				}//end if
+			}//end for
+		}//end for
 	}
 	
 	/**
 	 * a custom image effect filter to create an oil painting effect
-	 * @param int $strength the strength of the effect
-	 * @param int $diff how much random difference to apply to the colours used
+	 * @param int $strength  the strength of the effect
+	 * @param int $diff      how much random difference to apply to the colours used
 	 * @param int $brushsize the size of the brush to use in pixels
+	 * @return bool
 	 */
 	private function custom_oil($strength, $diff, $brushsize)
 	{
@@ -867,7 +882,7 @@ class image
 		{
 			for ($y = 0; $y < $imagey; ++$y)
 			{
-				if (rand(0,$strength) < 2)
+				if(rand(0, $strength) < 2)
 				{
 					$rgb = imagecolorat($this->image, $x, $y);
 					$red = ($rgb >> 16) & 0xFF;
@@ -888,8 +903,8 @@ class image
 					$colour = imagecolorallocate($this->image, $red, $green, $blue);
 					//imagesetpixel($image, $x, $y, $newcol);
 					imagefilledellipse($this->image, $x, $y, $brushsize, $brushsize, $colour);
-				}
-			}
-		}
+				}//end if
+			}//end for
+		}//end for
 	}
 }

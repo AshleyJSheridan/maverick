@@ -3,10 +3,12 @@ namespace maverick;
 
 /**
  * the main query builder class
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class query
 {
-	static $_instance;
+	public static $_instance;
 	private $from = '';
 	private $joins = array();
 	private $wheres = array();
@@ -26,8 +28,6 @@ class query
 
 	private $queries = array();
 	
-	private function __clone() {}
-	
 	/**
 	 * returns the singleton of this query class
 	 * @param bool $reset an optional argument that determines whether or not to blank this instance out for a new query
@@ -39,7 +39,7 @@ class query
 		{
 			// not everything needs to be reset, only those variables pertaining to an individual query
 			
-			$q = query::getInstance();
+			$q = self::getInstance();
 			
 			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up') as $var)
 				$q->$var = array();
@@ -60,14 +60,16 @@ class query
 	 */
 	public function get_queries()
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		return $q->queries;
 	}
 	
 	/**
 	 * set the table to use in the FROM clause
-	 * @param string $table
+	 * @param string $table the table being set as
+	 * @deprecated
+	 * @return bool
 	 */
 	public function set_from_table($table)
 	{
@@ -77,12 +79,12 @@ class query
 	/**
 	 * creates a standard JOIN clause
 	 * @param string $table the table to join
-	 * @param array $on the conditions on which to join
+	 * @param array  $on    the conditions on which to join
 	 * @return \maverick\query
 	 */
 	public static function leftJoin($table, $on)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->join('left', $table, $on);
 				
@@ -92,12 +94,12 @@ class query
 	/**
 	 * creates a RIGHT JOIN clause
 	 * @param string $table the table to join
-	 * @param array $on the conditions on which to join
+	 * @param array  $on    the conditions on which to join
 	 * @return \maverick\query
 	 */
 	public static function rightJoin($table, $on)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->join('right', $table, $on);
 				
@@ -107,12 +109,12 @@ class query
 	/**
 	 * creates an OUTER JOIN clause
 	 * @param string $table the table to join
-	 * @param array $on the conditions on which to join
+	 * @param array  $on    the conditions on which to join
 	 * @return \maverick\query
 	 */
 	public static function outerJoin($table, $on)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->join('outer', $table, $on);
 				
@@ -121,13 +123,13 @@ class query
 	
 	/**
 	 * creates a WHERE IN clause
-	 * @param string $field the field to WHERE
-	 * @param array $values the list of values to IN
+	 * @param string $field  the field to WHERE
+	 * @param array  $values the list of values to IN
 	 * @return \maverick\query
 	 */
 	public static function whereIn($field, $values)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 
 		if(!is_array($values))
 			return $q;
@@ -139,13 +141,13 @@ class query
 	
 	/**
 	 * create a WHERE IN ... OR clause
-	 * @param string $field the field to WHERE
-	 * @param array $values the list of values to IN
+	 * @param string $field  the field to WHERE
+	 * @param array  $values the list of values to IN
 	 * @return \maverick\query
 	 */
 	public static function whereInOr($field, $values)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($values))
 			return $q;
@@ -157,13 +159,13 @@ class query
 	
 	/**
 	 * create a WHERE NOT IN clause
-	 * @param string $field the field to WHERE NOT
-	 * @param array $values the list of values to IN
+	 * @param string $field  the field to WHERE NOT
+	 * @param array  $values the list of values to IN
 	 * @return \maverick\query
 	 */
 	public static function whereNotIn($field, $values)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($values))
 			return $q;
@@ -175,13 +177,13 @@ class query
 	
 	/**
 	 * creates a wHERE NOT IN ... OR clause
-	 * @param string $field the field to WHERE NOT
-	 * @param array $values the list of values to IN
+	 * @param string $field  the field to WHERE NOT
+	 * @param array  $values the list of values to IN
 	 * @return \maverick\query
 	 */
 	public static function whereNotInOr($field, $values)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($values))
 			return $q;
@@ -193,14 +195,14 @@ class query
 	
 	/**
 	 * creates a WHERE clause
-	 * @param string $field the field to WHERE
-	 * @param array $condition the conditions to create the WHERE on
-	 * @param mixed $value the value(s) to use in the WHERE
+	 * @param string $field     the field to WHERE
+	 * @param array  $condition the conditions to create the WHERE on
+	 * @param mixed  $value     the value(s) to use in the WHERE
 	 * @return \maverick\query
 	 */
 	public static function where($field, $condition, $value)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
 			return $q;
@@ -212,14 +214,14 @@ class query
 	
 	/**
 	 * creates a HAVING clause
-	 * @param string $field the field to HAVING
-	 * @param array $condition the conditions to create the HAVING on
-	 * @param mixed $value the value(s) to use in the HAVING
+	 * @param string $field     the field to HAVING
+	 * @param array  $condition the conditions to create the HAVING on
+	 * @param mixed  $value     the value(s) to use in the HAVING
 	 * @return \maverick\query
 	 */
 	public static function having($field, $condition, $value)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
 			return $q;
@@ -232,12 +234,12 @@ class query
 	/**
 	 * creates a WHERE LIKE clause
 	 * @param string $field the field to WHERE LIKE
-	 * @param mixed $value the value to use in the WHERE
+	 * @param mixed  $value the value to use in the WHERE
 	 * @return type
 	 */
 	public static function whereLike($field, $value)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->add_where('LIKE', $field, "%$value%");
 		
@@ -246,14 +248,14 @@ class query
 	
 	/**
 	 * create a WHERE ... OR clause
-	 * @param string $field the field to WHERE
-	 * @param array $condition the conditions to create the WHERE on
-	 * @param mixed $value the value(s) to use in the WHERE
+	 * @param string $field     the field to WHERE
+	 * @param array  $condition the conditions to create the WHERE on
+	 * @param mixed  $value     the value(s) to use in the WHERE
 	 * @return \maverick\query
 	 */
 	public static function whereOr($field, $condition, $value)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions)))
 			return $q;
@@ -266,11 +268,12 @@ class query
 	/**
 	 * create a limit clause on the query
 	 * @param int $results the number of results to return
-	 * @param int $offset the offset to start with on the results
+	 * @param int $offset  the offset to start with on the results
+	 * @return \maverick\query
 	 */
 	public static function limit($results, $offset=0)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(intval($results) && intval($offset)>-1)
 			$q->limit = array('results'=>intval($results), 'offset'=>intval($offset) );
@@ -285,7 +288,7 @@ class query
 	 */
 	public static function groupBy($field)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->group_bys[] = array(
 			'field' => $field,
@@ -296,13 +299,13 @@ class query
 	
 	/**
 	 * create an ORDER BY clause
-	 * @param string $field the field to order by
+	 * @param string $field     the field to order by
 	 * @param string $direction the direction to order results
 	 * @return \maverick\query
 	 */
 	public static function orderBy($field, $direction='asc')
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($direction, array('asc', 'desc')))
 			return $q;
@@ -322,7 +325,7 @@ class query
 	 */
 	public static function get($fields=array('*'))
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if((is_array($fields) && !count($fields)) || is_string($fields) && !strlen($fields) )
 			return $q;
@@ -351,7 +354,7 @@ class query
 	 */
 	public static function insert($data)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($data))
 			return false;
@@ -370,7 +373,7 @@ class query
 	 */
 	public static function insertOnDuplicate($data)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($data))
 			return false;
@@ -387,7 +390,7 @@ class query
 	 */
 	public static function update($data)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($data))
 			return false;
@@ -406,7 +409,7 @@ class query
 	 */
 	public static function updateOnDuplicate($data)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!is_array($data))
 			return false;
@@ -422,7 +425,7 @@ class query
 	 */
 	public static function delete()
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		$q->result('delete');
 		
@@ -437,7 +440,7 @@ class query
 	private function result($type)
 	{
 		$maverick = \maverick\maverick::getInstance();
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!strlen($q->from)) return false;
 		
@@ -498,9 +501,9 @@ class query
 
 				break;
 			}
-		}
+		}//end switch
 		
-		if ($stmt->execute( $params ) )
+		if($stmt->execute($params) )
 		{
 			switch($type)
 			{
@@ -521,7 +524,7 @@ class query
 				default:
 					$results = true;
 			}
-		}
+		}//end if
 		else
 			$results = false;
 		
@@ -587,7 +590,7 @@ class query
 			$insert_string .= ' (' . implode(',', array_keys($data)) . ') VALUES (' . implode(',', array_fill(0, count(array_keys($data) ), '?') ) . ') ';
 			foreach($data as $value)
 				$params[] = $value;
-		}
+		}//end if
 		
 		return array($insert_string, $params);
 	}
@@ -635,8 +638,8 @@ class query
 				
 				if($i==count($join['on'])-1)
 					$join_string .= ' ) ';
-			}
-		}
+			}//end for
+		}//end foreach
 		
 		return array($join_string, $params);
 	}
@@ -701,10 +704,10 @@ class query
 					}
 					default:
 						$where_string .= $wheres[$i]['value'];
-				}
-			}
+				}//end switch
+			}//end if
 				//$where_string .= $wheres[$i]['field'];
-		}
+		}//end for
 		
 		return array($where_string, $params);
 	}
@@ -769,10 +772,10 @@ class query
 					}
 					default:
 						$having_string .= $havings[$i]['value'];
-				}
-			}
+				}//end switch
+			}//end if
 				//$having_string .= $havings[$i]['field'];
-		}
+		}//end for
 		
 		return array($having_string, $params);
 	}
@@ -845,14 +848,14 @@ class query
 	/**
 	 * adds a where clause to the query object
 	 * @param string $condition the condition to WHERE on
-	 * @param string $field the field to WHERE on
-	 * @param mixed $value the value to WHERE on
-	 * @param string $type the type of WHERE, either 'and' or 'or'
+	 * @param string $field     the field to WHERE on
+	 * @param mixed  $value     the value to WHERE on
+	 * @param string $type      the type of WHERE, either 'and' or 'or'
 	 * @return \maverick\query
 	 */
 	private function add_where($condition, $field, $value, $type='and')
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
 			return $q;
@@ -870,14 +873,14 @@ class query
 	/**
 	 * adds a having clause to the query object
 	 * @param string $condition the condition to HAVING on
-	 * @param string $field the field to HAVING on
-	 * @param mixed $value the value to HAVING on
-	 * @param string $type the type of HAVING, either 'and' or 'or'
+	 * @param string $field     the field to HAVING on
+	 * @param mixed  $value     the value to HAVING on
+	 * @param string $type      the type of HAVING, either 'and' or 'or'
 	 * @return \maverick\query
 	 */
 	private function add_having($condition, $field, $value, $type='and')
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		if(!in_array($condition, array_merge($q->join_conditions, $q->where_conditions, $q->where_internal_conditions)))
 			return $q;
@@ -894,14 +897,14 @@ class query
 	
 	/**
 	 * add a join clause to the query object
-	 * @param string $type the type of join, e.g. LEFT, RIGHT, etc
+	 * @param string $type  the type of join, e.g. LEFT, RIGHT, etc
 	 * @param string $table the table to join
-	 * @param array $on the join conditions
+	 * @param array  $on    the join conditions
 	 * @return \maverick\query
 	 */
 	private function join($type, $table, $on)
 	{
-		$q = query::getInstance();
+		$q = self::getInstance();
 		
 		// either there's no table or mal-formed on parameters, so do nothing
 		if(!is_array($on) || !strlen($table))

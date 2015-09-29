@@ -2,9 +2,16 @@
 
 /**
  * a simple class just used as a hook to retrieve data from the main object view member variable
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class data
 {
+	/**
+	 * grabs a bit of information from the data array in the main view object being used
+	 * @param string $var the name of the data to get
+	 * @return mixed
+	 */
 	public static function get($var)
 	{
 		$app = \maverick\maverick::getInstance();
@@ -30,7 +37,7 @@ class data
 						break;
 				}
 			}
-		}
+		}//end if
 		else
 			$var = $app->view->get_data($var);
 		

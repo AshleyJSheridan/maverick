@@ -1,17 +1,15 @@
 <?php
 /**
  * a validation class for checking form submissions
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class validator
 {
-	static $_instance;
+	public static $_instance;
 	private $rules = array();
 	private $errors = array();
-	
-	private function __construct() {}
-	
-	private function __clone() {}
-	
+
 	/**
 	 * returns a reference to ths singleton instance of this class - there can be only one!
 	 * @return validator
@@ -31,7 +29,7 @@ class validator
 	 */
 	public static function make($rules)
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		$app = \maverick\maverick::getInstance();
 		
 		$v->reset();
@@ -48,13 +46,13 @@ class validator
 	/**
 	 * gets all the errors with submitted data, or all errors for a specific field if given,
 	 * with individual errors wrapped with a specified set of tags
-	 * @param string|null $field an optional field name
-	 * @param array $wrapper an array containing a pair of strings to wrap around an individual error
+	 * @param string|null $field   an optional field name
+	 * @param array       $wrapper an array containing a pair of strings to wrap around an individual error
 	 * @return array
 	 */
 	public static function get_all_errors($field=null, $wrapper=array())
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		
 		if($field && isset($v->errors[$field]))
 		{
@@ -83,16 +81,16 @@ class validator
 	
 	/**
 	 * return only the first error for the specified field
-	 * @param string $field the name of a field
-	 * @param array $wrapper an array containing a pair of strings to wrap around an individual error
+	 * @param string $field   the name of a field
+	 * @param array  $wrapper an array containing a pair of strings to wrap around an individual error
 	 * @return string
 	 */
 	public static function get_first_error($field, $wrapper=array())
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		
 		if(isset($v->errors[$field]))
-			return(count($wrapper)==2)?$wrapper[0] . reset($v->errors[$field]) . $wrapper[1]:reset($v->errors[$field]);
+			return (count($wrapper)==2)?$wrapper[0] . reset($v->errors[$field]) . $wrapper[1]:reset($v->errors[$field]);
 		else
 			return '';
 	}
@@ -104,7 +102,7 @@ class validator
 	 */
 	public static function get_error_count()
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		
 		return count($v->errors);
 	}
@@ -116,7 +114,7 @@ class validator
 	 */
 	public static function run()
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		$app = \maverick\maverick::getInstance();
 		
 		// run through the rules and apply them to any data that exists in the $_REQUEST array
@@ -138,7 +136,7 @@ class validator
 					if(!$v->$rule_method($field, $params))	// if the rule fails, generate the error message from the specific template in the config, and push it into the array for that field
 					{
 						// look up an error message for this and push it into the errors array
-						$error_string = vsprintf( $app->get_config("validator.$rule"), array_merge((array)$field, $params) );
+						$error_string = vsprintf($app->get_config("validator.$rule"), array_merge((array)$field, $params) );
 
 						if(!isset($v->errors[$field]))
 							$v->errors[$field] = array();
@@ -148,8 +146,8 @@ class validator
 				}
 				else
 					error::show("the validation rule {$params[0]} does not exist");
-			}
-		}
+			}//end foreach
+		}//end foreach
 		return !count($v->errors);
 	}
 	
@@ -185,7 +183,7 @@ class validator
 	/**
 	 * validates a field as required only if another field is set and not empty
 	 * @param string $field the field to make optionally required
-	 * @param array $value the field to check a value for
+	 * @param array  $value the field to check a value for
 	 * @return boolean
 	 */
 	private function rule_required_if($field, $value)
@@ -198,8 +196,8 @@ class validator
 	
 	/**
 	 * validates a field as required only if another field is set to something that validates as true by rule_accepted()
-	 * @param string $field
-	 * @param array $value
+	 * @param string $field the field to make optionally required
+	 * @param array  $value the value of the other field to check for conforming to rule_accepted()
 	 * @return boolean
 	 */
 	private function rule_required_if_yes($field, $value)
@@ -212,8 +210,8 @@ class validator
 	
 	/**
 	 * validates a field as required only if another field is set to the specified value
-	 * @param string $field
-	 * @param array $value
+	 * @param string $field the field to make optionally required
+	 * @param array  $value an array containing the second fields' value an the value it should match in order for this rule to apply
 	 * @return boolean
 	 */
 	private function rule_required_if_value($field, $value)
@@ -338,7 +336,7 @@ class validator
 	 * if the file exists on the local file system (which it should always under normal circumstances)
 	 * then the \helpers\file class is used to determine the real type of the file, and not the value
 	 * that is passed by the browser, as that can't really be trusted
-	 * @param string $field the name of the field to which this rule applies
+	 * @param string       $field the name of the field to which this rule applies
 	 * @param array|string $value the mime type(s) that the file must be within bounds of
 	 * @return boolean
 	 */
@@ -378,7 +376,7 @@ class validator
 	/**
 	 * apply the min rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param int the value to use for this rule
+	 * @param int    $value the value to use for this rule
 	 * @return bool
 	 */
 	private function rule_min($field, $value)
@@ -397,7 +395,7 @@ class validator
 	/**
 	 * apply the max rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param int the value to use for this rule
+	 * @param int    $value the value to use for this rule
 	 * @return bool
 	 */
 	private function rule_max($field, $value)
@@ -418,7 +416,7 @@ class validator
 	 * @param string $field the name of the field to which this rule applies
 	 * @return bool
 	 */
-	private function rule_email($field, $value)
+	private function rule_email($field)
 	{
 		if(isset($_REQUEST[$field]) && strlen($_REQUEST[$field]) )
 			return filter_var($_REQUEST[$field], FILTER_VALIDATE_EMAIL);
@@ -482,7 +480,7 @@ class validator
 	/**
 	 * apply the before rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param string $date the date to use for this field
+	 * @param string $date  the date to use for this field
 	 * @return bool
 	 */
 	private function rule_before($field, $date)
@@ -496,7 +494,7 @@ class validator
 	/**
 	 * apply the after rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param string $date the date to use for this field
+	 * @param string $date  the date to use for this field
 	 * @return bool
 	 */
 	private function rule_after($field, $date)
@@ -509,8 +507,8 @@ class validator
 	
 	/**
 	 * apply the between rule to a field
-	 * @param string $field the name of the field to which this rule applies
-	 * @param array $numbers an array of two numbers to use as the min and max values for this rule
+	 * @param string $field   the name of the field to which this rule applies
+	 * @param array  $numbers an array of two numbers to use as the min and max values for this rule
 	 * @return bool
 	 */
 	private function rule_between($field, $numbers)
@@ -542,8 +540,8 @@ class validator
 	
 	/**
 	 * apply the confirmed rule to a field
-	 * @param string $field the name of the field to which this rule applies
-	 * @param array $field2 an array (because of the way the arguments are passed) of one element specifying the name of the field to compare this field to
+	 * @param string $field  the name of the field to which this rule applies
+	 * @param array  $field2 an array (because of the way the arguments are passed) of one element specifying the name of the field to compare this field to
 	 * @return bool
 	 */
 	private function rule_confirmed($field, $field2)
@@ -557,7 +555,7 @@ class validator
 	/**
 	 * apply the in rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param array $array an array of values to use for this rule
+	 * @param array  $array an array of values to use for this rule
 	 * @return bool
 	 */
 	private function rule_in($field, $array)
@@ -571,7 +569,7 @@ class validator
 	/**
 	 * apply the notin rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param array $array an array of values to use for this rule
+	 * @param array  $array an array of values to use for this rule
 	 * @return bool
 	 */
 	private function rule_notin($field, $array)
@@ -585,7 +583,7 @@ class validator
 	/**
 	 * apply the size rule to a field
 	 * @param string $field the name of the field to which this rule applies
-	 * @param string $size a string representation of the int (due to the way it's parsed) that either a string must match exactly or a file size (in bytes) that a file must be equal to
+	 * @param string $size  a string representation of the int (due to the way it's parsed) that either a string must match exactly or a file size (in bytes) that a file must be equal to
 	 * @return bool
 	 */
 	private function rule_size($field, $size)
@@ -599,20 +597,22 @@ class validator
 	/**
 	 * set the rules to this validator instance
 	 * @param array $rules the rules to use
+	 * @return bool
 	 */
 	private function set_rules($rules)
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		
 		$v->rules = $rules;
 	}
 	
 	/**
 	 * reset this singleton back to base values
+	 * @return bool
 	 */
 	private function reset()
 	{
-		$v = validator::getInstance();
+		$v = self::getInstance();
 		
 		foreach(array('rules') as $var)
 			$v->$var = array();

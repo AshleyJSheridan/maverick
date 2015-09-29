@@ -13,6 +13,12 @@ if(!defined('MAVERICK_LOGSDIR'))
 if(!defined('MAVERICK_HTDOCS'))
 	define('MAVERICK_HTDOCS', dirname(__FILE__) . '/');
 
+/**
+ * autoload class for the framework
+ * this is a combination of a classic autoloader and a PRS-0 autloader
+ * @param string $class the name of the class (with namespace if applicable) to load
+ * @return bool
+ */
 function __autoload($class)
 {
 	// a more traditional autoloader - used for loading in controllers and models
@@ -23,7 +29,7 @@ function __autoload($class)
 	{
 		if(file_exists("$path/$class.php"))
 		{
-			require_once "$path/$class.php";
+			include_once "$path/$class.php";
 			$class_found = true;
 			break;
 		}
@@ -51,7 +57,7 @@ function __autoload($class)
 
 		set_include_path(MAVERICK_BASEDIR . 'vendor');
 
-		require_once $fileName;
+		include_once $fileName;
 	}
 }
 

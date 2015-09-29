@@ -3,20 +3,18 @@ use \maverick\data as data;
 
 /**
  * the view class responsible for creating the final view to give to a controller
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class view
 {
-	static $_instance;
+	public static $_instance;
 	private $view = '';
 	private $data = array();
 	private $headers = array();
 	private $original_headers = array();	// the headers actually specified by the user, which may not actually be set if they are malformed, etc
 	private $parse_handlers = array();
-	
-	private function __construct() {}
-	
-	private function __clone() {}
-	
+
 	/**
 	 * return the singleton instance of this class - there can be only one!
 	 * @return view
@@ -31,12 +29,12 @@ class view
 
 	/**
 	 * reset the instance and set the view to use for this view instance
-	 * @param string $view
+	 * @param string $view the path of the view file to use
 	 * @return view
 	 */
 	public static function make($view)
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 		$app = \maverick\maverick::getInstance();
 		
 		$v->reset();
@@ -53,12 +51,12 @@ class view
 	/**
 	 * set a named parameter to add to the main classes data array
 	 * @param string $name the name by which to reference this data
-	 * @param mixed $data the data to add
+	 * @param mixed  $data the data to add
 	 * @return view
 	 */
 	public static function with($name, $data)
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 		
 		if(!strlen($name) || empty($data))
 			return $v;	// probably nicest to just return the view without modification so that it doesn't break the chain
@@ -76,7 +74,7 @@ class view
 	 */
 	public static function headers($headers = array() )
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 
 		if(!is_array($headers))
 			return false;
@@ -101,7 +99,7 @@ class view
 						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
 					break;
 				case 'cache-control':
-					if(preg_match('/^(public|private|no-cache(, must-revalidate)?|no-store|max-age=\d+(, (public|private))?(, must-revalidate)?)$/' ,$value) )
+					if(preg_match('/^(public|private|no-cache(, must-revalidate)?|no-store|max-age=\d+(, (public|private))?(, must-revalidate)?)$/', $value) )
 						$v->headers[$header] = $v->convert_header_case($header) . ": $value";
 					break;
 				case 'pragma':
@@ -119,10 +117,10 @@ class view
 					break;
 				default:
 					$v->headers[$header] = $v->convert_header_case($header) . ": $value";
-			}
+			}//end switch
 			
 			$v->original_headers[$header] = $value;	// make a record of the actual requested header, regardless of whether it was actually successfully added due to parsing rules
-		}
+		}//end foreach
 
 		return $v;
 	}
@@ -131,7 +129,7 @@ class view
 	 * adds a custom parse handler to a member array on the view object that can then be iterated
 	 * to allow userland code to parse the rendered view and replace custom template snippets
 	 * @param string $namespace the namespace given to a template snippet, e.g. {{namespace:
-	 * @param string $handler a string in the form of controller->method, where method is the static method of the given controller which is used as the callback in preg_replace_callback() for the custom parser
+	 * @param string $handler   a string in the form of controller->method, where method is the static method of the given controller which is used as the callback in preg_replace_callback() for the custom parser
 	 * @return view
 	 */
 	public static function parse_handler($namespace, $handler)
@@ -139,7 +137,7 @@ class view
 		if(!preg_match('/^\p{L}[\p{L}\p{N}_]+$/', $namespace) || !preg_match('/^\p{L}[\p{L}\p{N}_]+\-\>\p{L}[\p{L}\p{N}_]+$/', $handler) )
 			return false;
 		
-		$v = view::getInstance();
+		$v = self::getInstance();
 		
 		$v->parse_handlers[] = array($namespace, $handler);
 		
@@ -149,13 +147,13 @@ class view
 	/**
 	 * use object buffering to build up the views into a single string and either return or echo it
 	 * optionally output any headers that have been added to the view instance
-	 * @param bool $echo whether to echo the view or return it as a string
+	 * @param bool $echo         whether to echo the view or return it as a string
 	 * @param bool $with_headers if set to true and $echo is also set to true, then send headers to the browser, otherwise do nothing
 	 * @return string
 	 */
 	public static function render($echo=true, $with_headers=false)
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 		$app = \maverick\maverick::getInstance();
 		
 		$view_file_path = MAVERICK_VIEWSDIR . "/$v->view.php";
@@ -205,8 +203,9 @@ class view
 	
 	/**
 	 * perform a redirect and add in a response code if it was set
-	 * @param string $url the URL to redirect to - although the specs say it has to be absolute, every browser accepts relative too
-	 * @param int $response_code if a positive integer, this is the HTTP response code that is sent too
+	 * @param string $url           the URL to redirect to - although the specs say it has to be absolute, every browser accepts relative too
+	 * @param int    $response_code if a positive integer, this is the HTTP response code that is sent too
+	 * @return bool
 	 */
 	public static function redirect($url, $response_code = null)
 	{
@@ -236,7 +235,7 @@ class view
 	 */
 	public function get_data($var)
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 		
 		return (isset($v->data[$var]))?$v->data[$var]:'';
 	}
@@ -248,7 +247,7 @@ class view
 	 */
 	private function parse_view($view)
 	{
-		$v = view::getInstance();
+		$v = self::getInstance();
 		$app = \maverick\maverick::getInstance();
 		
 		// check for the use of multi-lingual gettext stuff
@@ -308,11 +307,12 @@ class view
 	
 	/**
 	 * reset this singleton instance back to the beginning values
+	 * @return bool
 	 */
 	private function reset()
 	{
 		// not everything needs to be reset, only those variables pertaining to an individual view
-		$v = view::getInstance();
+		$v = self::getInstance();
 		
 		foreach(array('view') as $var)
 			$v->$var = '';
@@ -428,17 +428,18 @@ class view
 			511 => 'Network Authentication Required',
 			598 => 'Network read timeout error',
 			599 => 'Network connect timeout error',
- 		);
+		);
 		
 		if(isset($codes[$code]))
 			return "{$_SERVER["SERVER_PROTOCOL"]} $code {$codes[$code]}";
 		else
-			return $this->set_status_code (200);
+			return $this->set_status_code(200);
 	}
 
 	/**
 	 * set the view to use on this instance
 	 * @param string $view the view to use
+	 * @return bool
 	 */
 	private function set_view($view)
 	{

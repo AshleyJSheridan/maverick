@@ -3,6 +3,8 @@ namespace helpers\html;
 
 /**
  * a class for generating html lists from a json string
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class lists
 {
@@ -11,8 +13,8 @@ class lists
 
 	/**
 	 * the constructor for the list which accepts the json string and an array of list types
-	 * @param string $list_json the json string representing the list - this can be any number of levels deep
-	 * @param array $list_types an array of the list types which set the type of list to use for a given level. if this is not an array, the entire list will use the unordered type
+	 * @param string $list_json  the json string representing the list - this can be any number of levels deep
+	 * @param array  $list_types an array of the list types which set the type of list to use for a given level. if this is not an array, the entire list will use the unordered type
 	 */
 	public function __construct($list_json, $list_types)
 	{
@@ -40,8 +42,8 @@ class lists
 	
 	/**
 	 * builds the html for the list, calling itself recursively for sub-lists if necessary
-	 * @param array $list the list array
-	 * @param int $level the level deepness of this list within the whole list object - used to determine what list type this list uses
+	 * @param array $list  the list array
+	 * @param int   $level the level deepness of this list within the whole list object - used to determine what list type this list uses
 	 * @return string
 	 */
 	private function build_list($list, $level=0)

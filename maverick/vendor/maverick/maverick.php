@@ -3,10 +3,12 @@ namespace maverick;
 
 /**
  * the main framework class that everything else is built around
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class maverick
 {
-	static $_instance;
+	public static $_instance;
 	private $config;
 	private $requested_route;
 	private $requested_route_string;
@@ -32,8 +34,8 @@ class maverick
 	
 	/**
 	 * magic setter for the main class - returns false for any member variable not in the array of allowed values to set
-	 * @param string $name the member variable to set
-	 * @param mixed $value the value to set it to
+	 * @param string $name  the member variable to set
+	 * @param mixed  $value the value to set it to
 	 * @return boolean
 	 */
 	public function __set($name, $value)
@@ -55,7 +57,14 @@ class maverick
 		$this->load_config();
 	}
 	
-	private function __clone() {}
+	/**
+	 * magic clone method - isn't currently used
+	 * @return bool
+	 */
+	private function __clone()
+	{
+		
+	}
 	
 	/**
 	 * return the single instance of this class - there can be only one!
@@ -104,8 +113,8 @@ class maverick
 							break;
 					}
 				}
-			}
-		}
+			}//end if
+		}//end if
 
 		return $config;
 	}
@@ -131,6 +140,7 @@ class maverick
 	 * the main workhorse of the maverick class - this performs tasks like fetching views from cache to bypass the rest of the framework,
 	 * handles route pre-parsing if that's set up, sets up any initial database connections if requested in the config and calls the 
 	 * first controller matched by the requested route
+	 * @return bool
 	 */
 	public function build()
 	{
@@ -164,7 +174,7 @@ class maverick
 			$this->set_lang_culture();
 		
 		// look at routes to find out which route the requested path best matches
-		require_once (MAVERICK_BASEDIR . 'routes.php');
+		include_once MAVERICK_BASEDIR . 'routes.php';
 
 		// initialise base db object if the config exists, the engine is not an empty string, and the required parameters exist
 		if(strlen($this->get_config('db.engine') ) && $this->check_required_fields($this->get_config('db'), array('engine','host','database','username','password') ) )
@@ -174,7 +184,7 @@ class maverick
 			$dbuser = $this->get_config('db.username');
 			$dbpass = $this->get_config('db.password');
 			
-			$this->db->pdo = $pdo = new \PDO("mysql:dbname=$dbname;host=$dbhost",$dbuser,$dbpass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
+			$this->db->pdo = $pdo = new \PDO("mysql:dbname=$dbname;host=$dbhost", $dbuser, $dbpass, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"));;
 		}
 
 		// locate and initiate call to controller responsible for the requested route
@@ -204,6 +214,7 @@ class maverick
 	/**
 	 * sets the view on the main class
 	 * @param \maverick\view $view the view being set
+	 * @return bool
 	 */
 	public function set_view(&$view)
 	{
@@ -212,8 +223,9 @@ class maverick
 
 	/**
 	 * set the error route to use for a specific type of error
-	 * @param int $code the HTTP status code
+	 * @param int   $code    the HTTP status code
 	 * @param array $details an array of details for the route
+	 * @return bool
 	 */
 	public function set_error_route($code, $details)
 	{
@@ -223,6 +235,7 @@ class maverick
 	
 	/**
 	 * handle a route pre-parser method if it's been specified in the config
+	 * @param string $preparser a string representing a class and method call to be used as a route preparser
 	 * @return boolean
 	 */
 	private function route_preparser($preparser)
@@ -243,6 +256,7 @@ class maverick
 	/**
 	 * set the language culture if the corresponding settings exist in the config
 	 * this uses the standard I18N language functions
+	 * @return bool
 	 */
 	private function set_lang_culture()
 	{
@@ -275,6 +289,7 @@ class maverick
 	 * load in the config files that exist in the config directory
 	 * each config file will contain a returned array
 	 * this generates an array of \stdClass objects, one for each config file
+	 * @return bool
 	 */
 	private function load_config()
 	{
@@ -305,6 +320,7 @@ class maverick
 
 	/**
 	 * get the requested URI and set the corresponding parts of it to the correct member variables of this class
+	 * @return bool
 	 */
 	private function get_request_uri()
 	{
@@ -332,8 +348,8 @@ class maverick
 	 * determines if a method exists in a specified class
 	 * note that this creates an instance of the class, so be wary of certain actions in class constructor 
 	 * methods that you don't actually want to execute
-	 * @param string $class the name of the class
-	 * @param string $method the name of the method
+	 * @param string          $class        the name of the class
+	 * @param string          $method       the name of the method
 	 * @param \maverick\class $class_holder the object used to hold the instantiated instance of this class
 	 * @return type
 	 */
@@ -345,7 +361,7 @@ class maverick
 	/**
 	 * check that required fields exist in a data set
 	 * @todo consider breaking this out into a static helper class
-	 * @param array $data the dataset
+	 * @param array $data   the dataset
 	 * @param array $fields a list of fields to check exist
 	 * @return bool
 	 */
@@ -353,6 +369,6 @@ class maverick
 	{
 		$data_keys = array_keys($data);
 
-		return !count( array_diff($fields, $data_keys) );
+		return !count(array_diff($fields, $data_keys) );
 	}
 }

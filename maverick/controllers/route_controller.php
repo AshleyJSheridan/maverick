@@ -1,7 +1,18 @@
 <?php
+/**
+ * a controller in userspace which contains custom methods for dealing with routes
+ * this could contain multiple methods for different types of routes
+ * @package Userspace
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
+ */
 class route_controller extends base_controller
 {
-	function lang_filter()
+	/**
+	 * filter a language culture out of the URL and set the language in the application variable
+	 * this also removes the language culture parts from the URL path
+	 * @return bool
+	 */
+	public function lang_filter()
 	{
 		// any URL pre-parsing logic goes here
 		// for example, this method will look for language culture segments in the URL, and return the default language of the app

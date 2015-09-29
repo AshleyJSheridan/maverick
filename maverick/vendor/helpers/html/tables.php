@@ -3,6 +3,8 @@ namespace helpers\html;
 
 /**
  * a class to render an html table of various types
+ * @package Maverick
+ * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
 class tables
 {
@@ -16,6 +18,13 @@ class tables
 	private $xref_x = 'yes';
 	private $snippets_dir;
 	
+	/**
+	 * create the table object
+	 * @param string $name    the name of the table
+	 * @param string $type    the type of table: data, xref
+	 * @param array  $data    the data to use within the table
+	 * @param array  $headers an array of headers for the table - multi-dimensional for xref tables
+	 */
 	public function __construct($name, $type, $data, $headers)
 	{
 		if(in_array($type, array('data', 'xref') ) )
@@ -26,6 +35,12 @@ class tables
 		$this->headers = $headers;
 	}
 	
+	/**
+	 * magic setter for the table object
+	 * @param string $param the member variable to set
+	 * @param mixed  $value the value to set it to
+	 * @return bool
+	 */
 	public function __set($param, $value)
 	{
 		switch($param)
@@ -44,6 +59,10 @@ class tables
 		}
 	}
 	
+	/**
+	 * render a table object to HTML
+	 * @return string
+	 */
 	public function render()
 	{
 		// convert json to PHP arrays
@@ -74,6 +93,10 @@ class tables
 		return $html;
 	}
 	
+	/**
+	 * render a data tables contents
+	 * @return string
+	 */
 	private function render_data()
 	{
 		// create if the headers exists
@@ -99,7 +122,7 @@ class tables
 				$html .= '</tr>';
 			}
 			return $html;
-		}
+		}//end if
 		
 		// 1 header style table
 		if(count($this->headers) > 0 && isset($this->headers[0]) &&  !is_array($this->headers[0]) )
@@ -120,10 +143,15 @@ class tables
 			}
 			
 			return $html;
-		}
+		}//end if
+		
 		return '';
 	}
 	
+	/**
+	 * render a xref tables contents
+	 * @return string
+	 */
 	private function render_xref()
 	{
 		$name_id = \helpers\html\html::generate_id($this->name);
@@ -174,14 +202,20 @@ DATA;
 							$html .= '<td></td>';
 					}
 					$html .= '</tr>';
-				}
-			}
+				}//end foreach
+			}//end if
 			
 			return $html;
-		}
+		}//end if
 		return '';
 	}
 	
+	/**
+	 * convert a json string to an array to use in the table object generation
+	 * converts json objects into arrays after if necessary
+	 * @param string $json the json string to decode
+	 * @return array
+	 */
 	private function extract_json($json)
 	{
 		$array = json_decode($json);
@@ -197,6 +231,5 @@ DATA;
 		}
 		
 		return $array;
-	}
-	
+	}	
 }
