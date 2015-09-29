@@ -22,7 +22,7 @@ class query
 	private $results;
 	private $limit;
 	
-	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=');
+	private $join_conditions = array('=', '!=', '<', '<=', '>', '>=', 'REGEXP');
 	private $where_conditions = array('IS', 'IS NOT', 'LIKE');
 	private $where_internal_conditions = array('IN', 'NOT IN');
 
