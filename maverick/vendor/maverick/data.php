@@ -14,7 +14,7 @@ class data
 	 */
 	public static function get($var)
 	{
-		$app = \maverick\maverick::getInstance();
+		//$app = \maverick\maverick::getInstance();
 
 		if(strpos($var, '.') !== false)
 		{
@@ -22,7 +22,8 @@ class data
 			
 			if(count($matches) > 1)
 			{
-				$v = $app->view->get_data($matches[0]);
+				//$v = $app->view->get_data($matches[0]);
+				$v = self::get_data($matches[0]);
 				
 				array_shift($matches);
 				
@@ -37,10 +38,21 @@ class data
 						break;
 				}
 			}
-		}//end if
+		}
 		else
-			$var = $app->view->get_data($var);
+		{
+			//$var = $app->view->get_data($var);
+			$var = self::get_data($var);
+			
+		}//end if
 		
 		return $var;
+	}
+	
+	private static function get_data($var)
+	{
+		$app = \maverick\maverick::getInstance();
+		
+		return (isset($app->view_data[$var]))?$app->view_data[$var]:'';
 	}
 }

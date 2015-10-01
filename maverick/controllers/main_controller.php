@@ -33,12 +33,16 @@ class main_controller extends base_controller
 		}
 		else
 		{
-			$view = view::make($page['template_path'])
+			/*$view = view::make($page['template_path'])
 				->parse_handler('form', 'main_controller->parse_form_render')
-				->parse_handler('template', 'main_controller->parse_template_render');
-			
+				->parse_handler('template', 'main_controller->parse_template_render');*/
+
+			$view = new \maverick\mview($page['template_path']);
 			$view = $this::add_variables($view, $page);
+			$view->parse_handler('template', 'main_controller->parse_template_render');
 			
+			
+			var_dump($this->app->view_data);
 			$view->render();
 		}//end if
 	}
@@ -63,7 +67,7 @@ class main_controller extends base_controller
 	private static function add_variables($view, $page=null)
 	{
 		$app = \maverick\maverick::getInstance();
-		
+
 		// add in the super globals
 		$vars = array('server', 'get', 'post', 'files', 'cookie', 'session', 'request', 'env');
 		foreach($vars as $var)
@@ -82,7 +86,7 @@ class main_controller extends base_controller
 		// add in the passed in $page bits
 		if($page)
 			$view->with('page', $page);
-		
+
 		return $view;
 	}
 	
@@ -189,16 +193,31 @@ class main_controller extends base_controller
 	 */
 	public static function parse_template_render($matches)
 	{
+		$app = \maverick\maverick::getInstance();
+		
+		// if the template include doesn't exist, just silently fail with an empty string
 		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[1]}.php"))
 			return '';
 
+		// build up the replacements (if required) by taking the 3rd parameter in the {template} tag and parsing it as json
+		// this requires a little adjustment to the content, as the templating braces don't allow the correct json object notation to be used
 		$replacements = array();
 		if(isset($matches[2]))
 			$replacements = (array)json_decode(str_replace(array('=', '[', ']'), array(':', '{', '}'), $matches[2]) );
 
+		// create a new view and return it
 		$template_view = new maverick\mview($matches[1]);
 		
-		$template_view = self::add_variables($template_view);
+		// push the replacements to the view_data array
+		if(count($replacements) )
+		{
+			$app->view_data['template'] = array();
+			
+			foreach($replacements as $var => $value)
+				$app->view_data['template'][$var] = $value;
+			
+			//var_dump($app->view_data);
+		}
 		
 		return $template_view->render(false);
 	}

@@ -42,7 +42,8 @@ class mview
 		if(empty($name) || empty($data))
 			return $this;	// probably nicest to just return the view without modification so that it doesn't break the chain
 		
-		$this->data[(string)$name] = $data;
+		//$this->data[(string)$name] = $data;
+		$this->app->view_data[(string)$name] = $data;
 		
 		return $this;
 	}

@@ -18,6 +18,7 @@ class maverick
 	public $validator;
 	public $db;
 	public $view;
+	public $view_data = array();
 
 	/**
 	 * magic getter for specific object values - returns null if the specified value is not in the array
