@@ -33,16 +33,13 @@ class main_controller extends base_controller
 		}
 		else
 		{
-			/*$view = view::make($page['template_path'])
-				->parse_handler('form', 'main_controller->parse_form_render')
-				->parse_handler('template', 'main_controller->parse_template_render');*/
-
 			$view = new \maverick\mview($page['template_path']);
 			$view = $this::add_variables($view, $page);
 			$view->parse_handler('template', 'main_controller->parse_template_render');
+			$view->parse_handler('form', 'main_controller->parse_form_render');
 			
 			
-			var_dump($this->app->view_data);
+			//var_dump($this->app->view_data);
 			$view->render();
 		}//end if
 	}
@@ -211,13 +208,12 @@ class main_controller extends base_controller
 		// push the replacements to the view_data array
 		if(count($replacements) )
 		{
-			$app->view_data['template'] = array();
-			
 			foreach($replacements as $var => $value)
-				$app->view_data['template'][$var] = $value;
-			
-			//var_dump($app->view_data);
+				$template_view->with($var, $value);
 		}
+		
+		// parse any sub-template includes within this
+		$template_view->parse_handler('template', 'main_controller->parse_template_render');
 		
 		return $template_view->render(false);
 	}
