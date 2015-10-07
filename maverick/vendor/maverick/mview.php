@@ -261,7 +261,7 @@ class mview
 			{
 				$find[] = "{{{$match}}}";
 
-				$r = \data::get($match);
+				$r = \mdata::get($match);
 				if(is_array($r))
 					$r = implode($r);
 

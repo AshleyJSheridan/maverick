@@ -161,6 +161,7 @@ a.action, button.action, input[type=submit].action
 	&.filter {background-image: url(/img/maverick/icons/filter.png);}
 	&.add_group {background-image: url(/img/maverick/icons/add_element.png);}
 	&.add_tag {background-image: url(/img/maverick/icons/add_tag.png);}
+	&.new_page {background-image: url(/img/maverick/icons/document-new.png);}
 }
 
 .tag_groups

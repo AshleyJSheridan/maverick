@@ -5,7 +5,7 @@
  * @package Maverick
  * @author Ashley Sheridan <ash@ashleysheridan.co.uk>
  */
-class data
+class mdata
 {
 	/**
 	 * grabs a bit of information from the data array in the main view object being used
@@ -14,16 +14,13 @@ class data
 	 */
 	public static function get($var)
 	{
-		$app = \maverick\maverick::getInstance();
-
 		if(strpos($var, '.') !== false)
 		{
 			$matches = explode('.', $var);
 			
 			if(count($matches) > 1)
 			{
-				$v = $app->view->get_data($matches[0]);
-				//$v = self::get_data($matches[0]);
+				$v = self::get_data($matches[0]);
 				
 				array_shift($matches);
 				
@@ -41,11 +38,17 @@ class data
 		}
 		else
 		{
-			$var = $app->view->get_data($var);
-			//$var = self::get_data($var);
+			$var = self::get_data($var);
 			
 		}//end if
 		
 		return $var;
+	}
+	
+	private static function get_data($var)
+	{
+		$app = \maverick\maverick::getInstance();
+
+		return (isset($app->view_data[$var]))?$app->view_data[$var]:'';
 	}
 }

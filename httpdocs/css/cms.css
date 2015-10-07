@@ -54,6 +54,7 @@ a.action.view_details, button.action.view_details, input[type=submit].action.vie
 a.action.filter, button.action.filter, input[type=submit].action.filter { background-image: url(/img/maverick/icons/filter.png); }
 a.action.add_group, button.action.add_group, input[type=submit].action.add_group { background-image: url(/img/maverick/icons/add_element.png); }
 a.action.add_tag, button.action.add_tag, input[type=submit].action.add_tag { background-image: url(/img/maverick/icons/add_tag.png); }
+a.action.new_page, button.action.new_page, input[type=submit].action.new_page { background-image: url(/img/maverick/icons/document-new.png); }
 
 .tag_groups { width: 700px; margin: 10px auto; }
 .tag_groups .tag_group { background-color: #dddddd; border-radius: 1em; margin: 10px 10px 10px 0; width: 200px; padding: 10px; float: left; -ms-box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }

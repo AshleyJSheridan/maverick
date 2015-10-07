@@ -93,7 +93,7 @@ class forms_controller extends cms_controller
 			// get the form from the specified ID, returning the user to the main forms list if no form could be found with that ID
 			$form = cms::get_form($params[2]);
 			if(empty($form))
-				view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
+				view::redirect('/' . $this->app->get_config('cms.path') . '/forms/new_form');
 
 			// build up the extra fields for the form-specific details, like form name, etc
 			$form_details = \helpers\html\html::load_snippet(
@@ -144,7 +144,7 @@ class forms_controller extends cms_controller
 			$this->load_view('form_edit', $view_params );
 		}//end if
 		else
-			view::redirect('/' . $app->get_config('cms.path') . '/forms/new_form');
+			view::redirect('/' . $this->app->get_config('cms.path') . '/forms/new_form');
 	}
 	
 	/**

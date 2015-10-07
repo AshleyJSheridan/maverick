@@ -47,6 +47,21 @@ class cms
 	}
 	
 	/**
+	 * gets a list of the pages in the db
+	 * @param bool $deleted whether to return a list of pages that are marked as deleted or not
+	 * @return array
+	 */
+	public static function get_pages($deleted=false)
+	{
+		$pages = db::table('maverick_cms_pages as p')
+			->orderBy('p.last_edit', 'desc')
+			->get()
+			->fetch();
+		
+		return $pages;
+	}
+	
+	/**
 	 * get a list of the languages listed in the database
 	 * this list is a full list of ISO-639x language cultures
 	 * @param bool $all   determines if only languages currently being used within the CMS are to be returned
@@ -239,7 +254,7 @@ class cms
 	}
 	
 	/**
-	 * get a fom and all of its form elements with their respective element details
+	 * get a form and all of its form elements with their respective element details
 	 * if no elements are attached to a form, then the returned array contains a single element with mostly missing details
 	 * if no form is found, a completely empty array is returned
 	 * @param int $form_id the ID of the form to retrieve
@@ -331,6 +346,43 @@ class cms
 		}//end foreach
 
 		return $form;
+	}
+	
+	/**
+	 * get a page and all of its contents
+	 * if no page is found, a completely empty array is returned
+	 * @param int $page_id the ID of the page to retrieve
+	 * @return array
+	 */
+	public static function get_page($page_id)
+	{
+		$page_id = intval($page_id);
+		
+		$page = db::table('maverick_cms_pages AS p')
+			->leftJoin('maverick_cms_page_content AS pc', array('pc.page_id', '=', 'p.id') )
+			->leftJoin('maverick_cms_users AS u', array('u.id', '=', 'p.author_id') )
+			->where('p.id', '=', db::raw($page_id))
+			->where('p.deleted', '=', db::raw('no'))
+			->orderBy('pc.content_order')
+			->get(
+				array(
+					'p.id',
+					'p.page_name',
+					'p.page_route',
+					'p.status',
+					'p.template_path',
+					'p.added_at',
+					'p.last_edit',
+					'u.username',
+					'p.language_culture',
+					'pc.content_order',
+					'pc.content',
+					'pc.display'
+				)
+			)
+			->fetch();
+		
+		return $page;
 	}
 	
 	/**
