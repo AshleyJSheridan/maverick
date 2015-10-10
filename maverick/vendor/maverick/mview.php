@@ -231,7 +231,7 @@ class mview
 				$view = str_replace($find, $replace, $view);
 			}
 		}
-		// run any custom handlers that have been added - the callback will pass up to three matched parameters in the form
+		// run any custom handlers that have been added - the callback will pass up to $num_arguments (see below) matched parameters in the form
 		// {{handler_namespacee:param1:param2:param3}} with each matched parameter being in an array with
 		// param1 being array index 1, param2 being array index 3, and param3 being array index5
 		// the callback method must be a static method, and the return must be a string
@@ -242,7 +242,7 @@ class mview
 				list($controller, $method) = explode('->', $parse_handler[1]);
 
 				// build the match string used to replace snippets in the templates
-				$match_arguments = "([\p{L}\p{N}_\/\[\]\"\=, ]+)";	// this is the portion of the regex responsible for a single argument match - adjust to allow for more argument characters
+				$match_arguments = "([\p{L}\p{N}_\/\[\]\"\=, \.]+)";	// this is the portion of the regex responsible for a single argument match - adjust to allow for more argument characters
 				$match_str = "$match_arguments";
 				$num_arguments = 5;	// this controls how many arguments are matched - beyond this and the template parser will fail to match at all
 				for($i=0; $i<$num_arguments; $i++)

@@ -7,4 +7,7 @@
 
 <body class="page_type_{{page_type}} main_colour_{{main_colour}}">
 	
-	<header>{{template:snippets/navbar}}</header>
+	<header>
+		<nav>{{template:snippets/navbar}}</nav>
+		<h1>{{page.page_name}}</h1>
+	</header>

@@ -35,11 +35,12 @@ class main_controller extends base_controller
 		{
 			$view = new \maverick\mview($page['template_path']);
 			$view = $this::add_variables($view, $page);
-			$view->parse_handler('template', 'main_controller->parse_template_render');
-			$view->parse_handler('form', 'main_controller->parse_form_render');
 			
+			$view->parse_handler('template', 'main_controller->parse_template_render');		// adds in other templates
+			$view->parse_handler('form', 'main_controller->parse_form_render');				// adds rendered forms
+			$view->parse_handler('each', 'main_controller->parse_list_render');				// loops over an array and parses a template for each item
 			
-			//var_dump($this->app->view_data);
+
 			$view->render();
 		}//end if
 	}
@@ -80,6 +81,7 @@ class main_controller extends base_controller
 			$maverick_vars[$var] = $app->{$var};
 		$view->with('maverick', $maverick_vars);
 		
+		//var_dump($page);
 		// add in the passed in $page bits
 		if($page)
 			$view->with('page', $page);
@@ -216,5 +218,29 @@ class main_controller extends base_controller
 		$template_view->parse_handler('template', 'main_controller->parse_template_render');
 		
 		return $template_view->render(false);
+	}
+	
+	public static function parse_list_render($matches)
+	{
+		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[2]}.php"))
+			return '';
+		
+		$renderd_list = '';
+		$items = \mdata::get($matches[1]);
+		if(is_array($items) )
+		{
+			foreach($items as $item)
+			{
+				$replacements = array('item' => $item);
+				$list_view = new maverick\mview($matches[2]);
+				
+				foreach($replacements as $var => $value)
+					$list_view->with($var, $value);
+				
+				$renderd_list .= $list_view->render(false);
+			}
+		}
+		
+		return $renderd_list;
 	}
 }
