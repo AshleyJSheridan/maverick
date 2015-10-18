@@ -71,7 +71,7 @@ section.main { padding: 10px; float: left; }
 
 /*  Created on : 22-Jun-2015, 20:55:34 Author     : ashley
 */
-label { display: block; clear: both; width: 80%; margin-bottom: 10px; }
+label { display: block; clear: both; width: 80%; margin-bottom: 10px; overflow: auto; }
 label input, label textarea, label select { width: 70%; float: right; padding: 3px; }
 label select { /* this fixes a bug in Firefox (only tested so far on Linux) that extends the width of the select by the width of the ▼ bit */ -moz-box-sizing: border-box; }
 
@@ -101,19 +101,22 @@ form[name=login] input[type=submit] { background-image: url(/img/maverick/icons/
 .filter_form label:nth-child(odd) { margin-right: 40px; }
 .filter_form label input, .filter_form label select { display: block; float: none; width: 100%; }
 
-.form_elements.edit .form_details, .form_elements.edit .form_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
-.form_elements.edit .form_element .action { float: right; padding: 5px; }
-.form_elements.edit .form_element .action:last-child { margin-right: 0; }
-.form_elements.edit .form_element .action.no_float { float: none; }
-.form_elements.edit .form_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; width: 90%; padding: 5px; }
-.form_elements.edit .form_element .label:after { content: "▾"; position: absolute; right: 10px; top: 0; }
-.form_elements.edit .form_element .label:hover { background-color: #cccccc; }
-.form_elements.edit .form_element .element { background-color: #eeeeee; border-radius: 0.5em; padding: 10px; position: relative; clear: right; }
-.form_elements.edit .form_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 grey; }
-.form_elements.edit .details { display: none; }
-.form_elements.edit .details.active { display: block; }
-.form_elements.edit .details .list_values { display: none; }
-.form_elements.edit .details .list_values.show { display: block; }
+.form_elements.edit textarea, .page_elements.edit textarea { min-height: 100px; }
+.form_elements.edit .form_details, .form_elements.edit .form_element, .form_elements.edit .page_details, .form_elements.edit .page_element, .page_elements.edit .form_details, .page_elements.edit .form_element, .page_elements.edit .page_details, .page_elements.edit .page_element { display: block; width: 100%; background-color: #dddddd; border-radius: 1em; padding: 10px; margin: 10px 0; }
+.form_elements.edit .form_details, .form_elements.edit .page_details, .page_elements.edit .form_details, .page_elements.edit .page_details { background-color: #cccccc; }
+.form_elements.edit .form_element .action, .form_elements.edit .page_element .action, .page_elements.edit .form_element .action, .page_elements.edit .page_element .action { float: right; padding: 5px; }
+.form_elements.edit .form_element .action:last-child, .form_elements.edit .page_element .action:last-child, .page_elements.edit .form_element .action:last-child, .page_elements.edit .page_element .action:last-child { margin-right: 0; }
+.form_elements.edit .form_element .action.no_float, .form_elements.edit .page_element .action.no_float, .page_elements.edit .form_element .action.no_float, .page_elements.edit .page_element .action.no_float { float: none; }
+.form_elements.edit .form_element .label, .form_elements.edit .page_element .label, .page_elements.edit .form_element .label, .page_elements.edit .page_element .label { margin-bottom: 10px; height: 20px; background-repeat: no-repeat; position: relative; cursor: pointer; width: 90%; padding: 5px; }
+.form_elements.edit .form_element .label span, .form_elements.edit .page_element .label span, .page_elements.edit .form_element .label span, .page_elements.edit .page_element .label span { font-style: italic; }
+.form_elements.edit .form_element .element, .form_elements.edit .page_element .element, .page_elements.edit .form_element .element, .page_elements.edit .page_element .element { background-color: #eeeeee; border-radius: 0.5em; padding: 10px; position: relative; clear: right; }
+.form_elements.edit .form_element .element:after, .form_elements.edit .page_element .element:after, .page_elements.edit .form_element .element:after, .page_elements.edit .page_element .element:after { content: "preview"; position: absolute; bottom: 5px; right: 5px; color: #dddddd; text-shadow: 1px 1px 0 grey; }
+.form_elements.edit .form_element .label:after, .page_elements.edit .form_element .label:after { content: "▾"; position: absolute; right: 10px; top: 0; }
+.form_elements.edit .form_element .label:hover, .page_elements.edit .form_element .label:hover { background-color: #cccccc; }
+.form_elements.edit .details, .page_elements.edit .details { display: none; }
+.form_elements.edit .details.active, .page_elements.edit .details.active { display: block; }
+.form_elements.edit .details .list_values, .page_elements.edit .details .list_values { display: none; }
+.form_elements.edit .details .list_values.show, .page_elements.edit .details .list_values.show { display: block; }
 
 .user.edit label.permissions { width: 230px; display: inline-block; margin-right: 20px; }
 .user.edit label.permissions.permission_group_start { display: block; margin-top: 40px; }

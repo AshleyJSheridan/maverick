@@ -362,7 +362,6 @@ class cms
 			->leftJoin('maverick_cms_page_content AS pc', array('pc.page_id', '=', 'p.id') )
 			->leftJoin('maverick_cms_users AS u', array('u.id', '=', 'p.author_id') )
 			->where('p.id', '=', db::raw($page_id))
-			->where('p.deleted', '=', db::raw('no'))
 			->orderBy('pc.content_order')
 			->get(
 				array(
@@ -375,14 +374,58 @@ class cms
 					'p.last_edit',
 					'u.username',
 					'p.language_culture',
+					'pc.id AS content_id',
+					'pc.content_name',
 					'pc.content_order',
 					'pc.content',
-					'pc.display'
+					'pc.display',
+					'pc.content_type',
 				)
 			)
 			->fetch();
 		
+		// get the HTML for the each page element
+		foreach($page as &$element)
+			$element['html'] = self::get_page_element($element);
+		
 		return $page;
+	}
+	
+	/**
+	 * build a page element snippet for use in the CMS
+	 * @param array  $element      the element details which are passed to \helpers\html\html::load_snippet
+	 * @param bool   $render       whether or not to render the HTML for this
+	 * @param string $snippets_dir if non-null, this will be used as the snippets directory for building the form elements
+	 * @return string
+	 */
+	public static function get_page_element($element, $render=false, $snippets_dir=null)
+	{
+		if(!$snippets_dir || !file_exists($snippets_dir))
+			$snippets_dir = MAVERICK_VIEWSDIR . 'cms/includes/snippets';
+		
+		$element['content_types'] = implode(\helpers\html\cms::get_content_types($element['content_type']) );
+		$forced_index = intval($element['content_order']) - 1;
+		$element['display_checkbox'] = \helpers\html\html::load_snippet(
+			MAVERICK_VIEWSDIR . 'cms/includes/snippets/checkbox_manual_array.php', 
+			array(
+				'name'=>"display[$forced_index]",
+				'checked'=>($element['display'] == 'yes')?'checked="checked"':''
+			)
+		);
+		
+		if($render)
+		{
+			$view = view::make("cms/includes/snippets/form_element")
+				->with('content_type', $element['content_type'])
+				->with('content_name', $element['content_name'])
+				->with('content_order', $element['content_order'])
+				->with('content', $element['content'])
+				->with('display_checkbox', $element['display_checkbox'])
+				->headers(array('content-type'=>'text/plain') )
+				->render(true, true);
+		}
+		else
+			return \helpers\html\html::load_snippet("$snippets_dir/page_element.php", $element);
 	}
 	
 	/**

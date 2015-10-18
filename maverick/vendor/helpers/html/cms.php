@@ -9,7 +9,7 @@ namespace helpers\html;
 class cms extends \helpers\html\html
 {
 	/**
-	 * gets a list of all available elements in the snippets directory that follow a prescribed patter, and caches it for use later if it's needed
+	 * gets a list of all available elements in the snippets directory that follow a prescribed pattern, and caches it for use later if it's needed
 	 * @todo maybe add a way for this to become more flexible and allow for arbitrary element sets to be matched and returned
 	 * @param string $type    the type of element to return a list of
 	 * @param array  $extra   this can be used to include any extra bits that can be used in an individual case
@@ -61,4 +61,40 @@ class cms extends \helpers\html\html
 		return $elements;
 	}
 
+	/**
+	 * gets a list of all available content types that follow a prescribed pattern, and caches it for use later if it's needed
+	 * @param bool   $wrapped whether or not the returned array wraps each element in <option> tags taken from the select_option snippet
+	 * @return array
+	 */
+	public static function get_content_types($current_type, $wrapped=true)
+	{
+		$h = html::getInstance();
+		
+		$types = array();
+		
+		if(isset($h->cached_snippets["content_types"]))
+			$types = $h->cached_snippets["content_types"];
+		else
+		{
+			foreach(glob(MAVERICK_HTDOCS . 'js/cms/content_types/*.js') as $type)
+				$types[] = substr(basename($type), 0, strlen(basename($type) ) - 3 );	// the 3 comes from .js which should never change
+
+			$types = $h->cached_snippets["content_types"] = $types;
+		}
+
+		// perform the replacements - this isn't done earlier because we don't want to cache replaced versions, as snippets will often change because of these replacements
+		if($wrapped)
+		{
+			foreach($types as $type)
+			{
+				$type = array('value' => $type);
+
+				$type['selected'] = ($current_type == $type)?'selected="selected"':'';
+
+				$types[] = \helpers\html\html::load_snippet(MAVERICK_VIEWSDIR . 'cms/includes/snippets/select_option.php', $type);
+			}
+		}
+		
+		return $types;
+	}
 }

@@ -21,7 +21,6 @@ class content
 			->leftJoin('maverick_cms_page_content AS pc', array('pc.page_id', '=', 'p.id') )
 			->leftJoin('maverick_cms_users AS u', array('u.id', '=', 'p.author_id') )
 			->where(db::raw($uri), 'REGEXP', 'page_route' )
-			->where('deleted', '=', db::raw('no') )
 			->where('p.status', '=', db::raw('live') )
 			->where('pc.display', '=', db::raw('yes') )
 			->orderBy('pc.content_name')

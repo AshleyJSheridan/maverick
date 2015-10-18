@@ -83,9 +83,92 @@ class pages_controller extends cms_controller
 			if(empty($page))
 				view::redirect('/' . $this->app->get_config('cms.path') . '/page/new_page');
 			
+			// build up the extra fields for the page-specific details, like page name, etc
+			$page_info = \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Page Name',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php',
+						array(
+							'value'=>"value=\"{$page[0]['page_name']}\"",
+							'placeholder'=>"placeholder=\"page name\"",
+							'name'=>'page_name'
+						)
+					)
+				)
+			);
+			$page_info .= \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Language Culture',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php',
+						array(
+							'values'=> $this->cms->build_select_options(
+								cms::get_languages(false, true),
+								$page[0]['language_culture'],
+								true,
+								MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'
+							),
+							'name'=>'language_culture'
+						)
+					)
+				)
+			);
+			$page_info .= \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Page Status',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_select.php',
+						array(
+							'values'=> $this->cms->build_select_options(
+								array('live'=>'Live', 'draft'=>'Draft'),
+								$page[0]['status'],
+								true,
+								MAVERICK_BASEDIR . 'vendor/helpers/html/snippets'
+							),
+							'name'=>'status'
+						)
+					)
+				)
+			);
+			$page_info .= \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Page Route',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php',
+						array(
+							'value'=>"value=\"{$page[0]['page_route']}\"",
+							'placeholder'=>"placeholder=\"page route\"",
+							'name'=>'page_route'
+						)
+					)
+				)
+			);
+			$page_info .= \helpers\html\html::load_snippet(
+				MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/label_wrap.php',
+				array(
+					'label'=>'Template Path',
+					'element'=>\helpers\html\html::load_snippet(
+						MAVERICK_BASEDIR . 'vendor/helpers/html/snippets/input_text.php',
+						array(
+							'value'=>"value=\"{$page[0]['template_path']}\"",
+							'placeholder'=>"placeholder=\"tempate file\"",
+							'name'=>'template_path'
+						)
+					)
+				)
+			);
+							
+			//var_dump($page);
+			
 			$view_params = array(
 				'page_details'=>$page,
 				'page_buttons'=>$page_buttons,
+				'page_info'=>$page_info,
 				'scripts'=>array(
 					'/js/cms/pages.js'=>10, 
 					'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js'=>5,

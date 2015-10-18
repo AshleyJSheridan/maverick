@@ -8,6 +8,7 @@ label
 	clear: both;
 	width: 80%;
 	margin-bottom: $spacing;
+	overflow: auto;
 	
 	input, textarea, select
 	{
@@ -169,9 +170,13 @@ form[name=login]
 		}
 	}
 }
-.form_elements.edit
+.form_elements.edit, .page_elements.edit
 {
-	.form_details, .form_element
+	textarea
+	{
+		min-height: 100px;
+	}
+	.form_details, .form_element, .page_details, .page_element
 	{
 		display: block;
 		width: 100%;
@@ -180,14 +185,17 @@ form[name=login]
 		padding: $spacing;
 		margin: $spacing 0;
 	}
+	.form_details, .page_details
+	{
+		background-color: $grey;
+	}
 
-	.form_element
+	.form_element, .page_element
 	{
 		.action
 		{
 			float: right;
 			padding: $spacing/2;
-			//margin-bottom: $spacing;
 			
 			&:last-child
 			{
@@ -208,16 +216,9 @@ form[name=login]
 			width: 90%;
 			padding: $spacing/2;
 			
-			&:after
+			span
 			{
-				content: "▾";
-				position: absolute;
-				right: $spacing;
-				top: 0;
-			}
-			&:hover
-			{
-				background-color: $grey;
+				font-style: italic;
 			}
 		}
 		.element
@@ -238,6 +239,24 @@ form[name=login]
 				text-shadow: 1px 1px 0 grey;
 			}
 		}
+	}
+	.form_element
+	{
+		.label
+		{
+			&:after
+			{
+				content: "▾";
+				position: absolute;
+				right: $spacing;
+				top: 0;
+			}
+			&:hover
+			{
+				background-color: $grey;
+			}
+		}
+		
 	}
 	.details
 	{
