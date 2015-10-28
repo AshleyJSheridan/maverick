@@ -41,7 +41,7 @@ class query
 			
 			$q = self::getInstance();
 			
-			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up') as $var)
+			foreach(array('joins', 'wheres', 'group_bys', 'order_bys', 'gets', 'data', 'data_ins', 'data_up', 'havings') as $var)
 				$q->$var = array();
 				
 			foreach(array('limit') as $var)
