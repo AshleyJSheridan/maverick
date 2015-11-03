@@ -367,6 +367,25 @@ class query
 	}
 	
 	/**
+	 * create an INSERT IGNORE clause
+	 * @param array $data the data to insert
+	 * @return boolean|\maverick\query
+	 */
+	public static function insertIgnore($data)
+	{
+		$q = self::getInstance();
+		
+		if(!is_array($data))
+			return false;
+		
+		$q->data = $data;
+		
+		$q->result('insertIgnore');
+		
+		return $q;
+	}
+	
+	/**
 	 * adds the insert data for an ON DUPLICATE KEY UPDATE clause
 	 * @param array $data the data to use in the insert
 	 * @return boolean|\maverick\query
@@ -469,6 +488,14 @@ class query
 				list($insert_string, $params) = $q->compile_inserts($q->data);
 				
 				$stmt = $maverick->db->pdo->prepare("INSERT INTO {$q->from} $insert_string");
+				
+				break;
+			}
+			case 'insertIgnore':
+			{
+				list($insert_string, $params) = $q->compile_inserts($q->data);
+				
+				$stmt = $maverick->db->pdo->prepare("INSERT IGNORE INTO {$q->from} $insert_string");
 				
 				break;
 			}
