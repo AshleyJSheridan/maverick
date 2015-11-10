@@ -392,6 +392,15 @@ class cms
 	}
 	
 	/**
+	 * update the page based on the POST data
+	 * @return bool
+	 */
+	public static function update_page()
+	{
+		
+	}
+	
+	/**
 	 * build a page element snippet for use in the CMS
 	 * @param array  $element      the element details which are passed to \helpers\html\html::load_snippet
 	 * @param bool   $render       whether or not to render the HTML for this

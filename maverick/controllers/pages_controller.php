@@ -75,11 +75,12 @@ class pages_controller extends cms_controller
 			// process the posted data and save the form if the required fields are present
 			if(count($_REQUEST))
 			{
-				
+				cms::update_page();
 			}
 			
 			// get the page from the specified ID, returning the user to the main pages list if no page could be found with that ID
 			$page = cms::get_page($params[2]);
+			
 			if(empty($page))
 				view::redirect('/' . $this->app->get_config('cms.path') . '/page/new_page');
 			

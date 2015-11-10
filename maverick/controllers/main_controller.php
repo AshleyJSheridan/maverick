@@ -220,6 +220,13 @@ class main_controller extends base_controller
 		return $template_view->render(false);
 	}
 	
+	/**
+	 * uses a template to parse a simple list of items by building lots of mini views
+	 * and concatenating the rendered results after performing the simple replacement
+	 * @todo allow this to maybe generate more complicated lists based on more details available
+	 * @param array $matches any extra parameters for the parse renderer that were included in the template tag
+	 * @return string
+	 */
 	public static function parse_list_render($matches)
 	{
 		if(!file_exists(MAVERICK_VIEWSDIR . "{$matches[2]}.php"))
