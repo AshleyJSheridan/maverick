@@ -134,39 +134,7 @@ class main_controller extends base_controller
 				$validation_rules[] = 'required';
 			
 			// min and max
-			switch($element['type'])
-			{
-				case 'date':
-				case 'number':
-				case 'range':
-				case 'time':
-					if(!empty($element['min']))
-						$validation_rules[] = "min:{$element['min'][0]}";
-					if(!empty($element['max']))
-						$validation_rules[] = "max:{$element['max'][0]}";
-					if(!empty($element['between']))
-						$validation_rules[] = "between:{$element['between'][0]}";
-					
-					break;
-				case 'email':
-				case 'file':
-				case 'password':
-				case 'tel':
-				case 'textarea':
-				case 'text':
-				case 'url':
-					if(!empty($element['min']))
-						$validation_rules[] = "minlength:{$element['min'][0]}";
-					if(!empty($element['max']))
-						$validation_rules[] = "maxlength:{$element['max'][0]}";
-					if(!empty($element['between']))
-					{
-						list($min, $max) = explode(':', $element['between'][0]);
-						$validation_rules[] = "minlength:$min";
-						$validation_rules[] = "maxlength:$max";
-					}
-					break;
-			}//end switch
+			self::get_min_max($element, $validation_rules);
 			
 			// regex
 			if(!empty($element['regex']))
@@ -183,6 +151,49 @@ class main_controller extends base_controller
 		$form = new \helpers\html\form($form[0]['form_name'], json_encode($elements));
 		
 		return $form->render();
+	}
+	
+	/**
+	 * generate the min/max/between rules for elements
+	 * @param array $element          the form elements
+	 * @param array $validation_rules the array of rules, passed by reference so that this method can modify in place
+	 * @return bool
+	 */
+	private static function get_min_max($element, &$validation_rules)
+	{
+		switch($element['type'])
+		{
+			case 'date':
+			case 'number':
+			case 'range':
+			case 'time':
+				if(!empty($element['min']))
+					$validation_rules[] = "min:{$element['min'][0]}";
+				if(!empty($element['max']))
+					$validation_rules[] = "max:{$element['max'][0]}";
+				if(!empty($element['between']))
+					$validation_rules[] = "between:{$element['between'][0]}";
+
+				break;
+			case 'email':
+			case 'file':
+			case 'password':
+			case 'tel':
+			case 'textarea':
+			case 'text':
+			case 'url':
+				if(!empty($element['min']))
+					$validation_rules[] = "minlength:{$element['min'][0]}";
+				if(!empty($element['max']))
+					$validation_rules[] = "maxlength:{$element['max'][0]}";
+				if(!empty($element['between']))
+				{
+					list($min, $max) = explode(':', $element['between'][0]);
+					$validation_rules[] = "minlength:$min";
+					$validation_rules[] = "maxlength:$max";
+				}
+				break;
+		}//end switch
 	}
 	
 	/**
