@@ -150,9 +150,20 @@ class form
 				
 				foreach($element->validation as $validation)
 				{
-					if(preg_match('/^([a-z]+)=(.+)$/', $validation, $matches))
+					if(preg_match('/^([a-z]+):(.+)$/', $validation, $matches))
 					{
 						${$matches[1]} = $matches[2];
+						
+						// special case for some validation attributes which don't map 1 to 1 with an HTML attribute
+						switch($matches[1])
+						{
+							case 'between':
+							{
+								list($minlength, $maxlength) = explode(':', $matches[2]);
+								list($min, $max) = explode(':', $matches[2]);
+								break;
+							}
+						}
 					}
 				}
 
