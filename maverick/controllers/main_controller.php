@@ -147,7 +147,7 @@ class main_controller extends base_controller
 		
 		if(empty($form))
 			return '';
-			
+
 		$form = new \helpers\html\form($form[0]['form_name'], json_encode($elements));
 		
 		return $form->render();

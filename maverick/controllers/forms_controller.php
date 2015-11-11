@@ -30,10 +30,10 @@ class forms_controller extends cms_controller
 		{
 			// get list of forms and show them
 			$forms = cms::get_forms();
-			$headers = '["Name","Language","Total Elements","Actions"]';
+			$headers = '["ID #","Name","Language","Total Elements","Actions"]';
 			$data = array();
 			foreach($forms as $form)
-				$data[] = array($form['name'], $form['lang'], $form['total_elements'], cms::generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
+				$data[] = array($form['id'], $form['name'], $form['lang'], $form['total_elements'], cms::generate_actions('forms', $form['id'], array('edit', 'delete', 'duplicate') ) );
 			
 			$form_table = new \helpers\html\tables('forms', 'layout', $data, $headers);
 			$form_table->class = 'item_table';
